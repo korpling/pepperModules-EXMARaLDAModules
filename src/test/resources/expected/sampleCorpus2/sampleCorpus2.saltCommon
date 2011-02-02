@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sDocumentStructure:SDocumentGraph xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sDocumentStructure="sDocumentStructure" xmlns:saltCore="saltCore">
+  <nodes xsi:type="sDocumentStructure:STimeline" sName="timeline1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SDATA" valueString="#########"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#timeline1"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:STextualDS" sName="text1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SDATA" valueString="1. Zusammenfassung Unterscheidungen treffen ( George A. Miller ) "/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#text1"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok1">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="ADJA"/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="1."/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok1"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok2">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="NN"/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="Zusammenfassung"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok2"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok3">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="NN"/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="Unterscheidung"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok3"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok4">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="VVINF"/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="treffen"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok4"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok5">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="$("/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="("/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok5"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok6">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="NE"/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="George"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok6"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok7">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="NE"/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="A."/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok7"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok8">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="NE"/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString="&lt;unknown>"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok8"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok9">
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="$("/>
+    <labels xsi:type="saltCore:SAnnotation" name="lemma" valueString=")"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#tok9"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span1">
+    <labels xsi:type="saltCore:SAnnotation" name="v" valueString="Hallo"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#span1"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span2">
+    <labels xsi:type="saltCore:SAnnotation" name="v" valueString="nochmal"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#span2"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span3">
+    <labels xsi:type="saltCore:SAnnotation" name="v2" valueString="v2value1"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#span3"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span4">
+    <labels xsi:type="saltCore:SAnnotation" name="v2" valueString="v2value2"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="null#span4"/>
+  </nodes>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.2" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="0"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="2"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge1"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.2" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="0"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="1"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge2"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.3" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="3"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="18"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge3"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.3" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="1"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="2"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge4"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.4" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="19"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="35"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge5"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.4" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="2"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="3"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge6"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.5" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="36"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="43"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge7"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.5" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="3"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="4"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge8"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.6" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="44"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="45"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge9"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.6" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="4"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="5"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge10"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.7" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="46"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="52"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge11"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.7" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="5"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="6"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge12"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.8" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="53"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="55"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge13"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.8" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="6"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="7"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge14"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.9" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="56"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="62"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge15"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.9" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="7"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="8"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge16"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.10" target="//@nodes.1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="63"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="64"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge17"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.10" target="//@nodes.0">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="8"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="9"/>
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge18"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.11" target="//@nodes.2">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge19"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.11" target="//@nodes.3">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge20"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.12" target="//@nodes.4">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge21"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.12" target="//@nodes.5">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge22"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.12" target="//@nodes.6">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge23"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.13" target="//@nodes.2">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge24"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.13" target="//@nodes.3">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge25"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.14" target="//@nodes.4">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge26"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.14" target="//@nodes.5">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge27"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.14" target="//@nodes.6">
+    <labels xsi:type="saltCore:SProcessingAnnotation" namespace="dot" name="stored"/>
+    <identifier id="edge28"/>
+  </edges>
+</sDocumentStructure:SDocumentGraph>

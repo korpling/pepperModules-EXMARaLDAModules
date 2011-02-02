@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sDocumentStructure:SDocumentGraph xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sDocumentStructure="sDocumentStructure" xmlns:saltCore="saltCore" xmlns:saltSemantics="SaltSemantics">
+  <nodes xsi:type="sDocumentStructure:STextualDS" sName="text1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SDATA" valueString="1. Zusammenfassung Unterscheidungen treffen ( George A. Miller ) "/>
+    <identifier xsi:type="saltCore:SElementId" id="null#text1"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok1">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="ADJA"/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="1."/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok1"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok2">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltCore:SMetaAnnotation" name="TestInfo" valueString="TestValue"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="NN"/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="Zusammenfassung"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok2"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok3">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="NN"/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="Unterscheidung"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok3"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok4">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="VVINF"/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="treffen"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok4"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok5">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="$("/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="("/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok5"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok6">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="NE"/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="George"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok6"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok7">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="NE"/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="A."/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok7"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok8">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="NE"/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString="&lt;unknown>"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok8"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="tok9">
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    <labels xsi:type="saltSemantics:SPOSAnnotation" namespace="saltSemantics" name="POS" valueString="$("/>
+    <labels xsi:type="saltSemantics:SLemmaAnnotation" namespace="saltSemantics" name="LEMMA" valueString=")"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#tok9"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span1">
+    <labels xsi:type="saltCore:SAnnotation" name="v" valueString="Hallo"/>
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#span1"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span2">
+    <labels xsi:type="saltCore:SAnnotation" name="v" valueString="nochmal"/>
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#span2"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span3">
+    <labels xsi:type="saltCore:SAnnotation" name="v2" valueString="v2value1"/>
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#span3"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SSpan" sName="span4">
+    <labels xsi:type="saltCore:SAnnotation" name="v2" valueString="v2value2"/>
+    <labels xsi:type="saltCore:SAnnotation" name="medium" valueString="aud"/>
+    <labels xsi:type="saltCore:SAnnotation" name="url"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="null#span4"/>
+  </nodes>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.1" target="//@nodes.0" sName="textRel1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="0"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="2"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    
+    <identifier xsi:type="saltCore:SElementId" id="edge1"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.2" target="//@nodes.0" sName="textRel2">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="3"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="18"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge3"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.3" target="//@nodes.0" sName="textRel3">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="19"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="35"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge5"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.4" target="//@nodes.0" sName="textRel4">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="36"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="43"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge7"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.5" target="//@nodes.0" sName="textRel5">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="44"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="45"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge9"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.6" target="//@nodes.0" sName="textRel6">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="46"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="52"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge11"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.7" target="//@nodes.0" sName="textRel7">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="53"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="55"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge13"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.8" target="//@nodes.0" sName="textRel8">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="56"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="62"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge15"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.9" target="//@nodes.0" sName="textRel9">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="63"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="64"/>
+    <labels xsi:type="saltCore:SFeature" namespace="salt" name="STEXT_OVERLAPPING" valueString="true"/>
+    <identifier xsi:type="saltCore:SElementId" id="edge17"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.10" target="//@nodes.1" sName="spanRel1">
+    <identifier xsi:type="saltCore:SElementId" id="edge19"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.10" target="//@nodes.2" sName="spanRel2">
+    <identifier xsi:type="saltCore:SElementId" id="edge20"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.11" target="//@nodes.3" sName="spanRel3">
+    <identifier xsi:type="saltCore:SElementId" id="edge21"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.11" target="//@nodes.4" sName="spanRel4">
+    <identifier xsi:type="saltCore:SElementId" id="edge22"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.11" target="//@nodes.5" sName="spanRel5">
+    <identifier xsi:type="saltCore:SElementId" id="edge23"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.12" target="//@nodes.1" sName="spanRel6">
+    <identifier xsi:type="saltCore:SElementId" id="edge24"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.12" target="//@nodes.2" sName="spanRel7">
+    <identifier xsi:type="saltCore:SElementId" id="edge25"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.13" target="//@nodes.3" sName="spanRel8">
+    <identifier xsi:type="saltCore:SElementId" id="edge26"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.13" target="//@nodes.4" sName="spanRel9">
+    <identifier xsi:type="saltCore:SElementId" id="edge27"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:SSpanningRelation" source="//@nodes.13" target="//@nodes.5" sName="spanRel10">
+    <identifier xsi:type="saltCore:SElementId" id="edge28"/>
+  </edges>
+</sDocumentStructure:SDocumentGraph>

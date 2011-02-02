@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="ASCII"?>
+<sDocumentStructure:SDocumentGraph xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:graph="graph" xmlns:sDocumentStructure="sDocumentStructure" xmlns:saltCore="saltCore">
+  <labels xsi:type="graph:Identifier" namespace="graph" name="id" valueString="/corpus1/sample2"/>
+  <nodes xsi:type="sDocumentStructure:STimeline" sName="sTimeline1">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sTimeline1"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SDATA" valueString="0#1#2#3#4#5#6">
+      <labels name="SVAL_TYPE" valueString="STEXT"/>
+    </labels>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:STextualDS" sName="sample2_text">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sample2_text"/>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SDATA" valueString="This is a sample Text . ">
+      <labels name="SVAL_TYPE" valueString="STEXT"/>
+    </labels>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="sTok1">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sTok1"/>
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="Pos1">
+      <labels name="SVAL_TYPE" valueString="STEXT"/>
+    </labels>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="sTok2">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sTok2"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="sTok3">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sTok3"/>
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="Pos2">
+      <labels name="SVAL_TYPE" valueString="STEXT"/>
+    </labels>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="sTok4">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sTok4"/>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="sTok5">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sTok5"/>
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="Pos3">
+      <labels name="SVAL_TYPE" valueString="STEXT"/>
+    </labels>
+  </nodes>
+  <nodes xsi:type="sDocumentStructure:SToken" sName="sTok6">
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample2#sTok6"/>
+    <labels xsi:type="saltCore:SAnnotation" name="pos" valueString="$1">
+      <labels name="SVAL_TYPE" valueString="STEXT"/>
+    </labels>
+  </nodes>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.2" target="//@nodes.1" sName="sTextRel1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="0">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="4">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge1"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.2" target="//@nodes.0" sName="sTimeRel1">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="0">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="1">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge2"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.3" target="//@nodes.1" sName="sTextRel2">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="5">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="7">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge3"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.3" target="//@nodes.0" sName="sTimeRel2">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="1">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="2">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge4"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.4" target="//@nodes.1" sName="sTextRel3">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="8">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="9">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge5"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.4" target="//@nodes.0" sName="sTimeRel3">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="2">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="3">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge6"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.5" target="//@nodes.1" sName="sTextRel4">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="10">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="16">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge7"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.5" target="//@nodes.0" sName="sTimeRel4">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="3">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="4">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge8"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.6" target="//@nodes.1" sName="sTextRel5">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="17">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="21">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge9"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.6" target="//@nodes.0" sName="sTimeRel5">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="4">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="5">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge10"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STextualRelation" source="//@nodes.7" target="//@nodes.1" sName="sTextRel6">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="22">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="23">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge11"/>
+  </edges>
+  <edges xsi:type="sDocumentStructure:STimelineRelation" source="//@nodes.7" target="//@nodes.0" sName="sTimeRel6">
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SSTART" valueString="5">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SEND" valueString="6">
+      <labels name="SVAL_TYPE" valueString="SNUMERIC"/>
+    </labels>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="edge12"/>
+  </edges>
+</sDocumentStructure:SDocumentGraph>

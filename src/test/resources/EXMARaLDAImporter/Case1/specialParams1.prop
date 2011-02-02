@@ -1,0 +1,2 @@
+salt.token=text
+salt.tokenSeperator= " "

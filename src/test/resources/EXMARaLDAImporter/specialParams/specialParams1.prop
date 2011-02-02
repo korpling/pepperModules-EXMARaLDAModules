@@ -1,0 +1,6 @@
+salt.token=word
+salt.tokenSeperator= " "
+salt.structuralObjectCreation=MERGE
+salt.tierMerge={pos, lemma, word}
+saltSemantics.POS=pos
+saltSemantics.LEMMA=lemma

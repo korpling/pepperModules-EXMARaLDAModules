@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<basic-transcription>
+<head>
+<meta-information>
+<project-name></project-name><transcription-name></transcription-name><referenced-file url=""></referenced-file><ud-meta-information/><comment></comment><transcription-convention></transcription-convention></meta-information>
+<speakertable>
+</speakertable>
+</head>
+<basic-body>
+<common-timeline>
+<tli id="T0" time="0"/>
+<tli id="T1" time="1"/>
+<tli id="T2" time="2"/>
+<tli id="T3" time="3"/>
+<tli id="T4" time="4"/>
+<tli id="T5" time="5"/>
+<tli id="T6" time="6"/>
+<tli id="T7" time="7"/>
+<tli id="T8" time="8"/>
+<tli id="T9" time="9"/>
+</common-timeline>
+<tier id="TIE0" category="tok" type="t" display-name="[tok]">
+<event start="T0" end="T1">1.</event>
+<event start="T1" end="T2">Zusammenfassung</event>
+<event start="T2" end="T3">Unterscheidungen</event>
+<event start="T3" end="T4">treffen</event>
+<event start="T4" end="T5">(</event>
+<event start="T5" end="T6">George</event>
+<event start="T6" end="T7">A.</event>
+<event start="T7" end="T8">Miller</event>
+<event start="T8" end="T9">)</event>
+</tier>
+<tier id="TIE1" category="medium" type="t" display-name="[medium]"></tier>
+<tier id="TIE2" category="url" type="t" display-name="[url]"></tier>
+<tier id="TIE3" category="POS" type="t" display-name="[POS]">
+<event start="T0" end="T1" medium="aud">ADJA</event>
+<event start="T1" end="T2" medium="aud">NN</event>
+<event start="T2" end="T3" medium="aud">NN</event>
+<event start="T3" end="T4" medium="aud">VVINF</event>
+<event start="T4" end="T5" medium="aud">$(</event>
+<event start="T5" end="T6" medium="aud">NE</event>
+<event start="T6" end="T7" medium="aud">NE</event>
+<event start="T7" end="T8" medium="aud">NE</event>
+<event start="T8" end="T9" medium="aud">$(</event>
+</tier>
+<tier id="TIE4" category="LEMMA" type="t" display-name="[LEMMA]">
+<event start="T0" end="T1" medium="aud">1.</event>
+<event start="T1" end="T2" medium="aud">Zusammenfassung</event>
+<event start="T2" end="T3" medium="aud">Unterscheidung</event>
+<event start="T3" end="T4" medium="aud">treffen</event>
+<event start="T4" end="T5" medium="aud">(</event>
+<event start="T5" end="T6" medium="aud">George</event>
+<event start="T6" end="T7" medium="aud">A.</event>
+<event start="T7" end="T8" medium="aud">&lt;unknown&gt;</event>
+<event start="T8" end="T9" medium="aud">)</event>
+</tier>
+<tier id="TIE5" category="v" type="t" display-name="[v]">
+<event start="T0" end="T2" medium="aud">Hallo</event>
+<event start="T2" end="T5" medium="aud">nochmal</event>
+</tier>
+<tier id="TIE6" category="v2" type="t" display-name="[v2]">
+<event start="T0" end="T2" medium="aud">v2value1</event>
+<event start="T2" end="T5" medium="aud">v2value2</event>
+</tier>
+</basic-body>
+</basic-transcription>

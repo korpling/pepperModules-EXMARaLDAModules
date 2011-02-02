@@ -1,0 +1,6 @@
+salt.token=word
+salt.tokenSeperator= " "
+salt.tierMerge={word, pos, lemma}
+saltSemantics.POS=pos
+saltSemantics.LEMMA=lemma
+saltSemantics.WORD=word

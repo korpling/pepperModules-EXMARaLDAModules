@@ -1,0 +1,3 @@
+salt.token=text
+salt.tokenSeperator= " "
+salt.tierMerge={text, pos}
