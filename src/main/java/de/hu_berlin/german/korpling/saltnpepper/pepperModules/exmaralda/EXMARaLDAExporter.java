@@ -51,7 +51,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		//for testing the symbolic name has to be set without osgi
 		if (	(this.getSymbolicName()==  null) ||
 				(this.getSymbolicName().equalsIgnoreCase("")))
-			this.setSymbolicName("de.hub.corpling.pepper.modules.EXMARaLDAModule");
+			this.setSymbolicName("de.hu_berlin.german.korpling.saltnpepper.pepperModules.EXMARaLDAModules");
 		this.init();
 		if (this.getLogService()!= null)
 			this.getLogService().log(LogService.LOG_DEBUG,this.getName()+" is created...");
