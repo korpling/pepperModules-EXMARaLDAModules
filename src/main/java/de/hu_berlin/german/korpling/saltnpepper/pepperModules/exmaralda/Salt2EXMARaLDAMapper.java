@@ -365,7 +365,7 @@ public class Salt2EXMARaLDAMapper
 	private void mapSMetaAnnotation2UDInformation(SMetaAnnotation sMetaAnno, UDInformation udInfo)
 	{
 		if (	(udInfo.getAttributeName()!= null) &&
-				(!udInfo.getAttributeName().equalsIgnoreCase("")))
+				(!udInfo.getAttributeName().equals("")))
 		{
 			sMetaAnno.setSName(udInfo.getAttributeName());
 			sMetaAnno.setSValue(udInfo.getValue());

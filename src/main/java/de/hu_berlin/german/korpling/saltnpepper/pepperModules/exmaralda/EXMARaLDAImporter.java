@@ -58,7 +58,7 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 		this.name= "EXMARaLDAImporter";
 		//for testing the symbolic name has to be set without osgi
 		if (	(this.getSymbolicName()==  null) ||
-				(this.getSymbolicName().equalsIgnoreCase("")))
+				(this.getSymbolicName().equals("")))
 			this.setSymbolicName("de.hu_berlin.german.korpling.saltnpepper.pepperModules.EXMARaLDAModules");
 		this.init();
 		if (this.getLogService()!= null)
