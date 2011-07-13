@@ -239,6 +239,12 @@ public class EXMARaLDA2SaltMapper
 						this.tierNames2SLayers.put(tierName, sLayer);
 					}//put all tiernames in table to map them to the layer
 				}//if a tier to layer mapping is given
+				
+				if (this.tierNames2SLayers.size()== 0)
+				{
+					if (this.getLogService()!= null)
+						this.getLogService().log(LogService.LOG_WARNING, "It seems as if there is a syntax failure in the given special-param file in property '"+KW_LAYERS_BIG+"'. A value is given, but the layers to named could not have been extracted.");
+				}
 			}//find all simple layer descriptions
 		}//tiers to SLayer-objects
 	}
@@ -590,7 +596,7 @@ public class EXMARaLDA2SaltMapper
 			{//if current tier shall be added to a layer
 				sLayer= this.tierNames2SLayers.get(tier.getCategory());
 			}//if current tier shall be added to a layer
-						
+			
 			for (Event eEvent: tier.getEvents())
 			{
 				SSpan sSpan= SaltCommonFactory.eINSTANCE.createSSpan();
