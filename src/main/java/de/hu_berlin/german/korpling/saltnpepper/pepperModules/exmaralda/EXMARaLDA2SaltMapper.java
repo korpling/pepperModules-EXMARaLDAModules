@@ -55,10 +55,10 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SWordAnnotati
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SaltSemanticsFactory;
 
 /**
- * This class mapps data comming from the EXMARaLDA (EXB) model to a Salt model.
+ * This class maps data coming from the EXMARaLDA (EXB) model to a Salt model.
  * There are some properties to influence the mapping:
  * salt.Layers= {layerName1{tierName1, tierName2,...}}, {layerName2{tierName3, tierName4,...}} 
- * With this property you can mapp some tiers of EXMARaLDA to one SLAyer object. As you can see, the value 
+ * With this property you can map some tiers of EXMARaLDA to one SLAyer object. As you can see, the value 
  * of this is a list of pairs consisting of the one layerName (name of the SLayer-object) and a list of
  * tiers (Tier-objects). All the events of the tier objects, mapped to an SNode will be added the 
  * SLayer-object. 

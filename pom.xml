@@ -95,7 +95,7 @@
     </dependency>
     <dependency>
       <groupId>de.hu_berlin.german.korpling.saltnpepper.misc</groupId>
-      <artifactId>ExmaraldaModel</artifactId>
+      <artifactId>EXMARaLDAModel</artifactId>
       <version>1.1.0</version>
       <type>bundle</type>
       <scope>compile</scope>

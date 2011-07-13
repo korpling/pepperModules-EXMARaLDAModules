@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
-<sDocumentStructure:SDocumentGraph xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:graph="graph" xmlns:sDocumentStructure="sDocumentStructure" xmlns:saltCore="saltCore" xmlns:saltSemantics="SaltSemantics">
-  <labels xsi:type="graph:Identifier" namespace="graph" name="id" valueString="/corpus1/sample3"/>
+<sDocumentStructure:SDocumentGraph xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sDocumentStructure="sDocumentStructure" xmlns:saltCore="saltCore" xmlns:saltSemantics="SaltSemantics" sName="sample3_graph">
+  <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/sample3_graph"/>
   <nodes xsi:type="sDocumentStructure:STimeline" sName="sTimeline1">
     <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample3#sTimeline1"/>
     <labels xsi:type="saltCore:SFeature" namespace="saltCommon" name="SDATA" valueString="0#1#2#3#4#5#6">
