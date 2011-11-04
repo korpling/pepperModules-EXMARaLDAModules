@@ -26,18 +26,18 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import de.hu_berlin.german.korpling.saltnpepper.devTools.generalModuleTests.GeneralPepperImporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperConvertException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.CorpusDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperInterfaceFactory;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.testSuite.moduleTests.PepperImporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 
-public class EXMARaLDAImporterTest extends GeneralPepperImporterTest
+public class EXMARaLDAImporterTest extends PepperImporterTest
 {	
 //	URI resourceURI= URI.createFileURI("e:/workspace/SaltNPepper/de.hub.corpling.pepper.modules.EXMARaLDAModules/");
 	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
