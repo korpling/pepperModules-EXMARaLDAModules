@@ -41,7 +41,7 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 {	
 //	URI resourceURI= URI.createFileURI("e:/workspace/SaltNPepper/de.hub.corpling.pepper.modules.EXMARaLDAModules/");
 	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
-	URI temproraryURI= URI.createFileURI("_TMP/de.hub.corpling.pepper.modules.exmaralda");
+	URI temproraryURI= URI.createFileURI("./_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
 	URI specialParamsURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/specialParams/specialParams1.prop");
 	
 	protected void setUp() throws Exception 
@@ -123,18 +123,23 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 	
 	/**
 	 * Tests if all token and texts and annotations are there.
-	 * Terminals and non terminals with edges and secedgesbetween them. 
+	 * Terminals and non terminals with edges and secedges between them. 
 	 * @throws IOException 
 	 */
 	public void testStart1() throws IOException
 	{
 		URI expectedCorpusURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/corpus1/corpus1.saltCommon");
+		//System.out.println("Expected Corpus URI: "+ expectedCorpusURI.toFileString());
 		URI expectedURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon");
+		//System.out.println("Expected URI: "+ expectedURI.toFileString());
 		URI exportCorpusURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/corpus1.saltCommon");
+		//System.out.println("Export corpus URI: "+ exportCorpusURI.toFileString());
 		URI exportURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon");
+		//System.out.println("Export URI: "+ exportURI.toFileString());
 		URI corpusPath= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/corpus1");
+		//System.out.println("Corpus Path: "+ corpusPath.toFileString());
 		URI specialParamsURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/specialParams1.prop");
-		
+		//System.out.println("Special Params URI: "+ specialParamsURI.toFileString());
 		
 		this.testStart(expectedCorpusURI, expectedURI, exportCorpusURI, exportURI, corpusPath, specialParamsURI);
 	}
@@ -221,11 +226,16 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		{//creating and setting corpus definition
 			CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
 			FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
-			formatDef.setFormatName("exmaralda");
+			formatDef.setFormatName("EXMARaLDA");
 			formatDef.setFormatVersion("1.0");
 			corpDef.setFormatDefinition(formatDef);
 			corpDef.setCorpusPath(corpusPath);
 			this.getFixture().setCorpusDefinition(corpDef);
+			/*
+			System.out.println("Corpus Path: "+ this.getFixture().getCorpusDefinition().getCorpusPath());
+			System.out.println("Format Definition: Name: "+ this.getFixture().getCorpusDefinition().getFormatDefinition().getFormatName());
+			System.out.println("Format Definition: Version: "+ this.getFixture().getCorpusDefinition().getFormatDefinition().getFormatVersion());
+			*/
 		}
 		
 		{//setting corpus graph and importing corpus structure
