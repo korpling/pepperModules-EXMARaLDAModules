@@ -39,10 +39,15 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 
 public class EXMARaLDAImporterTest extends PepperImporterTest
 {	
-//	URI resourceURI= URI.createFileURI("e:/workspace/SaltNPepper/de.hub.corpling.pepper.modules.EXMARaLDAModules/");
+	/*
 	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
 	URI temproraryURI= URI.createFileURI("./_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
 	URI specialParamsURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/specialParams/specialParams1.prop");
+	*/
+	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
+	URI temproraryURI= URI.createFileURI("_TMP"+File.separator+"de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
+	URI specialParamsURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAImporter"+File.separator+"specialParams"+File.separator+"specialParams1.prop");
+	
 	
 	protected void setUp() throws Exception 
 	{
@@ -127,19 +132,28 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 	 * @throws IOException 
 	 */
 	public void testStart1() throws IOException
-	{
+	{	/*
 		URI expectedCorpusURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/corpus1/corpus1.saltCommon");
-		//System.out.println("Expected Corpus URI: "+ expectedCorpusURI.toFileString());
 		URI expectedURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon");
-		//System.out.println("Expected URI: "+ expectedURI.toFileString());
 		URI exportCorpusURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/corpus1.saltCommon");
-		//System.out.println("Export corpus URI: "+ exportCorpusURI.toFileString());
 		URI exportURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon");
-		//System.out.println("Export URI: "+ exportURI.toFileString());
 		URI corpusPath= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/corpus1");
-		//System.out.println("Corpus Path: "+ corpusPath.toFileString());
 		URI specialParamsURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/specialParams1.prop");
+		*/
+		URI expectedCorpusURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAImporter"+File.separator+"Case1"+File.separator+"corpus1"+File.separator+"corpus1.saltCommon");
+		URI expectedURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAImporter"+File.separator+"Case1"+File.separator+"corpus1"+File.separator+"sample1.saltCommon");
+		URI exportCorpusURI= URI.createFileURI(this.temproraryURI+File.separator+"EXMARaLDAImporter"+File.separator+"Case1"+File.separator+"corpus1"+File.separator+"corpus1.saltCommon");
+		URI exportURI= URI.createFileURI(this.temproraryURI+File.separator+"EXMARaLDAImporter"+File.separator+"Case1"+File.separator+"corpus1"+File.separator+"sample1.saltCommon");
+		URI corpusPath= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAImporter"+File.separator+"Case1"+File.separator+"corpus1");
+		URI specialParamsURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAImporter"+File.separator+"Case1"+File.separator+"specialParams1.prop");
+		
+		//System.out.println("Expected Corpus URI: "+ expectedCorpusURI.toFileString());
+		//System.out.println("Expected URI: "+ expectedURI.toFileString());
+		//System.out.println("Export corpus URI: "+ exportCorpusURI.toFileString());
+		//System.out.println("Export URI: "+ exportURI.toFileString());
+		//System.out.println("Corpus Path: "+ corpusPath.toFileString());
 		//System.out.println("Special Params URI: "+ specialParamsURI.toFileString());
+		
 		
 		this.testStart(expectedCorpusURI, expectedURI, exportCorpusURI, exportURI, corpusPath, specialParamsURI);
 	}
@@ -149,6 +163,7 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 	 * Terminals and non terminals with edges and secedgesbetween them. 
 	 * @throws IOException 
 	 */
+	/*
 	public void testStart2() throws IOException
 	{
 		URI expectedCorpusURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case2/corpus1/corpus1.saltCommon");
@@ -161,12 +176,13 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		
 		this.testStart(expectedCorpusURI, expectedURI, exportCorpusURI, exportURI, corpusPath, specialParamsURI);
 	}
-	
+	*/
 	/**
 	 * Tests if all token and texts and annotations are there.
 	 * Terminals and non terminals with edges and secedgesbetween them. 
 	 * @throws IOException 
 	 */
+	/*
 	public void testStart3() throws IOException
 	{
 		URI expectedCorpusURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case3/corpus1/corpus1.saltCommon");
@@ -179,7 +195,7 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		
 		this.testStart(expectedCorpusURI, expectedURI, exportCorpusURI, exportURI, corpusPath, specialParamsURI);
 	}
-	
+	*/
 //	/**
 //	 * Tests if all token and texts and annotations are there.
 //	 * Terminals and non terminals with edges and secedgesbetween them. 
@@ -280,7 +296,8 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 			resource2.save(null);
 //			sDocGraph.setSDocument(sDocument);
 		}
-		
+//		System.out.println("Corpus Path: "+ corpusPath);
+//		System.out.println("Content count:" + new File(corpusPath.toFileString()).listFiles().length);
 		assertTrue("The files '"+expectedCorpusURI+"' and '"+exportCorpusURI+"' aren't identical. ", this.compareFiles(expectedCorpusURI, exportCorpusURI));
 		assertTrue("The files '"+expectedURI+"' and '"+exportURI+"' aren't identical. ", this.compareFiles(expectedURI, exportURI));
 	}
