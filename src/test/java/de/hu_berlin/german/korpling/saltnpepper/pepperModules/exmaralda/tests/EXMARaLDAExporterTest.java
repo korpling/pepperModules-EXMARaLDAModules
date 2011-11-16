@@ -51,7 +51,9 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		super.setFixture(new EXMARaLDAExporter());
 		super.getFixture().setSaltProject(SaltCommonFactory.eINSTANCE.createSaltProject());
 		super.setResourcesURI(resourceURI);
-		URI temproraryURI= URI.createFileURI("."+File.separator+"_TMP"+File.separator+"de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
+		//URI temproraryURI= URI.createFileURI("_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
+		URI temproraryURI= URI.createFileURI("_TMP/ExportTest");
+		
 		super.setTemprorariesURI(temproraryURI);
 		
 		//set formats to support
@@ -95,13 +97,13 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 	 */
 	public void testStart1() throws IOException
 	{
-		URI corpusPath= URI.createFileURI("_TMP"+File.separator+"exportTest"+File.separator+"actual"+File.separator);
-		URI inputURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAExporter"+File.separator+"expected"+File.separator+"sample1"+File.separator+"sampleCorpus1.saltCommon");
-		//URI inputURI= URI.createFileURI("."+File.separator+"src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAExporter"+File.separator+"expected"+File.separator+"sampleCorpus1.saltCommon");
-		URI actualURI= URI.createFileURI("_TMP"+File.separator+"exportTest"+File.separator+"actual"+File.separator+"corp1"+File.separator+"doc1.exb");
+		URI corpusPath= URI.createFileURI("_TMP/exportTest/actual/");
+		//URI inputURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAExporter"+File.separator+"expected"+File.separator+"sample1"+File.separator+"sampleCorpus1.saltCommon");
+		URI inputURI= URI.createFileURI("src/test/resources/EXMARaLDAExporter/expected/sampleCorpus1.saltCommon");
+		URI actualURI= URI.createFileURI("_TMP/exportTest/actual/corp1/doc1.exb");
 		
 		//URI expectedURI= URI.createFileURI("."+File.separator+"src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAExporter"+File.separator+"expected"+File.separator+"sample1"+File.separator+"corp1"+File.separator+"doc1.exb");
-		URI expectedURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAExporter"+File.separator+"expected"+File.separator+"corp1"+File.separator+"doc1.exb");
+		URI expectedURI= URI.createFileURI("src/test/resources/EXMARaLDAExporter/expected/corp1/doc1.exb");
 		if (new File(expectedURI.toFileString()).exists()){
 			System.out.println(expectedURI + "exists");
 		} else {
@@ -171,10 +173,10 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 	 */
 	public void testStart2() throws IOException
 	{
-		URI corpusPath= URI.createFileURI("./_TMP/exportTest/actual/");
-		URI inputURI= URI.createFileURI("./src/test/resources/EXMARaLDAExporter/expected/sample2/sampleCorpus1.saltCommon");
-		URI actualURI= URI.createFileURI("./_TMP/exportTest/actual/corp1/doc1.exb");
-		URI expectedURI= URI.createFileURI("./src/test/resources/EXMARaLDAExporter/expected/sample2/corp1/doc1.exb");
+		URI corpusPath= URI.createFileURI("_TMP/exportTest/actual/");
+		URI inputURI= URI.createFileURI("src/test/resources/EXMARaLDAExporter/expected/sample2/sampleCorpus1.saltCommon");
+		URI actualURI= URI.createFileURI("_TMP/exportTest/actual/corp1/doc1.exb");
+		URI expectedURI= URI.createFileURI("src/test/resources/EXMARaLDAExporter/expected/sample2/corp1/doc1.exb");
 //		URI dotOutputPath= URI.createFileURI("./src/test/resources/dotOutput/");
 		
 		this.removeDirRec(new File(corpusPath.toFileString()));

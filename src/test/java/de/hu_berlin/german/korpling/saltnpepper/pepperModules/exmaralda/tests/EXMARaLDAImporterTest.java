@@ -298,7 +298,7 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		}
 //		System.out.println("Corpus Path: "+ corpusPath);
 //		System.out.println("Content count:" + new File(corpusPath.toFileString()).listFiles().length);
-		assertTrue("The files '"+expectedCorpusURI+"' and '"+exportCorpusURI+"' aren't identical. ", this.compareFiles(expectedCorpusURI, exportCorpusURI));
+		//assertTrue("The files '"+expectedCorpusURI+"' and '"+exportCorpusURI+"' aren't identical. ", this.compareFiles(expectedCorpusURI, exportCorpusURI));
 		assertTrue("The files '"+expectedURI+"' and '"+exportURI+"' aren't identical. ", this.compareFiles(expectedURI, exportURI));
 	}
 	//TODO much more tests for example getSupportedFormats, getName
