@@ -17,6 +17,7 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.felix.scr.annotations.Component;
@@ -39,6 +40,7 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperInter
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperExporterImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
+import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.Salt2EXMARaLDAMapper;
 
 @Component(name="EXMARaLDAExporterJavaComponent", factory="PepperExporterComponentFactory")
 @Service(value=PepperExporter.class)
@@ -103,6 +105,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 			this.createFolderStructure(sElementId);
 			//create uri to save
 			URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sElementId.getSElementPath()+ "." + FILE_EXTENION);
+			System.out.println("Saving File : "+new File(uri.toFileString()).getAbsolutePath());
 			try {
 				this.saveToFile(uri, basicTranscription);
 			} catch (IOException e) {
@@ -115,7 +118,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 	{
 		// create resource set and resource 
 		ResourceSet resourceSet = new ResourceSetImpl();
-
+		System.out.println("Saving File : "+new File(uri.toFileString()).getAbsolutePath());
 		// Register XML resource factory
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb",new EXBResourceFactory());
 		//load resource 
@@ -123,6 +126,8 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		resource.getContents().add(basicTranscription);
 		if (resource== null)
 			throw new EXMARaLDAExporterException("The resource is null.");
-		resource.save(null);
+		
+			resource.save(null);
+		
 	}
 }

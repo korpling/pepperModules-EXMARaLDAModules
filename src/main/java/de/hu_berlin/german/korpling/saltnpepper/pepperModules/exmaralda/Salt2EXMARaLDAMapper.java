@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 
@@ -382,20 +383,20 @@ public class Salt2EXMARaLDAMapper
 	{
 		String retString= uncleanedString;
 		if (retString!= null)
-		{	
-			retString= retString.replace("&", "&amp;");
-			retString= retString.replace("'", "&apos;");
-			retString= retString.replace("<", "&lt;");
-			retString= retString.replace(">", "&gt;");
-			retString= retString.replace("\"", "&quot;");
+		{	retString = StringEscapeUtils.escapeXml(uncleanedString);
+//			retString= retString.replace("&", "&amp;");
+//			retString= retString.replace("'", "&apos;");
+//			retString= retString.replace("<", "&lt;");
+//			retString= retString.replace(">", "&gt;");
+//			retString= retString.replace("\"", "&quot;");
 			
-			retString= retString.replace("�", "&#196;");
-			retString= retString.replace("�", "&#214;");
-			retString= retString.replace("�", "&#220;");
-			retString= retString.replace("�", "&#228;");
-			retString= retString.replace("�", "&#246;");
-			retString= retString.replace("�", "&#252;");
-			retString= retString.replace("�", "&#223;");
+			retString= retString.replace("Ä", "&#196;");
+			retString= retString.replace("Ö", "&#214;");
+			retString= retString.replace("Ü", "&#220;");
+			retString= retString.replace("ä", "&#228;");
+			retString= retString.replace("ö", "&#246;");
+			retString= retString.replace("ü", "&#252;");
+			retString= retString.replace("ß", "&#223;");
 		}			
 		return(retString);
 	}

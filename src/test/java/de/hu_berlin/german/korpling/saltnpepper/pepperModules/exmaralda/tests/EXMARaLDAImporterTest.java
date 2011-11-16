@@ -45,8 +45,8 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 	URI specialParamsURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/specialParams/specialParams1.prop");
 	*/
 	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
-	URI temproraryURI= URI.createFileURI("_TMP"+File.separator+"de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
-	URI specialParamsURI= URI.createFileURI("src"+File.separator+"test"+File.separator+"resources"+File.separator+"EXMARaLDAImporter"+File.separator+"specialParams"+File.separator+"specialParams1.prop");
+	URI temproraryURI= URI.createFileURI("_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
+	URI specialParamsURI= URI.createFileURI("src/test/resources/EXMARaLDAImporter/specialParams/specialParams1.prop");
 	
 	
 	protected void setUp() throws Exception 
@@ -290,15 +290,16 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 			
 			//load resource 
 			Resource resource2 = resourceSet.createResource(exportCorpusURI);
+			
 			if (resource2== null)
 				throw new PepperConvertException("The resource is null.");
 			resource2.getContents().add(this.getFixture().getSaltProject());
 			resource2.save(null);
-//			sDocGraph.setSDocument(sDocument);
+			//sDocGraph.setSDocument(sDocument);
 		}
 //		System.out.println("Corpus Path: "+ corpusPath);
 //		System.out.println("Content count:" + new File(corpusPath.toFileString()).listFiles().length);
-		//assertTrue("The files '"+expectedCorpusURI+"' and '"+exportCorpusURI+"' aren't identical. ", this.compareFiles(expectedCorpusURI, exportCorpusURI));
+		assertTrue("The Corpus files '"+expectedCorpusURI+"' and '"+exportCorpusURI+"' aren't identical. ", this.compareFiles(expectedCorpusURI, exportCorpusURI));
 		assertTrue("The files '"+expectedURI+"' and '"+exportURI+"' aren't identical. ", this.compareFiles(expectedURI, exportURI));
 	}
 	//TODO much more tests for example getSupportedFormats, getName
