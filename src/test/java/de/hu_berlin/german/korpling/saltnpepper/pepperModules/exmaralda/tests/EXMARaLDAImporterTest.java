@@ -312,19 +312,19 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		assertTrue("The expected File '"+expectedURI+"' does not exist", (new File(expectedURI.toFileString())).exists());
 		assertTrue("The export File '"+exportURI+"' does not exist", (new File(exportURI.toFileString())).exists());
 		System.out.println("Export URI found: "+(new File(exportURI.toFileString())).getAbsolutePath());
-		File inputFile = new File(exportURI.toFileString());
-	    File outputFile = new File(resourceURI.toFileString()+"/copied.txt");
-
-	    FileReader in = new FileReader(inputFile);
-	    FileWriter out = new FileWriter(outputFile);
-	    int c;
-
-	    while ((c = in.read()) != -1)
-	      out.write(c);
-
-	    in.close();
-	    out.close();
-		
+//		File inputFile = new File(exportURI.toFileString());
+//	    File outputFile = new File(resourceURI.toFileString()+"/copied.txt");
+//
+//	    FileReader in = new FileReader(inputFile);
+//	    FileWriter out = new FileWriter(outputFile);
+//	    int c;
+//
+//	    while ((c = in.read()) != -1)
+//	      out.write(c);
+//
+//	    in.close();
+//	    out.close();
+//		
 		
 		assertTrue("The Corpus files '"+expectedCorpusURI+"' and '"+exportCorpusURI+"' aren't identical. ", this.compareFiles(expectedCorpusURI, exportCorpusURI));
 		assertTrue("The files '"+expectedURI+"' and '"+exportURI+"' aren't identical. ", this.compareFiles(expectedURI, exportURI));
