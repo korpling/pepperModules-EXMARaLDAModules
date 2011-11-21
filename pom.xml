@@ -30,7 +30,7 @@
     <dependency>
     	<groupId>org.apache.commons</groupId>
     	<artifactId>commons-lang3</artifactId>
-    	<version>3.0.1</version>
+    	<version>3.0</version>
     	<type>jar</type>
     	<scope>compile</scope>
     </dependency>
@@ -73,7 +73,8 @@
             <Bundle-Version>${project.version}</Bundle-Version>
             <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
             <Service-Component>OSGI-INF/${component.descriptor.name}</Service-Component>
-            <Include-Resource>{maven-resources}, LICENSE, NOTICE</Include-Resource>
+            <Bundle-ClassPath>.,{maven-dependencies},lib/commons-lang3-3.0.jar</Bundle-ClassPath> 
+            <Include-Resource>{maven-resources}, LICENSE, NOTICE, lib/commons-lang3-3.0.jar=commons-lang3-3.0.jar</Include-Resource>
           </instructions>
         </configuration>
       </plugin>

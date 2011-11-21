@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="ASCII"?>
 <saltCommon:SaltProject xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sCorpusStructure="sCorpusStructure" xmlns:saltCommon="saltCommon" xmlns:saltCore="saltCore">
   <sCorpusGraphs sName="/corpus1">
-    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="corpusGraph1"/>
+    <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" value="ACED000574000C636F72707573477261706831" valueString="corpusGraph1"/>
     <nodes xsi:type="sCorpusStructure:SCorpus" sName="corpus1">
-      <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1"/>
+      <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" value="ACED00057400082F636F7270757331" valueString="/corpus1"/>
     </nodes>
     <nodes xsi:type="sCorpusStructure:SDocument" sName="sample1">
-      <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="/corpus1/sample1"/>
-      <sDocumentGraph href="_TMP/de.hub.corpling.pepper.modules.exmaralda/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon#/"/>
+      <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" value="ACED00057400102F636F72707573312F73616D706C6531" valueString="/corpus1/sample1"/>
+      <sDocumentGraph href="_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon#/"/>
     </nodes>
     <edges xsi:type="sCorpusStructure:SCorpusDocumentRelation" source="//@sCorpusGraphs.0/@nodes.0" target="//@sCorpusGraphs.0/@nodes.1" sName="corpDocRel1">
-      <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" valueString="salt:/corpDocRel1"/>
+      <labels xsi:type="saltCore:SElementId" namespace="graph" name="id" value="ACED000574001173616C743A2F636F7270446F6352656C31" valueString="salt:/corpDocRel1"/>
     </edges>
   </sCorpusGraphs>
 </saltCommon:SaltProject>
