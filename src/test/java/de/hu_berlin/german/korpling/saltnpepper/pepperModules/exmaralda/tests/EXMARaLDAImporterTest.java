@@ -34,10 +34,12 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefin
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperInterfaceFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testSuite.moduleTests.PepperImporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporter;
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltSample.SaltSample;
 
 public class EXMARaLDAImporterTest extends PepperImporterTest
 {	
@@ -124,31 +126,48 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 	
 	
 	/**
-	 * Tests if all token and texts and annotations are there.
-	 * Terminals and non terminals with edges and secedges between them. 
+	 * Checks if a {@link SDocument} object is stored in exmaralda like this:
+	 * <table border="1">
+	 * <tr><td></td><td><span>1&nbsp;[00:01.0]</span></td><td ><span>2&nbsp;[00:02.0]</span></td><td ><span>3&nbsp;[00:03.0]</span></td><td ><span>4&nbsp;[00:04.0]</span></td><td ><span>5&nbsp;[00:05.0]</span></td><td ><span>6&nbsp;[00:06.0]</span></td><td ><span>7&nbsp;[00:07.0]</span></td><td ><span>8&nbsp;[00:08.0]</span></td><td ><span>9&nbsp;[00:09.0]</span></td></tr>
+	 * <tr><td><span>[tok]</span>&nbsp;&nbsp;</td><td class="TIE0" colspan="1"  ><span class="TIE0">Is</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">this</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">example</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">more</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">complicated</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">than</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">it</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">appears</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">to</span></td><td class="TIE0" colspan="1"  ><span class="TIE0">be</span></td>	</tr><tr>
+	 * <td><span>[POS]</span>&nbsp;&nbsp;</td><td class="TIE1" colspan="1"  ><span class="TIE1">VBZ</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">DT</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">NN</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">ABR</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">JJ</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">IN</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">PRP</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">VBZ</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">TO</span></td><td class="TIE1" colspan="1"  ><span class="TIE1">VB</span></td>	</tr>
+	 * <tr><td><span>[LEMMA]</span>&nbsp;&nbsp;</td><td class="TIE2" colspan="1"  ><span class="TIE2">be</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">this</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">example</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">more</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">complicated</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">than</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">it</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">appear</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">to</span></td><td class="TIE2" colspan="1"  ><span class="TIE2">be</span></td>	</tr>
+	 * <tr><td><span>[Inf-Struct]</span>&nbsp;&nbsp;</td><td class="TIE3" colspan="1"><span class="TIE3">contrast-focus</span></td><td class="TIE3" colspan="9"><span class="TIE3">topic</span></td></tr>
+	 * </table> 
 	 * @throws IOException 
 	 */
 	public void testStart1() throws IOException
 	{	
-		URI expectedCorpusURI= URI.createFileURI("src/test/resources/EXMARaLDAImporter/Case1/corpus1/corpus1.saltCommon");
-		URI expectedURI= URI.createFileURI("src/test/resources/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon");
-		//URI exportCorpusURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/corpus1.saltCommon");
-		//URI exportURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon");
-		
-		URI exportCorpusURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/corpus1.saltCommon");
-		URI exportURI= URI.createFileURI(this.temproraryURI+"/EXMARaLDAImporter/Case1/corpus1/sample1.saltCommon");
 		URI corpusPath= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/corpus1");
 		URI specialParamsURI= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case1/specialParams1.prop");
+		this.getFixture().setSpecialParams(specialParamsURI);
 		
-		//System.out.println("Expected Corpus URI: "+ expectedCorpusURI.toFileString());
-		//System.out.println("Expected URI: "+ expectedURI.toFileString());
-		//System.out.println("Export corpus URI: "+ exportCorpusURI.toFileString());
-		//System.out.println("Export URI: "+ exportURI.toFileString());
-		//System.out.println("Corpus Path: "+ corpusPath.toFileString());
-		//System.out.println("Special Params URI: "+ specialParamsURI.toFileString());
+		//start: creating and setting corpus definition
+			CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
+			FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+			formatDef.setFormatName("EXMARaLDA");
+			formatDef.setFormatVersion("1.0");
+			corpDef.setFormatDefinition(formatDef);
+			corpDef.setCorpusPath(corpusPath);
+			this.getFixture().setCorpusDefinition(corpDef);
+		//end: creating and setting corpus definition
 		
+		//start: create sample
+			//start:create corpus structure
+				SDocument sDoc= SaltFactory.eINSTANCE.createSDocument();
+				sDoc.setSId("/corpus1/doc1");
+				sDoc.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+			//end:create corpus structure
+			SaltSample.createPrimaryData(sDoc);
+			SaltSample.createTokens(sDoc);
+			SaltSample.createMorphologyAnnotations(sDoc);
+			SaltSample.createInformationStructureSpan(sDoc);
+			SaltSample.createInformationStructureAnnotations(sDoc);
+		//end: create sample
+			
+		this.start();
 		
-		this.testStart(expectedCorpusURI, expectedURI, exportCorpusURI, exportURI, corpusPath, specialParamsURI);
+		assertEquals(sDoc, this.getFixture().getSaltProject().getSCorpusGraphs().get(0).getSDocuments().get(0));
 	}
 	
 	/**
@@ -259,12 +278,7 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		assertNotNull(this.getFixture().getSaltProject().getSCorpusGraphs().get(0));
 		assertNotNull(this.getFixture().getSaltProject().getSCorpusGraphs().get(0).getSDocuments());
 		assertTrue(this.getFixture().getSaltProject().getSCorpusGraphs().get(0).getSDocuments().size()> 0);
-		SDocument sDocument= this.getFixture().getSaltProject().getSCorpusGraphs().get(0).getSDocuments().get(0);
-//		{//print saltGraph to dot (just for testing)
-//			Salt2DOT salt2Dot= new Salt2DOT();
-//			salt2Dot.salt2Dot(sDocument.getSElementId(), URI.createFileURI(this.getFixture().getTemproraries() + "/doc1.dot"));
-//		}//print saltGraph (just for testing)
-		
+		SDocument sDocument= this.getFixture().getSaltProject().getSCorpusGraphs().get(0).getSDocuments().get(0);		
 		{
 			SDocumentGraph sDocGraph= sDocument.getSDocumentGraph();
 			sDocGraph.setSDocument(null);
@@ -290,44 +304,14 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 			resource2.save(null);
 			//sDocGraph.setSDocument(sDocument);
 		}
-//		System.out.println("Corpus Path: "+ corpusPath);
-//		System.out.println("Content count:" + new File(corpusPath.toFileString()).listFiles().length);
 		assertTrue("The expected Corpus File '"+expectedCorpusURI+"' does not exist", (new File(expectedCorpusURI.toFileString())).exists());
 		assertTrue("The export Corpus File '"+exportCorpusURI+"' does not exist", (new File(exportCorpusURI.toFileString())).exists());
 		System.out.println("Export Corpus URI found: "+(new File(exportCorpusURI.toFileString())).getAbsolutePath());
-		/*
-		File inputFile = new File(exportCorpusURI.toFileString());
-	    File outputFile = new File(resourceURI.toFileString()+"/copied.txt");
-
-	    FileReader in = new FileReader(inputFile);
-	    FileWriter out = new FileWriter(outputFile);
-	    int c;
-
-	    while ((c = in.read()) != -1)
-	      out.write(c);
-
-	    in.close();
-	    out.close();
-	    */
 		assertTrue("The expected File '"+expectedURI+"' does not exist", (new File(expectedURI.toFileString())).exists());
 		assertTrue("The export File '"+exportURI+"' does not exist", (new File(exportURI.toFileString())).exists());
 		System.out.println("Export URI found: "+(new File(exportURI.toFileString())).getAbsolutePath());
-//		File inputFile = new File(exportURI.toFileString());
-//	    File outputFile = new File(resourceURI.toFileString()+"/copied.txt");
-//
-//	    FileReader in = new FileReader(inputFile);
-//	    FileWriter out = new FileWriter(outputFile);
-//	    int c;
-//
-//	    while ((c = in.read()) != -1)
-//	      out.write(c);
-//
-//	    in.close();
-//	    out.close();
-//		
 		
 		assertTrue("The Corpus files '"+expectedCorpusURI+"' and '"+exportCorpusURI+"' aren't identical. ", this.compareFiles(expectedCorpusURI, exportCorpusURI));
 		assertTrue("The files '"+expectedURI+"' and '"+exportURI+"' aren't identical. ", this.compareFiles(expectedURI, exportURI));
 	}
-	//TODO much more tests for example getSupportedFormats, getName
 }

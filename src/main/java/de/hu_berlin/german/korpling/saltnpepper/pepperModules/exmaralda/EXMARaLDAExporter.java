@@ -97,15 +97,20 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		{
 			SDocument sDoc= (SDocument) sElementId.getSIdentifiableElement();
 			BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
-			{// mapping
+			
+			// start: mapping
 				Salt2EXMARaLDAMapper mapper= new Salt2EXMARaLDAMapper();
-				mapper.map2BasicTranscription(sDoc, basicTranscription);
-			}
+				try
+				{
+					mapper.map2BasicTranscription(sDoc, basicTranscription);
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+			// start: mapping
 			
 			this.createFolderStructure(sElementId);
 			//create uri to save
 			URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sElementId.getSElementPath()+ "." + FILE_EXTENION);
-			System.out.println("Saving File : "+new File(uri.toFileString()).getAbsolutePath());
 			try {
 				this.saveToFile(uri, basicTranscription);
 			} catch (IOException e) {
@@ -118,16 +123,14 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 	{
 		// create resource set and resource 
 		ResourceSet resourceSet = new ResourceSetImpl();
-		System.out.println("Saving File : "+new File(uri.toFileString()).getAbsolutePath());
 		// Register XML resource factory
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb",new EXBResourceFactory());
 		//load resource 
 		Resource resource = resourceSet.createResource(uri);
-		resource.getContents().add(basicTranscription);
 		if (resource== null)
-			throw new EXMARaLDAExporterException("The resource is null.");
+			throw new EXMARaLDAExporterException("Cannot save a resource to uri '"+uri+"', because the given resource is null.");
 		
-			resource.save(null);
-		
+		resource.getContents().add(basicTranscription);
+		resource.save(null);
 	}
 }

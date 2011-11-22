@@ -35,7 +35,7 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentStructureAccessor;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SSpan;
@@ -164,23 +164,23 @@ public class EXMARaLDA2SaltMapper
 	/**
 	 * String for regex for for tier to layer mapping
 	 */
-	private static final String tierNameDesc="(_|-|[A-Z]|[a-z]|[0-9])+";
+	private static final String TIER_NAME_DESC="(_|-|[A-Z]|[a-z]|[0-9])+";
 	/**
 	 * String for regex for for tier to layer mapping
 	 */
-	private static final String simpleTierListDesc= "\\{"+tierNameDesc+"(,\\s?"+tierNameDesc+")*"+"\\}";
+	private static final String SIMPLE_TIER_LIST_DESC= "\\{"+TIER_NAME_DESC+"(,\\s?"+TIER_NAME_DESC+")*"+"\\}";
 	/**
 	 * String for regex for for tier to layer mapping
 	 */
-	private static final String layerNameDesc="(_|-|[A-Z]|[a-z]|[0-9])+";
+	private static final String LAYER_NAME_DESC="(_|-|[A-Z]|[a-z]|[0-9])+";
 	/**
 	 * String for regex for for tier to layer mapping
 	 */
-	private static final String simpleLayerDesc= "\\{"+layerNameDesc+simpleTierListDesc+"\\}";
+	private static final String SIMPLE_LAYER_DESC= "\\{"+LAYER_NAME_DESC+SIMPLE_TIER_LIST_DESC+"\\}";
 	/**
 	 * String for regex for for tier to layer mapping
 	 */
-	private static final String layerDesc= simpleLayerDesc+"(,"+simpleLayerDesc+")*";
+	private static final String LAYER_DESC= SIMPLE_LAYER_DESC+"(,"+SIMPLE_LAYER_DESC+")*";
 	
 	/**
 	 * Checks the given properties, if the necessary ones are given and creates
@@ -217,13 +217,13 @@ public class EXMARaLDA2SaltMapper
 				}//check if number of closing brackets is identical to number of opening brackets
 				this.tierNames2SLayers= new Hashtable<String, SLayer>();
 				tier2SLayerStr= tier2SLayerStr.replace(" ", "");
-				Pattern pattern= Pattern.compile(simpleLayerDesc, Pattern.CASE_INSENSITIVE);
+				Pattern pattern= Pattern.compile(SIMPLE_LAYER_DESC, Pattern.CASE_INSENSITIVE);
 				Matcher matcher= pattern.matcher(tier2SLayerStr);
 				while (matcher.find())
 				{//find all simple layer descriptions
 					String[] tierNames= null;
 					String tierNameList= null;
-					Pattern pattern1= Pattern.compile(simpleTierListDesc, Pattern.CASE_INSENSITIVE);
+					Pattern pattern1= Pattern.compile(SIMPLE_TIER_LIST_DESC, Pattern.CASE_INSENSITIVE);
 					Matcher matcher1= pattern1.matcher(matcher.group());
 					while (matcher1.find())
 					{//find all tier lists
@@ -231,7 +231,7 @@ public class EXMARaLDA2SaltMapper
 						tierNames= tierNameList.replace("}", "").replace("{", "").split(",");
 					}//find all tier lists
 					String sLayerName= matcher.group().replace(tierNameList, "").replace("}", "").replace("{", "");
-					SLayer sLayer = SaltCommonFactory.eINSTANCE.createSLayer();
+					SLayer sLayer = SaltFactory.eINSTANCE.createSLayer();
 					sLayer.setSName(sLayerName);
 					this.getsDocument().getSDocumentGraph().getSLayers().add(sLayer);
 					for (String tierName: tierNames)
@@ -251,7 +251,7 @@ public class EXMARaLDA2SaltMapper
 	
 	public void startMapping()
 	{
-		this.getsDocument().setSDocumentGraph(SaltCommonFactory.eINSTANCE.createSDocumentGraph());
+		this.getsDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
 		this.getsDocument().getSDocumentGraph().setSId(this.getsDocument().getSId());
 		this.checkProperties();
 		this.mapDocument(this.sDocument, this.basicTranscription);
@@ -274,7 +274,7 @@ public class EXMARaLDA2SaltMapper
 				}//map all speaker objects
 			}//mapping the speakers object
 			{//mapping the timeline
-				STimeline sTimeline= SaltCommonFactory.eINSTANCE.createSTimeline();
+				STimeline sTimeline= SaltFactory.eINSTANCE.createSTimeline();
 				sDoc.getSDocumentGraph().setSTimeline(sTimeline);
 				this.mapCommonTimeLine2STimeine(basicTranscription.getCommonTimeLine(), sTimeline);
 			}//mapping the timeline	
@@ -298,8 +298,8 @@ public class EXMARaLDA2SaltMapper
 					}
 				}
 				if (eTextTier== null)
-					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because no textual source layer was found.");
-				STextualDS sTextDS= SaltCommonFactory.eINSTANCE.createSTextualDS();
+					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because no textual source layer was found corresponding to value property '"+KW_TOKEN+"':\t'"+this.getProps().getProperty(KW_TOKEN)+"'.");
+				STextualDS sTextDS= SaltFactory.eINSTANCE.createSTextualDS();
 				sTextDS.setSName(this.getsDocument().getSName()+"_text");
 				sDoc.getSDocumentGraph().addSNode(sTextDS);
 				this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);
@@ -326,7 +326,7 @@ public class EXMARaLDA2SaltMapper
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
 				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
 		{//project name
-			SMetaAnnotation sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_PROJECT_NAME);
 			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getProjectName());
 			sDoc.addSMetaAnnotation(sMetaAnno);
@@ -334,7 +334,7 @@ public class EXMARaLDA2SaltMapper
 		if (	(basicTranscription.getMetaInformation().getTranscriptionName()!= null) &&
 				(!basicTranscription.getMetaInformation().getTranscriptionName().equals("")))
 		{//transcription name
-			SMetaAnnotation sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_NAME);
 			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getTranscriptionName());
 			sDoc.addSMetaAnnotation(sMetaAnno);
@@ -342,7 +342,7 @@ public class EXMARaLDA2SaltMapper
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
 				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
 		{//referencedFile
-			SMetaAnnotation sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_REFERENCED_FILE);
 			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getReferencedFile());
 			sDoc.addSMetaAnnotation(sMetaAnno);
@@ -350,7 +350,7 @@ public class EXMARaLDA2SaltMapper
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
 				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
 		{//comment
-			SMetaAnnotation sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_COMMENT);
 			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getComment());
 			sDoc.addSMetaAnnotation(sMetaAnno);
@@ -358,7 +358,7 @@ public class EXMARaLDA2SaltMapper
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
 				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
 		{//project transcription convention
-			SMetaAnnotation sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION);
 			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getTranscriptionConvention());
 			sDoc.addSMetaAnnotation(sMetaAnno);
@@ -391,7 +391,7 @@ public class EXMARaLDA2SaltMapper
 				if (	(speaker.getAbbreviation()!= null) &&
 						(!speaker.getAbbreviation().equals("")))
 				{
-					sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
 					sMetaAnno.setSName("abbreviation");
 					sMetaAnno.setSValue(speaker.getAbbreviation());
@@ -400,7 +400,7 @@ public class EXMARaLDA2SaltMapper
 			{//map sex
 				if (speaker.getSex()!= null)
 				{
-					sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
 					sMetaAnno.setSName("sex");
 					sMetaAnno.setSValue(speaker.getSex());
@@ -421,7 +421,7 @@ public class EXMARaLDA2SaltMapper
 						else
 							langUsedStr.append(", "+ langUsed);
 					}
-					sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
 					sMetaAnno.setSName("languages-used");
 					sMetaAnno.setSValue(langUsedStr);
@@ -442,7 +442,7 @@ public class EXMARaLDA2SaltMapper
 						else
 							l1Str.append(", "+ l1);
 					}
-					sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
 					sMetaAnno.setSName("l1");
 					sMetaAnno.setSValue(l1Str);
@@ -463,7 +463,7 @@ public class EXMARaLDA2SaltMapper
 						else
 							l2Str.append(", "+ l2);
 					}
-					sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
 					sMetaAnno.setSName("l2");
 					sMetaAnno.setSValue(l2Str);
@@ -473,7 +473,7 @@ public class EXMARaLDA2SaltMapper
 				if (	(speaker.getComment()!= null) &&
 						(!speaker.getComment().equals("")))
 				{
-					sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
 					sMetaAnno.setSName("comment");
 					sMetaAnno.setSValue(speaker.getComment());
@@ -482,7 +482,7 @@ public class EXMARaLDA2SaltMapper
 			{//map ud-informations
 				for (UDInformation udInfo: speaker.getUdSpeakerInformations())
 				{
-					sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
 					sMetaAnno.setSName(udInfo.getAttributeName());
 					sMetaAnno.setSValue(udInfo.getValue());
@@ -507,7 +507,7 @@ public class EXMARaLDA2SaltMapper
 		SMetaAnnotation sMetaAnno= null;
 		for (UDInformation udInfo: udInformations)
 		{
-			sMetaAnno= SaltCommonFactory.eINSTANCE.createSMetaAnnotation();
+			sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(udInfo.getAttributeName());
 			sMetaAnno.setSValue(udInfo.getValue());
 			sOwner.addSMetaAnnotation(sMetaAnno);
@@ -599,7 +599,7 @@ public class EXMARaLDA2SaltMapper
 			
 			for (Event eEvent: tier.getEvents())
 			{
-				SSpan sSpan= SaltCommonFactory.eINSTANCE.createSSpan();
+				SSpan sSpan= SaltFactory.eINSTANCE.createSSpan();
 				this.sDocument.getSDocumentGraph().addSNode(sSpan);
 				this.mapEvent2SNode(tier, eEvent, sSpan);
 				
@@ -624,7 +624,7 @@ public class EXMARaLDA2SaltMapper
 				
 				for (SToken sToken: sTokens)
 				{
-					SSpanningRelation spanRel= SaltCommonFactory.eINSTANCE.createSSpanningRelation();
+					SSpanningRelation spanRel= SaltFactory.eINSTANCE.createSSpanningRelation();
 					spanRel.setSSpan(sSpan);
 					spanRel.setSToken(sToken);
 					this.getsDocument().getSDocumentGraph().addSRelation(spanRel);
@@ -647,7 +647,7 @@ public class EXMARaLDA2SaltMapper
 		{//mapMedium to SAnnotation
 			if (event.getMedium()!= null)
 			{	
-				sAnno= SaltCommonFactory.eINSTANCE.createSAnnotation();
+				sAnno= SaltFactory.eINSTANCE.createSAnnotation();
 				sAnno.setSName(EXBNameIdentifier.KW_EXB_EVENT_MEDIUM);
 				sAnno.setSValue(event.getMedium());
 				sNode.addSAnnotation(sAnno);
@@ -656,7 +656,7 @@ public class EXMARaLDA2SaltMapper
 		{//mapURL to SAnnotation
 			if (event.getUrl()!= null)
 			{
-				sAnno= SaltCommonFactory.eINSTANCE.createSAnnotation();
+				sAnno= SaltFactory.eINSTANCE.createSAnnotation();
 				sAnno.setSName(EXBNameIdentifier.KW_EXB_EVENT_URL);
 				sAnno.setSValue(event.getUrl());
 				sNode.addSAnnotation(sAnno);
@@ -709,7 +709,7 @@ public class EXMARaLDA2SaltMapper
 					break;
 				i++;
 			}	
-			STimelineRelation sTimeRel= SaltCommonFactory.eINSTANCE.createSTimelineRelation();
+			STimelineRelation sTimeRel= SaltFactory.eINSTANCE.createSTimelineRelation();
 			sTimeRel.setSTimeline(sTime);
 			sTimeRel.setSToken(sToken);
 			sTimeRel.setSStart(startPos);
@@ -741,7 +741,7 @@ public class EXMARaLDA2SaltMapper
 					(sep!= null))
 				text.append(sep);
 			//creating and adding token
-			SToken sToken= SaltCommonFactory.eINSTANCE.createSToken();
+			SToken sToken= SaltFactory.eINSTANCE.createSToken();
 			this.sDocument.getSDocumentGraph().addSNode(sToken);
 			if (this.tierNames2SLayers!= null)
 			{//add sToken to layer if required
@@ -759,7 +759,7 @@ public class EXMARaLDA2SaltMapper
 			//medium and url to SAnnotation
 			this.mapMediumURL2SSNode(event, sToken);
 			//creating textual relation
-			STextualRelation sTextRel= SaltCommonFactory.eINSTANCE.createSTextualRelation();
+			STextualRelation sTextRel= SaltFactory.eINSTANCE.createSTextualRelation();
 			sTextRel.setSTextualDS(sText);
 			sTextRel.setSToken(sToken);
 			sTextRel.setSStart(start);
@@ -834,14 +834,14 @@ public class EXMARaLDA2SaltMapper
 			else
 			{	
 				URI corpusFilePath=  URI.createFileURI(file.getAbsolutePath());
-				sAnno= SaltCommonFactory.eINSTANCE.createSAnnotation();
+				sAnno= SaltFactory.eINSTANCE.createSAnnotation();
 				sAnno.setSName(tier.getCategory());
 				sAnno.setSValue(corpusFilePath);
 			}
 		}
 		else
 		{	
-			sAnno= SaltCommonFactory.eINSTANCE.createSAnnotation();
+			sAnno= SaltFactory.eINSTANCE.createSAnnotation();
 			sAnno.setSName(tier.getCategory());
 			sAnno.setSValue(eEvent.getValue());
 		}

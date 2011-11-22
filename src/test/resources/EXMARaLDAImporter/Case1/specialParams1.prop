@@ -1,2 +1,2 @@
-salt.token=text
+salt.token=tok
 salt.tokenSeperator= " "

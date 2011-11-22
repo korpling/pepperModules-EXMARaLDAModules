@@ -195,6 +195,13 @@ public class Salt2EXMARaLDAMapper
 	 */
 	private void map2CommonTimeLine(STimeline sTimeline, CommonTimeLine cTimeLine)
 	{
+		if (	(sTimeline== null)||
+				(sTimeline.getSPointsOfTime()== null)||
+				(sTimeline.getSPointsOfTime().size()==0));
+		{
+			this.getsDocument().getSDocumentGraph().createSTimeline();
+			sTimeline= this.getsDocument().getSDocumentGraph().getSTimeline();
+		}
 		String TLI_id= "T";
 		int i= 0;
 		for (String pointOfTime: sTimeline.getSPointsOfTime())
