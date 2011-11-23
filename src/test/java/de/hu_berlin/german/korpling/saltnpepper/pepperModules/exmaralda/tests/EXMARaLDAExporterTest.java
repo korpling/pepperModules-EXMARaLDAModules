@@ -107,11 +107,11 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		URI currentURI = URI.createFileURI(currentFile.getCanonicalPath());
 		URI expectedURI= URI.createFileURI(expectedFile.getCanonicalPath());
 		
-		if (new File(expectedURI.toFileString()).exists()){
-			System.out.println(new File(expectedURI.toFileString()).getAbsolutePath() + " exists");
-		} else {
-			throw new PepperModuleTestException(expectedFile.getAbsolutePath() + " does not exist");
-		}
+//		if (new File(expectedURI.toFileString()).exists()){
+//			System.out.println(new File(expectedURI.toFileString()).getAbsolutePath() + " exists");
+//		} else {
+//			throw new PepperModuleTestException(expectedFile.getAbsolutePath() + " does not exist");
+//		}
 		
 		this.removeDirRec(new File(corpusPath.toFileString()));
 		
