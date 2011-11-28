@@ -189,17 +189,20 @@ public class EXMARaLDA2SaltMapper
 	 */
 	private void checkProperties()
 	{
+		if (	(this.getProps()== null)||
+				(this.getProps().size()==0))
+			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there are no special params given.");
 		String tokLayer= this.getProps().getProperty(KW_TOKEN);
 		if (	(tokLayer== null)||
-				(tokLayer.equals("")))
-			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there is no definition for token layer in property file.");
+				(tokLayer.isEmpty()))
+			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there is no definition for token layer in property file. Please set a special parameter for '"+KW_TOKEN+"'. Following properties were found: "+ this.getProps());
 		{//tiers to SLayer-objects
 			String tier2SLayerStr=null;
 			tier2SLayerStr= this.getProps().getProperty(KW_LAYERS_SMALL);
 			if (tier2SLayerStr==null)
 				tier2SLayerStr=this.getProps().getProperty(KW_LAYERS_BIG);
 			if (	(tier2SLayerStr!= null) &&
-					(!tier2SLayerStr.trim().equals("")))
+					(!tier2SLayerStr.trim().isEmpty()))
 			{//if a tier to layer mapping is given
 				{//check if number of closing brackets is identical to number of opening brackets
 					char[] tier2SLayerChar= tier2SLayerStr.toCharArray();
@@ -324,7 +327,7 @@ public class EXMARaLDA2SaltMapper
 	private void mapMetaInformation2SDocument(BasicTranscription basicTranscription, SDocument sDoc)
 	{
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
-				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
+				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
 		{//project name
 			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_PROJECT_NAME);
@@ -332,7 +335,7 @@ public class EXMARaLDA2SaltMapper
 			sDoc.addSMetaAnnotation(sMetaAnno);
 		}
 		if (	(basicTranscription.getMetaInformation().getTranscriptionName()!= null) &&
-				(!basicTranscription.getMetaInformation().getTranscriptionName().equals("")))
+				(!basicTranscription.getMetaInformation().getTranscriptionName().isEmpty()))
 		{//transcription name
 			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_NAME);
@@ -340,7 +343,7 @@ public class EXMARaLDA2SaltMapper
 			sDoc.addSMetaAnnotation(sMetaAnno);
 		}
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
-				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
+				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
 		{//referencedFile
 			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_REFERENCED_FILE);
@@ -348,7 +351,7 @@ public class EXMARaLDA2SaltMapper
 			sDoc.addSMetaAnnotation(sMetaAnno);
 		}
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
-				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
+				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
 		{//comment
 			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_COMMENT);
@@ -356,7 +359,7 @@ public class EXMARaLDA2SaltMapper
 			sDoc.addSMetaAnnotation(sMetaAnno);
 		}
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
-				(!basicTranscription.getMetaInformation().getProjectName().equals("")))
+				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
 		{//project transcription convention
 			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION);
@@ -389,7 +392,7 @@ public class EXMARaLDA2SaltMapper
 			SMetaAnnotation sMetaAnno= null;
 			{//map abbriviation
 				if (	(speaker.getAbbreviation()!= null) &&
-						(!speaker.getAbbreviation().equals("")))
+						(!speaker.getAbbreviation().isEmpty()))
 				{
 					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
@@ -471,7 +474,7 @@ public class EXMARaLDA2SaltMapper
 			}//map l2
 			{//map comment
 				if (	(speaker.getComment()!= null) &&
-						(!speaker.getComment().equals("")))
+						(!speaker.getComment().isEmpty()))
 				{
 					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 					sMetaAnno.setSNS(speaker.getId());
@@ -525,13 +528,13 @@ public class EXMARaLDA2SaltMapper
 	{
 		this.tierCollection= new BasicEList<EList<Tier>>();
 		if (	(this.getProps().getProperty(KW_TIERMERGE)!= null) &&
-				(!this.getProps().getProperty(KW_TIERMERGE).equals("")))
+				(!this.getProps().getProperty(KW_TIERMERGE).isEmpty()))
 		{
 			String[] slotStrings= this.getProps().getProperty(KW_TIERMERGE).split("}");
 			for (String slotString:slotStrings)
 			{
 				slotString = slotString.replace("{", "");
-				if (!slotString.equals(""))
+				if (!slotString.isEmpty())
 				{	
 					String[] tierCategories= slotString.split(",");
 					//create new slot for slottedt tiers
@@ -807,7 +810,7 @@ public class EXMARaLDA2SaltMapper
 		String preUriTiers= this.getProps().getProperty(KW_URI_ANNOTATION);
 		EList<String> uriTiers= null;
 		if (	(preUriTiers!= null) && 
-				(!preUriTiers.equals("")))
+				(!preUriTiers.isEmpty()))
 		{
 			uriTiers= new BasicEList<String>();
 			for (String uriTier: preUriTiers.trim().split(","))
@@ -871,7 +874,7 @@ public class EXMARaLDA2SaltMapper
 	{
 		String retVal= null;
 		if (	(this.getProps().getProperty(KW_TOKENSEP)!= null) &&
-				(!this.getProps().getProperty(KW_TOKENSEP).equals("")))
+				(!this.getProps().getProperty(KW_TOKENSEP).isEmpty()))
 		{
 			String preSep= this.getProps().getProperty(KW_TOKENSEP);
 			
@@ -892,7 +895,7 @@ public class EXMARaLDA2SaltMapper
 	{
 		String retVal= null;
 		if (	(this.getProps().getProperty(KW_SALT_SEMANTICS_WORD)!= null) &&
-				(!this.getProps().getProperty(KW_SALT_SEMANTICS_WORD).equals("")))
+				(!this.getProps().getProperty(KW_SALT_SEMANTICS_WORD).isEmpty()))
 		{
 			String wordTier= this.getProps().getProperty(KW_SALT_SEMANTICS_WORD);
 			
