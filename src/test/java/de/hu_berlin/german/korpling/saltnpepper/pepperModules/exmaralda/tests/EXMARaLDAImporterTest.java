@@ -18,8 +18,6 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import org.eclipse.emf.common.util.URI;
