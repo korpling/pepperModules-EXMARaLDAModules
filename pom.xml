@@ -27,6 +27,7 @@
   </parent>
   <scm>
     <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/EXMARaLDAModules/tags/pepperModules-EXMARaLDAModules-1.1.1</developerConnection>
+    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/EXMARaLDAModules/tags/pepperModules-EXMARaLDAModules-1.1.1</url>
   </scm>
   <dependencies>
     <dependency>
