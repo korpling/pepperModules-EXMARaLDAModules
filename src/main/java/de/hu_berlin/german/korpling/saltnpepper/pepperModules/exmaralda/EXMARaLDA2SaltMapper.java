@@ -329,10 +329,7 @@ public class EXMARaLDA2SaltMapper
 		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
 				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
 		{//project name
-			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_PROJECT_NAME);
-			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getProjectName());
-			sDoc.addSMetaAnnotation(sMetaAnno);
+			sDoc.setSName(basicTranscription.getMetaInformation().getProjectName());
 		}
 		if (	(basicTranscription.getMetaInformation().getTranscriptionName()!= null) &&
 				(!basicTranscription.getMetaInformation().getTranscriptionName().isEmpty()))
@@ -342,24 +339,25 @@ public class EXMARaLDA2SaltMapper
 			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getTranscriptionName());
 			sDoc.addSMetaAnnotation(sMetaAnno);
 		}
-		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
-				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
-		{//referencedFile
-			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_REFERENCED_FILE);
-			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getReferencedFile());
-			sDoc.addSMetaAnnotation(sMetaAnno);
-		}
-		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
-				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
+		//TODO map to dataSource
+//		if (	(basicTranscription.getMetaInformation().getReferencedFile()!= null) &&
+//				(!basicTranscription.getMetaInformation().getReferencedFile().isEmpty()))
+//		{//referencedFile
+//			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
+//			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_REFERENCED_FILE);
+//			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getReferencedFile());
+//			sDoc.addSMetaAnnotation(sMetaAnno);
+//		}
+		if (	(basicTranscription.getMetaInformation().getComment()!= null) &&
+				(!basicTranscription.getMetaInformation().getComment().isEmpty()))
 		{//comment
 			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_COMMENT);
 			sMetaAnno.setSValue(basicTranscription.getMetaInformation().getComment());
 			sDoc.addSMetaAnnotation(sMetaAnno);
 		}
-		if (	(basicTranscription.getMetaInformation().getProjectName()!= null) &&
-				(!basicTranscription.getMetaInformation().getProjectName().isEmpty()))
+		if (	(basicTranscription.getMetaInformation().getTranscriptionConvention()!= null) &&
+				(!basicTranscription.getMetaInformation().getTranscriptionConvention().isEmpty()))
 		{//project transcription convention
 			SMetaAnnotation sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
 			sMetaAnno.setSName(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION);
@@ -600,8 +598,10 @@ public class EXMARaLDA2SaltMapper
 				sLayer= this.tierNames2SLayers.get(tier.getCategory());
 			}//if current tier shall be added to a layer
 			
+			int eventCtr= 0;
 			for (Event eEvent: tier.getEvents())
 			{
+				eventCtr++;
 				SSpan sSpan= SaltFactory.eINSTANCE.createSSpan();
 				this.sDocument.getSDocumentGraph().addSNode(sSpan);
 				this.mapEvent2SNode(tier, eEvent, sSpan);
@@ -623,7 +623,7 @@ public class EXMARaLDA2SaltMapper
 				EList<SToken>  sTokens= timeAccessor.getSTokensByTimeInterval(startPos, endPos);
 				
 				if (sTokens== null)
-					throw new EXMARaLDAImporterException("There are no tokens found for tier: "+ tier.getCategory() +" and event: "+ eEvent.getValue()+". Exception occurs in file '"+this.getDocumentFilePath()+"'.");
+					throw new EXMARaLDAImporterException("There are no matching tokens found on token-tier for current tier: '"+ tier.getCategory() +"' in event number '"+eventCtr+"' having the value '"+ eEvent.getValue()+"'. Exception occurs in file '"+this.getDocumentFilePath()+"'.");
 				
 				for (SToken sToken: sTokens)
 				{

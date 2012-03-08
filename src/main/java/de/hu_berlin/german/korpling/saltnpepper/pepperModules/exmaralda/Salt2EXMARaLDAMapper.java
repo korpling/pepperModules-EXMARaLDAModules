@@ -150,7 +150,7 @@ public class Salt2EXMARaLDAMapper
 	
 	
 	/**
-	 * Maps alle SMetaAnnotations of document to MetaInformation or UDInformation
+	 * Maps all SMetaAnnotations of document to MetaInformation or UDInformation
 	 * @param sDoc
 	 * @param metaInfo
 	 */
