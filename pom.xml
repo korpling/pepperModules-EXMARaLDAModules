@@ -5,19 +5,6 @@
   <artifactId>pepperModules-EXMARaLDAModules</artifactId>
   <version>1.1.2-SNAPSHOT</version>
   <packaging>bundle</packaging>
-  
-  <description>This project provides a Pepper importer and an exporter for EXMARaLDA data.</description>
-  <url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-exmaraldamodules</url>
-  <issueManagement>
-  	<system>Redmine</system>
-  	<url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-exmaraldamodules/issues</url>
-  </issueManagement>
-  <ciManagement>
-  	<system>Jenkins</system>
-  	<url>https://korpling.german.hu-berlin.de/jenkins/</url>
-  </ciManagement>
-  <inceptionYear>2009</inceptionYear>
-
   <repositories>
     <repository>
       <id>korpling</id>
@@ -30,7 +17,7 @@
       <id>korpling</id>
       <name>korpling maven repo</name>
       <url>file:///srv/www/maven2/</url>
-      <!-- <url>scpexe://korpling.german.hu-berlin.de/srv/www/maven2/</url>-->
+      <!--<url>scpexe://korpling.german.hu-berlin.de/srv/www/maven2/</url>-->
     </repository>
   </distributionManagement>
   <parent>
@@ -46,8 +33,7 @@
     <dependency>
       <groupId>de.hu_berlin.german.korpling.saltnpepper</groupId>
       <artifactId>misc-EXMARaLDAModel</artifactId>
-      <version>1.1.2-SNAPSHOT</version>
-      <!-- <version>[1.1.2,)</version> -->
+      <version>[1.1.2,)</version>
       <type>bundle</type>
       <scope>compile</scope>
     </dependency>
