@@ -27,7 +27,7 @@
   </parent>
   <scm>
     <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/EXMARaLDAModules/trunk</developerConnection>
-    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/pepper/tags/pepper-1.1.3/pepper-parentModule/pepperModules-EXMARaLDAModules</url>
+    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/EXMARaLDAModules/</url>
   </scm>
   <dependencies>
     <dependency>
