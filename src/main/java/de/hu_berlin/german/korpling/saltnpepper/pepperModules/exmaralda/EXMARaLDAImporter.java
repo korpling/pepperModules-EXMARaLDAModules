@@ -39,9 +39,7 @@ import org.osgi.service.log.LogService;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperInterfaceFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperImporterImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
@@ -55,31 +53,10 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 	public EXMARaLDAImporter()
 	{
 		super();
+		//setting name of module
 		this.name= "EXMARaLDAImporter";
-		//for testing the symbolic name has to be set without osgi
-		if (	(this.getSymbolicName()==  null) ||
-				(this.getSymbolicName().equals("")))
-			this.setSymbolicName("de.hu_berlin.german.korpling.saltnpepper.pepperModules.EXMARaLDAModules");
-		this.init();
-		if (this.getLogService()!= null)
-			this.getLogService().log(LogService.LOG_DEBUG,this.getName()+" is created...");
-	}
-
-	protected void init()
-	{
-		this.supportedFormats= new BasicEList<FormatDefinition>();
-		FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
-		formatDef.setFormatName("EXMARaLDA");
-		formatDef.setFormatVersion("1.0");
-		this.supportedFormats.add(formatDef);
-	}
-	
-	private EList<FormatDefinition> supportedFormats= null;
-	
-	@Override
-	public EList<FormatDefinition> getSupportedFormats() 
-	{
-		return(this.supportedFormats);
+		//set list of formats supported by this module
+		this.addSupportedFormat("EXMARaLDA", "1.0", null);
 	}
 
 	/**

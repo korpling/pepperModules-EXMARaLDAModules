@@ -17,30 +17,23 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.service.log.LogService;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFactory;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperExporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperInterfaceFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperExporterImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.Salt2EXMARaLDAMapper;
 
 @Component(name="EXMARaLDAExporterJavaComponent", factory="PepperExporterComponentFactory")
 @Service(value=PepperExporter.class)
@@ -49,46 +42,13 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 	public EXMARaLDAExporter()
 	{
 		super();
+		//setting name of module
 		this.name= "EXMARaLDAExporter";
-		//for testing the symbolic name has to be set without osgi
-		if (	(this.getSymbolicName()==  null) ||
-				(this.getSymbolicName().equals("")))
-			this.setSymbolicName("de.hu_berlin.german.korpling.saltnpepper.pepperModules.EXMARaLDAModules");
-		this.init();
-		if (this.getLogService()!= null)
-			this.getLogService().log(LogService.LOG_DEBUG,this.getName()+" is created...");
+		//set list of formats supported by this module
+		this.addSupportedFormat("EXMARaLDA", "1.0", null);
 	}
 
-	protected void init()
-	{
-		this.supportedFormats= new BasicEList<FormatDefinition>();
-		FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
-		formatDef.setFormatName("EXMARaLDA");
-		formatDef.setFormatVersion("1.0");
-		this.supportedFormats.add(formatDef);
-	}
-
-	protected void activate(ComponentContext componentContext) 
-	{
-		this.setSymbolicName(componentContext.getBundleContext().getBundle().getSymbolicName());
-		if (this.getLogService()!= null)
-			this.getLogService().log(LogService.LOG_DEBUG,this.getName()+" is activated...");
-	}
-
-	/**
-	 * Wird von der Service Component Runtime vor der Deaktivierung der Komponente
-	 * aufgerufen und gibt noch eine Abschiedsbotschaft aus
-	 * 
-	 * @param componentContext
-	 *          Der Kontext der Komponente
-	 */
-	protected void deactivate(ComponentContext componentContext) {
-		if (this.getLogService()!= null)
-			this.getLogService().log(LogService.LOG_DEBUG,this.getName()+" is deactivated...");
-
-	}
-	
-	String FILE_EXTENION="exb";
+	public static final String FILE_EXTENION="exb";
 	
 	@Override
 	public void start(SElementId sElementId) throws PepperModuleException 

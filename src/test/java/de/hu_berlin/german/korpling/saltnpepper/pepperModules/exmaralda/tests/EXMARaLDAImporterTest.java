@@ -29,17 +29,14 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperConvertException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.CorpusDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperInterfaceFactory;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModulesFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testSuite.moduleTests.PepperImporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.graph.Label;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonPackage;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltSample.SaltSample;
 
 public class EXMARaLDAImporterTest extends PepperImporterTest
 {	
@@ -60,7 +57,7 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		this.getFixture().setResources(resourceURI);
 		
 		//set formats to support
-		FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+		FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);
@@ -72,8 +69,8 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 	public void testSetGetCorpusDefinition()
 	{
 		//TODO somethong to test???
-		CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
-		FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+		CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
+		FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		corpDef.setFormatDefinition(formatDef);
@@ -91,8 +88,8 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 //		URI corpusPath= URI.createFileURI("./src/test/resources/EXMARaLDAImporter/Case4/corpus1");
 //		
 //		{//creating and setting corpus definition
-//			CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
-//			FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+//			CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
+//			FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 //			formatDef.setFormatName("EXMARaLDA");
 //			formatDef.setFormatVersion("1.0");
 //			corpDef.setFormatDefinition(formatDef);
@@ -143,8 +140,8 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 //		this.getFixture().setSpecialParams(specialParamsURI);
 //		
 //		//start: creating and setting corpus definition
-//			CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
-//			FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+//			CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
+//			FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 //			formatDef.setFormatName("EXMARaLDA");
 //			formatDef.setFormatVersion("1.0");
 //			corpDef.setFormatDefinition(formatDef);
@@ -261,12 +258,12 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 	 * Tests if all token and texts and annotations are there. 
 	 * @throws IOException 
 	 */
-	private void testStart(URI expectedCorpusURI, URI expectedURI, URI exportCorpusURI, URI exportURI, URI corpusPath, URI specialParamsURI) throws IOException
+	public void testStart(URI expectedCorpusURI, URI expectedURI, URI exportCorpusURI, URI exportURI, URI corpusPath, URI specialParamsURI) throws IOException
 	{
 		this.getFixture().setSpecialParams(specialParamsURI);
 		{//creating and setting corpus definition
-			CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
-			FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+			CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
+			FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 			formatDef.setFormatName("EXMARaLDA");
 			formatDef.setFormatVersion("1.0");
 			corpDef.setFormatDefinition(formatDef);
@@ -299,7 +296,7 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 			ResourceSet resourceSet = new ResourceSetImpl();
 
 			// Register XML resource factory
-			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("saltCommon",new XMIResourceFactoryImpl());
+			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(SaltFactory.FILE_ENDING_SALT,new XMIResourceFactoryImpl());
 			//load resource 
 			Resource resource = resourceSet.createResource(exportURI);
 			if (resource== null)

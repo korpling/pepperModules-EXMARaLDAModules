@@ -24,9 +24,8 @@ import org.eclipse.emf.common.util.URI;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.CorpusDefinition;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperInterfaceFactory;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModulesFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testSuite.moduleTests.PepperExporterTest;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testSuite.moduleTests.PepperModuleTestException;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAExporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
@@ -51,21 +50,21 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		super.setTemprorariesURI(temporaryURI);
 		
 		//set formats to support
-		FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+		FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);
 		
 		// set corpus definition
-		CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
+		CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
 		corpDef.setFormatDefinition(formatDef);
 	}
 	
 	public void testSetGetCorpusDefinition()
 	{
 		//TODO something to test???
-		CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
-		FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+		CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
+		FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		corpDef.setFormatDefinition(formatDef);
@@ -116,8 +115,8 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		this.removeDirRec(new File(corpusPath.toFileString()));
 		
 		{//creating and setting corpus definition
-			CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
-			FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+			CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
+			FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 			formatDef.setFormatName("EXMARaLDA");
 			formatDef.setFormatVersion("1.0");
 			corpDef.setFormatDefinition(formatDef);
@@ -160,8 +159,8 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 //		
 //		//this.removeDirRec(new File(corpusPath.toFileString()));
 //		{//creating and setting corpus definition
-//			CorpusDefinition corpDef= PepperInterfaceFactory.eINSTANCE.createCorpusDefinition();
-//			FormatDefinition formatDef= PepperInterfaceFactory.eINSTANCE.createFormatDefinition();
+//			CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
+//			FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
 //			formatDef.setFormatName("EXMARaLDA");
 //			formatDef.setFormatVersion("1.0");
 //			corpDef.setFormatDefinition(formatDef);
