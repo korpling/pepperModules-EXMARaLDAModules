@@ -156,6 +156,8 @@ public class EXMARaLDA2SaltMapper
 	private static final String KW_SALT_SEMANTICS_LEMMA="saltSemantics.LEMMA";
 	private static final String KW_SALT_SEMANTICS_WORD="saltSemantics.WORD";
 	
+	private static final String DEFAULT_PRIMTEXT_CATEGORY = "v";
+	
 	/**
 	 * Relates the name of the tiers to the layers, to which they shall be append.
 	 */
@@ -193,9 +195,7 @@ public class EXMARaLDA2SaltMapper
 				(this.getProps().size()==0))
 			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there are no special params given.");
 		String tokLayer= this.getProps().getProperty(KW_TOKEN);
-		if (	(tokLayer== null)||
-				(tokLayer.isEmpty()))
-			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there is no definition for token layer in property file. Please set a special parameter for '"+KW_TOKEN+"'. Following properties were found: "+ this.getProps());
+		
 		{//tiers to SLayer-objects
 			String tier2SLayerStr=null;
 			tier2SLayerStr= this.getProps().getProperty(KW_LAYERS_SMALL);
@@ -288,9 +288,16 @@ public class EXMARaLDA2SaltMapper
 				{
 					for (Tier tier: slot)
 					{//search for textual source
-						if (tier.getCategory().trim().equalsIgnoreCase(this.getProps().getProperty(KW_TOKEN).trim()))
+						if (this.getProps().containsKey(KW_TOKEN) &&
+							tier.getCategory().trim().equalsIgnoreCase(this.getProps().getProperty(KW_TOKEN).trim())
+						)
 						{
 							eTextTier= tier;
+							break;
+						}
+						else if(tier.getCategory().trim().equalsIgnoreCase(DEFAULT_PRIMTEXT_CATEGORY))
+						{
+							eTextTier = tier;
 							break;
 						}
 					}
