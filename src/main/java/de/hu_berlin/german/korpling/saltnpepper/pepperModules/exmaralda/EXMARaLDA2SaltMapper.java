@@ -156,7 +156,7 @@ public class EXMARaLDA2SaltMapper
 	private static final String KW_SALT_SEMANTICS_LEMMA="saltSemantics.LEMMA";
 	private static final String KW_SALT_SEMANTICS_WORD="saltSemantics.WORD";
 	
-	private static final String DEFAULT_PRIMTEXT_CATEGORY = "v";
+	private static final String DEFAULT_PRIMTEXT_TYPENAME = "t";
 	
 	/**
 	 * Relates the name of the tiers to the layers, to which they shall be append.
@@ -282,10 +282,14 @@ public class EXMARaLDA2SaltMapper
 				this.mapCommonTimeLine2STimeine(basicTranscription.getCommonTimeLine(), sTimeline);
 			}//mapping the timeline	
 			{//mapping text and tokens
-				Tier eTextTier= null;
-				EList<Tier> textSlot= null;
+				
+				EList<EList<Tier>> allTextSlots = new BasicEList<EList<Tier>>();
+				
 				for (EList<Tier> slot: this.tierCollection)
 				{
+					Tier eTextTier= null;
+					EList<Tier> textSlot= null;
+					
 					for (Tier tier: slot)
 					{//search for textual source
 						if (this.getProps().containsKey(KW_TOKEN) &&
@@ -295,26 +299,33 @@ public class EXMARaLDA2SaltMapper
 							eTextTier= tier;
 							break;
 						}
-						else if(tier.getCategory().trim().equalsIgnoreCase(DEFAULT_PRIMTEXT_CATEGORY))
+						else if(tier.getType().getName().trim().equalsIgnoreCase(DEFAULT_PRIMTEXT_TYPENAME))
 						{
 							eTextTier = tier;
 							break;
 						}
-					}
+					} // end for each tier in slot
+					
 					if (eTextTier!= null)
 					{
 						textSlot= slot;
-						break;
+					
+						STextualDS sTextDS= SaltFactory.eINSTANCE.createSTextualDS();
+						sTextDS.setSName(this.getsDocument().getSName()+"_text");
+						sDoc.getSDocumentGraph().addSNode(sTextDS);
+						this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);
+
+						allTextSlots.add(slot);
 					}
-				}
-				if (eTextTier== null)
-					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because no textual source layer was found corresponding to value property '"+KW_TOKEN+"':\t'"+this.getProps().getProperty(KW_TOKEN)+"'.");
-				STextualDS sTextDS= SaltFactory.eINSTANCE.createSTextualDS();
-				sTextDS.setSName(this.getsDocument().getSName()+"_text");
-				sDoc.getSDocumentGraph().addSNode(sTextDS);
-				this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);
-				//remove textslot as processed
-				this.tierCollection.remove(textSlot);
+					
+					
+				} // end for each slot of tierCollection
+				if (allTextSlots.size() == 0)
+					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because no textual source layer was found.");
+				
+				//remove all text-slots as processed
+				this.tierCollection.removeAll(allTextSlots);
+				
 			}//mapping text and tokens
 			{// map other tiers
 				for (EList<Tier> slot: this.tierCollection)
