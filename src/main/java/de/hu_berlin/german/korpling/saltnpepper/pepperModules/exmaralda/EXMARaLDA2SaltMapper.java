@@ -311,7 +311,7 @@ public class EXMARaLDA2SaltMapper
 						textSlot= slot;
 					
 						STextualDS sTextDS= SaltFactory.eINSTANCE.createSTextualDS();
-						sTextDS.setSName(this.getsDocument().getSName()+"_text");
+						sTextDS.setSName(eTextTier.getCategory());
 						sDoc.getSDocumentGraph().addSNode(sTextDS);
 						this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);
 
