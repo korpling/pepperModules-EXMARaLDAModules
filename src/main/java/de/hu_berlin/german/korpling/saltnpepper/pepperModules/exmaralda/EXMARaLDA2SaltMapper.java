@@ -53,6 +53,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SMetaAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SWordAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SaltSemanticsFactory;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * This class maps data coming from the EXMARaLDA (EXB) model to a Salt model.
@@ -196,6 +198,16 @@ public class EXMARaLDA2SaltMapper
 			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there are no special params given.");
 		String tokLayer= this.getProps().getProperty(KW_TOKEN);
 		
+		if(tokLayer != null)
+		{
+			// check that no empty token layer was given
+			if(tokLayer.trim().length() == 0)
+			{
+				throw new EXMARaLDAImporterException("Cannot import since \"" 
+						+ KW_TOKEN + "\" property is empty");
+			} 
+		}
+		
 		{//tiers to SLayer-objects
 			String tier2SLayerStr=null;
 			tier2SLayerStr= this.getProps().getProperty(KW_LAYERS_SMALL);
@@ -282,7 +294,26 @@ public class EXMARaLDA2SaltMapper
 				this.mapCommonTimeLine2STimeine(basicTranscription.getCommonTimeLine(), sTimeline);
 			}//mapping the timeline	
 			{//mapping text and tokens
-				
+			
+				Set<String> tokenTiers = new LinkedHashSet<String>();
+				if(this.getProps().containsKey(KW_TOKEN))
+				{
+					String rawTokenText = this.getProps().getProperty(KW_TOKEN);
+					if(rawTokenText.startsWith("{"))
+					{
+						rawTokenText = rawTokenText.replace("{", "").replace("}", "");
+						String[] splitted = rawTokenText.split(",");
+						for(String s : splitted)
+						{
+							tokenTiers.add(s.trim());
+						}
+					}
+					else
+					{
+						tokenTiers.add(rawTokenText.trim());
+					}
+				}
+			
 				EList<EList<Tier>> allTextSlots = new BasicEList<EList<Tier>>();
 				
 				for (EList<Tier> slot: this.tierCollection)
@@ -292,9 +323,9 @@ public class EXMARaLDA2SaltMapper
 					
 					for (Tier tier: slot)
 					{//search for textual source
-						if (this.getProps().containsKey(KW_TOKEN) &&
-							tier.getCategory().trim().equalsIgnoreCase(this.getProps().getProperty(KW_TOKEN).trim())
-						)
+						if (tokenTiers.size() > 0 &&
+							tokenTiers.contains(tier.getCategory().trim())
+						)						
 						{
 							eTextTier= tier;
 							break;
@@ -640,8 +671,24 @@ public class EXMARaLDA2SaltMapper
 				timeAccessor.setSDocumentGraph(this.sDocument.getSDocumentGraph());
 				EList<SToken>  sTokens= timeAccessor.getSTokensByTimeInterval(startPos, endPos);
 				
-				if (sTokens== null)
-					throw new EXMARaLDAImporterException("There are no matching tokens found on token-tier for current tier: '"+ tier.getCategory() +"' in event number '"+eventCtr+"' having the value '"+ eEvent.getValue()+"'. Exception occurs in file '"+this.getDocumentFilePath()+"'.");
+				if (sTokens== null) 
+				{
+//					if(true)
+//					{
+//						// try to correct by inserting an empty token
+//						SToken emptyTok = SaltFactory.eINSTANCE.createSToken();
+//						STextualRelation textRel = SaltFactory.eINSTANCE.createSTextualRelation();
+//						textRel.setSToken(emptyTok);
+//						textRel.setSTextualDS(null);
+//					}
+//					else
+//					{
+						throw new EXMARaLDAImporterException(
+								"There are no matching tokens found on token-tier for current tier: '"
+								+ tier.getCategory() +"' in event number '"+eventCtr+"' having the value '"+ eEvent.getValue()
+								+"'. Exception occurs in file '"+this.getDocumentFilePath()+"'.");
+//					}
+				}
 				
 				for (SToken sToken: sTokens)
 				{
