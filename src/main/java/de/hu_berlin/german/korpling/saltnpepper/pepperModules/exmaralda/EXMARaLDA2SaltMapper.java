@@ -940,14 +940,24 @@ public class EXMARaLDA2SaltMapper
 		}
 		else
 		{	
-			sAnno= SaltFactory.eINSTANCE.createSAnnotation();
-			sAnno.setSName(tier.getCategory());
-			sAnno.setSValue(eEvent.getValue());
+			if ( (tier.getCategory()== null)||
+			     (tier.getCategory().isEmpty()))
+			{
+			    if (this.getLogService()!= null)
+			        this.getLogService().log(LogService.LOG_WARNING, "Cannot map annotation corresponding to tier id '"+tier.getId()+"', because category name is empty.");
+			}
+			else
+			{
+    		    sAnno= SaltFactory.eINSTANCE.createSAnnotation();
+    			sAnno.setSName(tier.getCategory());
+    			sAnno.setSValue(eEvent.getValue());
+			}
 		}
 		if (	(eEvent.getUdInformations() != null) &&
 				(eEvent.getUdInformations().size() > 0))
 			this.mapUDInformations2SMetaAnnotatableElement(eEvent.getUdInformations(), sNode);
-		sNode.addSAnnotation(sAnno);
+		if (sAnno!= null)
+		    sNode.addSAnnotation(sAnno);
 	}
 	
 	/**
