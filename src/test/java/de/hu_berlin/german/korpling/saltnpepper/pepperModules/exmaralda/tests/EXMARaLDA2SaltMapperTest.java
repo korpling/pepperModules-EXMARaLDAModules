@@ -1,6 +1,6 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
 
-import javax.rmi.CORBA.Tie;
+import junit.framework.TestCase;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -11,7 +11,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFac
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
-import junit.framework.TestCase;
 
 public class EXMARaLDA2SaltMapperTest extends TestCase 
 {
