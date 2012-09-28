@@ -17,7 +17,6 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
-import java.awt.List;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -38,7 +37,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentStructureAccessor;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SAudioDSRelation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SAudioDataSource;
@@ -58,6 +56,11 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SMetaAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SWordAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SaltSemanticsFactory;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class maps data coming from the EXMARaLDA (EXB) model to a Salt model.
@@ -150,6 +153,8 @@ public class EXMARaLDA2SaltMapper
 	}
 // -------------------- LogService
 	
+	private static final String DEFAULT_PRIMTEXT_TYPENAME = "t";
+	
 	/**
 	 * Relates the name of the tiers to the layers, to which they shall be append.
 	 */
@@ -187,9 +192,17 @@ public class EXMARaLDA2SaltMapper
 				(this.getProps().size()==0))
 			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there are no special params given.");
 		String tokLayer= this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKEN);
-		if (	(tokLayer== null)||
-				(tokLayer.isEmpty()))
-			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there is no definition for token layer in property file. Please set a special parameter for '"+EXMARaLDAImporter.PROP_TOKEN+"'. Following properties were found: "+ this.getProps());
+		
+		if(tokLayer != null)
+		{
+			// check that no empty token layer was given
+			if(tokLayer.trim().length() == 0)
+			{
+				this.getLogService().log(LogService.LOG_WARNING, "\"" 
+						+ EXMARaLDAImporter.PROP_TOKEN + "\" property is empty");
+			} 
+		}
+		
 		{//tiers to SLayer-objects
 			String tier2SLayerStr=null;
 			tier2SLayerStr= this.getProps().getProperty(EXMARaLDAImporter.PROP_LAYERS_SMALL);
@@ -264,7 +277,7 @@ public class EXMARaLDA2SaltMapper
 	 * @param basicTranscription the model to be checked
 	 * @param tokenTiers a list of tiers representing the token layer
 	 */
-	public void cleanModel(BasicTranscription basicTranscription, EList<Tier> tokenTiers)
+	public void cleanModel(BasicTranscription basicTranscription, Collection<Tier> tokenTiers)
 	{
 		for (Tier tokenTier: tokenTiers)
 		{
@@ -328,38 +341,78 @@ public class EXMARaLDA2SaltMapper
 				this.mapCommonTimeLine2STimeine(basicTranscription.getCommonTimeLine(), sTimeline);
 			}//mapping the timeline	
 			{//mapping text and tokens
-				Tier eTextTier= null;
-				EList<Tier> textSlot= null;
+			
+				Set<String> tokenTiers = new LinkedHashSet<String>();
+				if(this.getProps().containsKey(EXMARaLDAImporter.PROP_TOKEN))
+				{
+					String rawTokenText = this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKEN);
+					if(rawTokenText.startsWith("{"))
+					{
+						rawTokenText = rawTokenText.replace("{", "").replace("}", "");
+						String[] splitted = rawTokenText.split(",");
+						for(String s : splitted)
+						{
+							tokenTiers.add(s.trim());
+						}
+					}
+					else
+					{
+						tokenTiers.add(rawTokenText.trim());
+					}
+				}
+			
+				Map<Tier, EList<Tier>> allTextSlots = new LinkedHashMap<Tier, EList<Tier>>();
+				
 				for (EList<Tier> slot: this.tierCollection)
 				{
+					Tier eTextTier= null;
+					
 					for (Tier tier: slot)
 					{//search for textual source
-						if (tier.getCategory().trim().equalsIgnoreCase(this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKEN).trim()))
+						if (tokenTiers.size() > 0 &&
+							tokenTiers.contains(tier.getCategory().trim())
+						)						
 						{
 							eTextTier= tier;
 							break;
 						}
-					}
+						else if(tier.getType().getName().trim().equalsIgnoreCase(DEFAULT_PRIMTEXT_TYPENAME))
+						{
+							eTextTier = tier;
+							break;
+						}
+					} // end for each tier in slot
+					
 					if (eTextTier!= null)
 					{
-						textSlot= slot;
-						break;
+						allTextSlots.put(eTextTier, slot);
 					}
+					
+				} // end for each slot of tierCollection
+				if (allTextSlots.size() == 0)
+					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because no textual source layer was found.");
+				
+				if("true".equalsIgnoreCase(props.getProperty(EXBNameIdentifier.KW_EXB_CLEAN_MODEL, "false")))
+				{
+					//run clean model
+					cleanModel(basicTranscription, allTextSlots.keySet());
 				}
-				if (eTextTier== null)
-					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because no textual source layer was found corresponding to value property '"+EXMARaLDAImporter.PROP_TOKEN+"':\t'"+this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKEN)+"'.");
 				
-				//run clean model
-				EList<Tier> tokenTiers= new BasicEList<Tier>();
-				tokenTiers.add(eTextTier);
-				cleanModel(basicTranscription, tokenTiers);
+				// map each text slot
+				for(Map.Entry<Tier, EList<Tier>> entry : allTextSlots.entrySet())
+				{
+					Tier eTextTier = entry.getKey();
+					EList<Tier> textSlot = entry.getValue();
+					
+					STextualDS sTextDS= SaltFactory.eINSTANCE.createSTextualDS();
+					sTextDS.setSName(eTextTier.getCategory());
+					sDoc.getSDocumentGraph().addSNode(sTextDS);
+					this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);	
+				}
 				
-				STextualDS sTextDS= SaltFactory.eINSTANCE.createSTextualDS();
-				sTextDS.setSName(this.getsDocument().getSName()+"_text");
-				sDoc.getSDocumentGraph().addSNode(sTextDS);
-				this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);
-				//remove textslot as processed
-				this.tierCollection.remove(textSlot);
+				//remove all text-slots as processed
+				this.tierCollection.removeAll(allTextSlots.values());
+				
 			}//mapping text and tokens
 			{// map other tiers
 				for (EList<Tier> slot: this.tierCollection)
@@ -680,13 +733,15 @@ public class EXMARaLDA2SaltMapper
 				sequence.setSSequentialDS(getsDocument().getSDocumentGraph().getSTimeline());
 				EList<SToken>  sTokens=this.sDocument.getSDocumentGraph().getSTokensBySequence(sequence);
 				
-//				SDocumentStructureAccessor timeAccessor= new SDocumentStructureAccessor(); 
-//				timeAccessor.setSDocumentGraph(this.sDocument.getSDocumentGraph());
-//				EList<SToken>  sTokens= timeAccessor.getSTokensByTimeInterval(startPos, endPos);
-				
 				if (sTokens== null)
 				{	
-					throw new EXMARaLDAImporterException("There are no matching tokens found on token-tier for current tier: '"+ tier.getCategory() +"' in event number '"+eventCtr+"' having the value '"+ eEvent.getValue()+"'. Exception occurs in file '"+this.getDocumentFilePath()+"'. Please run cleanModel() first.");
+					throw new EXMARaLDAImporterException(
+							"There are no matching tokens found on token-tier "
+							+ "for current tier: '"+ tier.getCategory() 
+							+"' in event number '"+eventCtr+"' having the value '"
+							+ eEvent.getValue()+"'. Exception occurs in file '"
+							+this.getDocumentFilePath()
+							+"'. You can try to set the property \"cleanModel\" to \"true\".");
 				}
 				for (SToken sToken: sTokens)
 				{
@@ -940,24 +995,14 @@ public class EXMARaLDA2SaltMapper
 		}
 		else
 		{	
-			if ( (tier.getCategory()== null)||
-			     (tier.getCategory().isEmpty()))
-			{
-			    if (this.getLogService()!= null)
-			        this.getLogService().log(LogService.LOG_WARNING, "Cannot map annotation corresponding to tier id '"+tier.getId()+"', because category name is empty.");
-			}
-			else
-			{
-    		    sAnno= SaltFactory.eINSTANCE.createSAnnotation();
-    			sAnno.setSName(tier.getCategory());
-    			sAnno.setSValue(eEvent.getValue());
-			}
+			sAnno= SaltFactory.eINSTANCE.createSAnnotation();
+			sAnno.setSName(tier.getCategory());
+			sAnno.setSValue(eEvent.getValue());
 		}
 		if (	(eEvent.getUdInformations() != null) &&
 				(eEvent.getUdInformations().size() > 0))
 			this.mapUDInformations2SMetaAnnotatableElement(eEvent.getUdInformations(), sNode);
-		if (sAnno!= null)
-		    sNode.addSAnnotation(sAnno);
+		sNode.addSAnnotation(sAnno);
 	}
 	
 	/**
