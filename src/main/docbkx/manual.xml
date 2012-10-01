@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+    <info>
+        <title>EXMARaLDAModules</title>
+        <subtitle>User's Guide</subtitle>
+        <authorgroup>
+            <author>
+                <personname>
+                    <firstname>Florian</firstname>
+                    <surname>Zipser</surname>
+                </personname>
+                <email>saltnpepper@lists.hu-berlin.de</email>
+            </author>
+            <author>
+                <orgname xml:id="org1">INRIA</orgname>
+            </author>
+            <author>
+                <orgname xml:id="org2">SFB 632 Information Structure / D1 Linguistic Database</orgname>
+            </author>
+            <author>
+                <orgname xml:id="org3">Humboldt-Universität zu Berlin</orgname>
+            </author>
+            <author>
+                <orgname xml:id="org4">Universität Potsdam</orgname>
+            </author>
+        </authorgroup>
+        <copyright>
+            <year>2012</year>
+            <holder><xref linkend="org1"/>, <xref linkend="org2"/>, <xref linkend="org3"/>, <xref linkend="org1"/>,<xref linkend="org4"/>, All rights reserved.</holder>
+        </copyright>
+        <releaseinfo>Version ${project.version}</releaseinfo>
+    </info>
+    <preface>
+        <title>Foreword</title>
+        <para>The intention of this document is first to give a guide to the user of how to use the
+            here mentioned pepper modules and how to utilize a mapping performed by them. Second
+            this document shall give a closer view in the details of such a mapping in a declarative
+            way, to give the user a chance to understand how specific data will be mapped by the
+            presented pepper modules.</para>
+    </preface>
+    <chapter>
+        <title>Overview</title>
+        <para>This project contains the pepper modules listed in <xref linkend="table_overview"/>. A
+            single module can be identified via its coordinates (module-name, format-name,
+            format-version) also given in <xref linkend="table_overview"/>. You can use these
+            coordinates in a pepper workflow description file to identify the modules in a pepper
+            conversion process. A description of how to model a workfloe description file can be
+            found under https://korpling.german.hu-berlin.de/saltnpepper/.</para>
+        <para> EXMARaLDA is a time based format, which makes use of a time line (Timeline element),
+            tiers (Tier element) and events (Event element) contained in a tier and referencing to a
+            time line. </para>
+        <table xml:id="table_overview" frame="all">
+            <title>pepper modules contained in this project</title>
+            <tgroup cols="3" align="left" colsep="1" rowsep="1">
+                <thead>
+                    <row>
+                        <entry>Name of pepper module</entry>
+                        <entry>Type of pepper module</entry>
+                        <entry>Format (if module is im- or exporter)</entry>
+                    </row>
+                </thead>
+                <tbody>
+                    <row>
+                        <entry><xref linkend="exm_importer" endterm="exm_importer_name"/></entry>
+                        <entry>importer</entry>
+                        <entry>1.0</entry>
+                    </row>
+                    <row>
+                        <entry><xref linkend="exm_exporter" endterm="exm_exporter_name"/></entry>
+                        <entry>exporter</entry>
+                        <entry>1.0</entry>
+                    </row>
+                </tbody>
+            </tgroup>
+        </table>
+    </chapter>
+    <chapter xml:id="changes">
+        <title>Changes</title>
+        <para> This chapter contains the changes in version ${project.version} compared to the
+        previous version. </para>
+        <section>
+            <title><xref linkend="exm_importer_name"/></title>
+        <itemizedlist spacing="compact">
+            <listitem>
+                <para>If a {@link BasicTranscription} object contains the not empty attribute
+                    referencedFile, a {@link SAudioDataSource} will be created containing the given
+                    {@link URI}. all @time attributes will be mapped to a SAudioDSRelation, if an
+                    event mapped to an SToken only contains sStart or SEnd, only these values will
+                    be set (an automatic interpolation can be provided). </para>
+
+            </listitem>
+            <listitem>
+                <para>in case of some tli objects are not covered by event objects of the
+                    token-tier, artificial events will be created, including the primary text "" for
+                    instance </para>
+                <table>
+                    <title/>
+                    <tgroup cols="3" align="left" colsep="1" rowsep="1">
+                        <tbody>
+                            <row>
+                                <entry/>
+                                <entry>token</entry>
+                                <entry/>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </table>
+                <para>will be enhanced to</para>
+                <table>
+                    <title/>
+                    <tgroup cols="3" align="left" colsep="1" rowsep="1">
+                        <tbody>
+                            <row>
+                                <entry>EMPTY_STRING</entry>
+                                <entry>token</entry>
+                                <entry>EMPTY_STRING</entry>
+                            </row>
+                        </tbody>
+                    </tgroup>
+                </table>
+            </listitem>
+        </itemizedlist>
+        </section>
+    </chapter>
+    <chapter xml:id="exm_importer">
+        <title xml:id="exm_importer_name">EXMARaLDAImporter</title>
+        <para>General information about this importer.</para>
+        <sect1>
+            <title>Mapping to Salt</title>
+            <para>To represent this model in Salt we mapped the time based event concept to the
+                token concept of Salt. A general difference between both models is the handling of
+                primary texts. EXMARaLDA, does not care about primary texts, because of the event
+                based concept. Therefore it is necessary to define one or more tiers to contain the
+                primary text resource in the EXB model when mapping the data to Salt. This is done
+                via an entry in the property file needed by the EXMARaLDAImporter (see
+                “salt.Token“). The values of each Event objects contained in the marked Tier object
+                will be concatenated and mapped to a primary text (STextualDS object). If there are
+                two or more Tier objects marked, each will be mapped to a separate primary text.
+                Next to this each Event object contained in this Tier object will also be mapped to
+                a SToken object. A Timeline object of EXMARaLDA will be mapped to the STimeline
+                object of Salt. Each SToken object will refer to the range (via SPointOfTime
+                objects) of time inside the STimeline object. After mapping, the range of time of a
+                SToken object is the same as for the corresponding Event object. Event objects not
+                part of the marked Tier object will be mapped to a SSpan object. The value of the
+                Event object will be mapped to an SAnnotation object with Event.value →
+                SAnnotation.sValue and Tier.categoryName → SAnnotation.sName. The project-name of
+                the EXMARaLDA document will be mapped to the SName of the corresponding SDocument
+                object. To have a more user-defined way for mappings you can use the properties
+                described in the section “Property file“.</para>
+        </sect1>
+        <sect1>
+            <title>Properties</title>
+            <para> The table <xref linkend="importer_prop_overview"/> contains an overview of all
+                usable properties to customize the behaviour of this pepper module. The following
+                section contains a close description to each single property and describes the
+                resulting differences in the mapping to the salt model.</para>
+            <table xml:id="importer_prop_overview" frame="all">
+                <title>properties to customize importer behaviour</title>
+                <tgroup cols="4" align="left" colsep="1" rowsep="1">
+                    <thead>
+                        <row>
+                            <entry>Name of property</entry>
+                            <entry>Type of property</entry>
+                            <entry>optional/ mandatory</entry>
+                            <entry>default value</entry>
+                        </row>
+                    </thead>
+                    <tbody>
+                        <row>
+                            <entry><xref linkend="prop_prop1" endterm="importer_prop1_title"
+                            /></entry>
+                            <entry>Tier.categoryName</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                        <row>
+                            <entry><xref linkend="prop_prop2" endterm="importer_prop2_title"
+                            /></entry>
+                            <entry>String</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                        <row>
+                            <entry><xref linkend="prop_prop3" endterm="importer_prop3_title"
+                            /></entry>
+                            <entry>{Tier1.categoryname, Tier2.categoryname, …}, {…}</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                        <row>
+                            <entry><xref linkend="prop_prop4" endterm="importer_prop4_title"
+                            /></entry>
+                            <entry>Tier.categoryName</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                        <row>
+                            <entry><xref linkend="prop_prop5" endterm="importer_prop5_title"
+                            /></entry>
+                            <entry>{layerName{Tier1.categoryName, Tier2.categoryName,...}},{...}</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                        <row>
+                            <entry><xref linkend="prop_prop6" endterm="importer_prop6_title"
+                            /></entry>
+                            <entry>Tier.categoryName</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                        <row>
+                            <entry><xref linkend="prop_prop7" endterm="importer_prop7_title"
+                            /></entry>
+                            <entry>Tier.categoryName</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                        <row>
+                            <entry><xref linkend="prop_prop8" endterm="importer_prop8_title"
+                            /></entry>
+                            <entry>Tier.categoryName</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </table>
+            <sect2 xml:id="prop_prop1">
+                <title xml:id="importer_prop1_title">salt.token</title>
+                <para>With the property <property>salt.token</property> you can mark the Tier object
+                    which shall be interpreted as the one containing the tokenization and the
+                    primary text.</para>
+                <para><code>salt.token=Tier.categoryName</code></para>
+                <para>Imagine the example of <xref linkend="primaryData_exm"/>, there we have a Tier
+                    object with categorical name txt displayed as X[txt]. <figure
+                        xml:id="primaryData_exm">
+                        <title>primary data in EXMARaLDA</title>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="images/primaryData_exm.jpg"/>
+                            </imageobject>
+                        </mediaobject>
+                    </figure> This Tier object contains the data representing the primary text. To
+                    map them in correct way to Salt, you need to set the property “salt.token”: </para>
+                <para><code>salt.token=txt</code></para>
+            </sect2>
+            <sect2 xml:id="prop_prop2">
+                <title xml:id="importer_prop2_title">salt.tokenSeparator</title>
+                <para>With the property <property>salt.tokenSeparator</property>you can set a single
+                    sign or a sequence of signs which shall be used between the concatenation of
+                    event values representing the primary data. </para>
+                <para><code>salt.tokenSeparator=”SIGN”</code></para>
+                <para> In case of the example given in Figure 1, the creation of primary text
+                    without setting the property “salt.tokenSeparator” will produce the primary
+                    text: “Thisisasampletext.”. With the use of a blank as separator as shown
+                    here:</para>
+                <para><code>salt.tokenSeparator=” “</code></para>
+                <para> the produced text is the following: “This is a sample text .” Note the blank
+                    between “text” and “.”. In the current EXMARaLDAImporter version, there is no
+                    possibility to avoid the superfluous blank.</para>
+            </sect2>
+            <sect2 xml:id="prop_prop3">
+                <title xml:id="importer_prop3_title">salt.TierMerge</title>
+                <para>In EXMARaLDA there is just one value per each Event object. When mapping those
+                    data to Salt, this restriction results, that a SSpan or SToken object will be
+                    created for each Event object. To avoid this, you can mark a sequence of sets of
+                    tiers to map them to a single SSpan or SToken object in Salt. This can be done
+                    with the property “salt.tierMerge”.</para>
+                <para><code>salt.tierMerge={Tier1.categoryname, Tier2.categoryname, …},
+                    {…}</code></para>
+                <para>In this case all Event objects of tier with categorical name categoryname1 and
+                    categoryname2 refering the same time range will be mapped to a single SSToken or
+                    SSpan object. Each Event object of each set in the given sequence will be
+                    grouped. Figure 2 shows an Example of EXMARaLDA data mapped to Salt with the use
+                    of the property salt.tierMerge.</para>
+                <note>
+                    <para>All Event objects contained in a tier to be merged, must refer to the same
+                        time ranges. Gaps in time line are allowed, see the events of column 3 of
+                        <xref linkend="tokAnnos_exm"/></para>
+                </note>
+                <figure
+                    xml:id="tokAnnos_exm">
+                    <title>token annotation in EXMARaLDA</title>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/tokAnnos_exm.jpg"/>
+                        </imageobject>
+                    </mediaobject>
+                </figure>
+                <para>and the mapped salt model <xref linkend="tokAnnos_salt"/>.</para>
+                <figure
+                    xml:id="tokAnnos_salt">
+                    <title>token annotation in salt</title>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/tokAnnos_salt.jpg"/>
+                        </imageobject>
+                    </mediaobject>
+                </figure>
+                <para>
+                    The two figures above show the representation in EXMARaLDA Partitur Editor, beyond the representation in Salt after mapping with the properties:
+                </para>
+                <para><code>
+                    salt.token=txt
+                    salt.tokenSeparator=” ”
+                    salt.tierMerge={txt, pos, lemma}
+                </code></para>
+                <note><para>Two events contained in tiers to merge, which overlapps the time ranges (timeRange1 and timeRange1) with timeRange1.start ≤  timeRange2.start and timeRange1.end >  timeRange2.end, vice versa and are not allowed.</para></note>
+            </sect2>
+            <sect2 xml:id="prop_prop4">
+                <title xml:id="importer_prop4_title">salt.URIAnnotation</title>
+                <para>With the property salt.URIAnnotation, you can mark a Tier object containing annotations, which are references in URI notation and are not simple String values. When mapping the data to Salt the resulting SAnnotation.sValue objects will be typed as URI values, so that each interpreting tool can interpret them as references.</para>
+                <para><code>salt.URIAnnotation=Tier.categoryName</code></para>
+            </sect2>
+            <sect2 xml:id="prop_prop5">
+                <title xml:id="importer_prop5_title">salt.Layers</title>
+                <para>With the property salt.layers you can use the layer mechanism of Salt. This means, with this property, you can map all SToken or SSpan object caused by Event objects to an SLayer object. You can also group SToken or SSpan coming from Event objects contained in several Tier objects to the same SLayer object. </para>
+                <para><code>salt.layers={layerName{Tier1.categoryName, Tier2.categoryName,...}},{...}</code></para>
+                <para>Imagine the example of figures <xref linkend="layers_exm"/></para>
+                <figure
+                    xml:id="layers_exm">
+                    <title>layers in EXMARaLDA</title>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/layers_exm.jpg"/>
+                        </imageobject>
+                    </mediaobject>
+                </figure>
+                <para>and <xref linkend="layers_salt"/>.</para>
+                <figure
+                    xml:id="layers_salt">
+                    <title>layers in salt</title>
+                    <mediaobject>
+                        <imageobject>
+                            <imagedata fileref="images/layers_salt.jpg"/>
+                        </imageobject>
+                    </mediaobject>
+                </figure>
+                <para>
+                    The two figures above show the representation in EXMARaLDA Partitur Editor, beyond the representation in Salt after mapping with the properties:
+                </para>
+                <para><code>
+                    salt.token=txt
+                    salt.tokenSeparator=” ”
+                    salt.tierMerge={txt, pos, lemma}
+                    salt.layers={syntax{unit}}, {morphosyntax{pos, lemma}}
+                </code></para>
+                <para>Here we grouped the events of the tiers pos and lemma to one SLayer object named morphosyntax and we grouped the event of tier unit to another SLayer object named syntax.</para>
+            </sect2>
+            <sect2 xml:id="prop_prop6">
+                <title xml:id="importer_prop6_title">saltSemantics.POS</title>
+                <para>You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing. The currently available semantic enrichments are:</para>
+                <para>When using the property saltSemantics.POS, the EXMARaLDAImporter will create a special SPOSAnnotation instead of a simple attribut-value-pair annotation. </para>
+            </sect2>
+            <sect2 xml:id="prop_prop7">
+                <title xml:id="importer_prop7_title">saltSemantics.LEMMA</title>
+                <para>You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing. The currently available semantic enrichments are:</para>
+                <para>When using the property saltSemantics.LEMMA, the EXMARaLDAImporter will create a special SLemmaAnnotation instead of a simple attribut-value-pair annotation.</para>
+            </sect2>
+            <sect2 xml:id="prop_prop8">
+                <title xml:id="importer_prop8_title">saltSemantics.WORD</title>
+                <para>You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing. The currently available semantic enrichments are:</para>
+                <para>When using the property saltSemantics.WORD a structural object like a SSToken or a SSpan object will be additionally annotated to represent a word.</para>
+            </sect2>
+        </sect1>
+    </chapter>
+    <chapter xml:id="exm_exporter">
+        <title xml:id="exm_exporter_name">EXMARaLDAExporter</title>
+        <para>No description exists so far</para>
+    </chapter>
+</book>
