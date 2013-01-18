@@ -70,7 +70,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 			
 			this.createFolderStructure(sElementId);
 			//create uri to save
-			URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sElementId.getSElementPath()+ "." + FILE_EXTENION);
+			URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sElementId.getSElementPath().toFileString()+ "." + FILE_EXTENION);
 			try {
 				this.saveToFile(uri, basicTranscription);
 			} catch (IOException e) {
