@@ -501,19 +501,13 @@ public class EXMARaLDA2SaltMapper
 				if (	(speaker.getAbbreviation()!= null) &&
 						(!speaker.getAbbreviation().isEmpty()))
 				{
-					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-					sMetaAnno.setSNS(speaker.getId());
-					sMetaAnno.setSName("abbreviation");
-					sMetaAnno.setSValue(speaker.getAbbreviation());
+					sDocument.createSMetaAnnotation(speaker.getId(), "abbreviation", speaker.getAbbreviation().toString());
 				}
 			}//map abbriviation
 			{//map sex
 				if (speaker.getSex()!= null)
 				{
-					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-					sMetaAnno.setSNS(speaker.getId());
-					sMetaAnno.setSName("sex");
-					sMetaAnno.setSValue(speaker.getSex());
+					sDocument.createSMetaAnnotation(speaker.getId(), "sex", speaker.getSex().toString());
 				}
 			}//map sex
 			{//language used
@@ -531,10 +525,7 @@ public class EXMARaLDA2SaltMapper
 						else
 							langUsedStr.append(", "+ langUsed);
 					}
-					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-					sMetaAnno.setSNS(speaker.getId());
-					sMetaAnno.setSName("languages-used");
-					sMetaAnno.setSValue(langUsedStr);
+					sDocument.createSMetaAnnotation(speaker.getId(), "languages-used", langUsedStr.toString());
 				}
 			}//language used
 			{//map l1
@@ -552,10 +543,7 @@ public class EXMARaLDA2SaltMapper
 						else
 							l1Str.append(", "+ l1);
 					}
-					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-					sMetaAnno.setSNS(speaker.getId());
-					sMetaAnno.setSName("l1");
-					sMetaAnno.setSValue(l1Str);
+					sDocument.createSMetaAnnotation(speaker.getId(), "l1", l1Str.toString());
 				}
 			}//map l1
 			{//map l2
@@ -573,20 +561,15 @@ public class EXMARaLDA2SaltMapper
 						else
 							l2Str.append(", "+ l2);
 					}
-					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-					sMetaAnno.setSNS(speaker.getId());
-					sMetaAnno.setSName("l2");
-					sMetaAnno.setSValue(l2Str);
+
+					sDocument.createSMetaAnnotation(speaker.getId(), "l2", l2Str.toString());
 				}
 			}//map l2
 			{//map comment
 				if (	(speaker.getComment()!= null) &&
 						(!speaker.getComment().isEmpty()))
 				{
-					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-					sMetaAnno.setSNS(speaker.getId());
-					sMetaAnno.setSName("comment");
-					sMetaAnno.setSValue(speaker.getComment());
+					sDocument.createSMetaAnnotation(speaker.getId(), "comment", speaker.getComment());
 				}
 			}//map comment
 			{//map ud-informations
