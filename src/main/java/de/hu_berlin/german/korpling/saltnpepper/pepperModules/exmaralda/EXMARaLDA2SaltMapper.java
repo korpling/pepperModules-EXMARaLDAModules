@@ -496,18 +496,19 @@ public class EXMARaLDA2SaltMapper
 		if (	(speaker!= null) &&
 				(speaker.getUdSpeakerInformations()!= null))
 		{
-			SMetaAnnotation sMetaAnno= null;
-			{//map abbriviation
+			{//map abbreviation
 				if (	(speaker.getAbbreviation()!= null) &&
 						(!speaker.getAbbreviation().isEmpty()))
 				{
-					sDocument.createSMetaAnnotation(speaker.getId(), "abbreviation", speaker.getAbbreviation().toString());
+					String namespace= (speaker.getAbbreviation()!= null) ? speaker.getAbbreviation(): speaker.getId();
+					sDocument.createSMetaAnnotation(namespace, "abbreviation", speaker.getAbbreviation().toString());
 				}
-			}//map abbriviation
+			}//map abbreviation
 			{//map sex
 				if (speaker.getSex()!= null)
 				{
-					sDocument.createSMetaAnnotation(speaker.getId(), "sex", speaker.getSex().toString());
+					String namespace= (speaker.getAbbreviation()!= null) ? speaker.getAbbreviation(): speaker.getId();
+					sDocument.createSMetaAnnotation(namespace, "sex", speaker.getSex().toString());
 				}
 			}//map sex
 			{//language used
@@ -525,7 +526,8 @@ public class EXMARaLDA2SaltMapper
 						else
 							langUsedStr.append(", "+ langUsed);
 					}
-					sDocument.createSMetaAnnotation(speaker.getId(), "languages-used", langUsedStr.toString());
+					String namespace= (speaker.getAbbreviation()!= null) ? speaker.getAbbreviation(): speaker.getId();
+					sDocument.createSMetaAnnotation(namespace, "languages-used", langUsedStr.toString());
 				}
 			}//language used
 			{//map l1
@@ -543,7 +545,8 @@ public class EXMARaLDA2SaltMapper
 						else
 							l1Str.append(", "+ l1);
 					}
-					sDocument.createSMetaAnnotation(speaker.getId(), "l1", l1Str.toString());
+					String namespace= (speaker.getAbbreviation()!= null) ? speaker.getAbbreviation(): speaker.getId();
+					sDocument.createSMetaAnnotation(namespace, "l1", l1Str.toString());
 				}
 			}//map l1
 			{//map l2
@@ -562,21 +565,25 @@ public class EXMARaLDA2SaltMapper
 							l2Str.append(", "+ l2);
 					}
 
-					sDocument.createSMetaAnnotation(speaker.getId(), "l2", l2Str.toString());
+					String namespace= (speaker.getAbbreviation()!= null) ? speaker.getAbbreviation(): speaker.getId();
+					sDocument.createSMetaAnnotation(namespace, "l2", l2Str.toString());
 				}
 			}//map l2
 			{//map comment
 				if (	(speaker.getComment()!= null) &&
 						(!speaker.getComment().isEmpty()))
 				{
-					sDocument.createSMetaAnnotation(speaker.getId(), "comment", speaker.getComment());
+					String namespace= (speaker.getAbbreviation()!= null) ? speaker.getAbbreviation(): speaker.getId();
+					sDocument.createSMetaAnnotation(namespace, "comment", speaker.getComment());
 				}
 			}//map comment
 			{//map ud-informations
 				for (UDInformation udInfo: speaker.getUdSpeakerInformations())
 				{
+					SMetaAnnotation sMetaAnno= null;
 					sMetaAnno= SaltFactory.eINSTANCE.createSMetaAnnotation();
-					sMetaAnno.setSNS(speaker.getId());
+					String namespace= (speaker.getAbbreviation()!= null) ? speaker.getAbbreviation(): speaker.getId();
+					sMetaAnno.setSNS(namespace);
 					sMetaAnno.setSName(udInfo.getAttributeName());
 					sMetaAnno.setSValue(udInfo.getValue());
 					if (sDocument.getSMetaAnnotation(sMetaAnno.getQName())== null)
