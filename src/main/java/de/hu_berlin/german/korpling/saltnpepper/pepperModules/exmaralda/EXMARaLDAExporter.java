@@ -19,12 +19,11 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
 import java.io.IOException;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.osgi.service.component.annotations.Component;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFactory;
@@ -36,7 +35,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 @Component(name="EXMARaLDAExporterJavaComponent", factory="PepperExporterComponentFactory")
-@Service(value=PepperExporter.class)
 public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExporter
 {
 	public EXMARaLDAExporter()
