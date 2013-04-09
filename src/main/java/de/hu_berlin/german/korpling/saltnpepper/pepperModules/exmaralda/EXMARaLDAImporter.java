@@ -141,7 +141,7 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 				throw new EXMARaLDAImporterException("Cannot start converting, because no special parameters are set.");
 			File specialParamFile= new File(this.getSpecialParams().toFileString());
 			if (!specialParamFile.exists())
-				throw new EXMARaLDAImporterException("Cannot start converting, because the file for special parameters does not exists: "+ specialParamFile);
+				throw new EXMARaLDAImporterException("Cannot start converting, because the file for special parameters does not exist: "+ specialParamFile);
 			if (!specialParamFile.isFile())
 				throw new EXMARaLDAImporterException("Cannot start converting, because the file for special parameters is not a file: "+ specialParamFile);
 		}
