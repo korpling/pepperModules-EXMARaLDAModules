@@ -58,15 +58,20 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 	public static final String PROP_SALT_SEMANTICS_LEMMA="saltSemantics.LEMMA";
 	public static final String PROP_SALT_SEMANTICS_WORD="saltSemantics.WORD";
 	
+	public static final String[] exmaraldaEndings={"exb", "xml", "exmaralda"};
+	
 	public EXMARaLDAImporter()
 	{
 		super();
 		//setting name of module
 		this.name= "EXMARaLDAImporter";
 
-    //set list of formats supported by this module
+		//set list of formats supported by this module
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
-
+		
+		//adding all file endings to list of endings for documents (necessary for importCorpusStructure)
+		for (String ending: exmaraldaEndings)
+			this.getSDocumentEndings().add(ending);
 	}
 
 	/**
@@ -85,53 +90,7 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 	 * Measured time which is needed to map all documents to salt. 
 	 */
 	private Long totalTimeToMapDocument= 0l;
-	
-	/**
-	 * Stores relation between documents and their resource 
-	 */
-	private Map<SElementId, URI> documentResourceTable= null;
-	
-	@Override
-	public void importCorpusStructure(SCorpusGraph corpusGraph)
-			throws EXMARaLDAImporterException
-	{
-		this.timeImportSCorpusStructure= System.nanoTime();
-		this.setSCorpusGraph(corpusGraph);
-		if (this.getSCorpusGraph()== null)
-			throw new EXMARaLDAImporterException(this.name+": Cannot start with importing corpus, because salt project isn�t set.");
-		
-		if (this.getCorpusDefinition()== null)
-			throw new EXMARaLDAImporterException(this.name+": Cannot start with importing corpus, because no corpus definition to import is given.");
-		if (this.getCorpusDefinition().getCorpusPath()== null)
-			throw new EXMARaLDAImporterException(this.name+": Cannot start with importing corpus, because the path of given corpus definition is null.");
-		
-		if (this.getCorpusDefinition().getCorpusPath().isFile())
-		{
-			this.documentResourceTable= new Hashtable<SElementId, URI>();
-			//clean uri in corpus path (if it is a folder and ends with/, / has to be removed)
-			if (	(this.getCorpusDefinition().getCorpusPath().toFileString().endsWith("/")) || 
-					(this.getCorpusDefinition().getCorpusPath().toFileString().endsWith("\\")))
-			{
-				this.getCorpusDefinition().setCorpusPath(this.getCorpusDefinition().getCorpusPath().trimSegments(1));
-			}
-			try {
-				EList<String> endings= new BasicEList<String>();
-				endings.add("exb");
-				endings.add("xml");
-				endings.add("exmaralda");
-				this.documentResourceTable= this.createCorpusStructure(this.getCorpusDefinition().getCorpusPath(), null, endings);
-			} catch (IOException e) {
-				throw new EXMARaLDAImporterException(this.name+": Cannot start with importing corpus, because saome exception occurs: ",e);
-			}
-			finally
-			{
-				timeImportSCorpusStructure= System.nanoTime()- timeImportSCorpusStructure;
-			}
-		}	
-	}
-	
-	
-	
+
 	@Override
 	public void start(SElementId sElementId) throws EXMARaLDAImporterException 
 	{
@@ -155,10 +114,9 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 		}
 		else if (sElementId.getSIdentifiableElement() instanceof SDocument)
 		{//sElementId belongs to SDOcument-object
-			URI documentPath= this.documentResourceTable.get(sElementId);
+			URI documentPath= this.getSElementId2ResourceTable().get(sElementId);
 			if (documentPath!= null)
 			{
-	//			SDocument sDoc= (SDocument) sElementId.getSIdentifiableElement();
 				BasicTranscription basicTranscription=null;
 				{//loading exmaralda model
 					Long timeToLoadSDocumentStructure= System.nanoTime();
