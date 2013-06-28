@@ -18,8 +18,12 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Properties;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +40,10 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SAudioDSRelation;
@@ -56,11 +64,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SMetaAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SNode;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SWordAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SaltSemanticsFactory;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * This class maps data coming from the EXMARaLDA (EXB) model to a Salt model.
@@ -74,19 +77,8 @@ import java.util.Set;
  * @author Florian Zipser
  *
  */
-public class EXMARaLDA2SaltMapper 
+public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapper
 {
-// -------------------- basic SDocument
-	private SDocument sDocument= null;
-
-	public void setsDocument(SDocument sDocument) {
-		this.sDocument = sDocument;
-	}
-
-	public SDocument getsDocument() {
-		return sDocument;
-	}
-// -------------------- basic SDocument
 // -------------------- basic transcription	
 	private BasicTranscription basicTranscription= null;
 	
@@ -97,61 +89,11 @@ public class EXMARaLDA2SaltMapper
 	public BasicTranscription getBasicTranscription() {
 		return basicTranscription;
 	}
-// -------------------- basic transcription
-// -------------------- physical path
-	/**
-	 * the physical path (file-path) of the current converted document
-	 */
-	private URI documentFilePath= null;
-	
-	/**
-	 * Returns the physical path (file-path) of the current converted document.
-	 * @return
-	 */
-	public URI getDocumentFilePath() {
-		return documentFilePath;
-	}
 
-	/**
-	 * Sets the physical path (file-path) of the current converted document
-	 * @param documentFilePath
-	 */
-	public void setDocumentFilePath(URI documentFilePath) {
-		this.documentFilePath = documentFilePath;
+	/** casts {@link PepperModuleProperties} to {@link EXMARaLDAImporterProperties} **/
+	public EXMARaLDAImporterProperties getProps() {
+		return((EXMARaLDAImporterProperties)this.getProperties());
 	}
-// -------------------- physical path
-// -------------------- properties	
-	private Properties props= null;
-	public void setProps(Properties props) {
-		this.props = props;
-	}
-
-	public Properties getProps() {
-		return props;
-	}
-// -------------------- properties
-// -------------------- LogService
-	/**
-	 * LogService for logging via OSGi.
-	 */
-	private LogService logService= null;
-	
-	/**
-	 * returns LogService for logging via OSGi.
-	 * @return
-	 */
-	public LogService getLogService() {
-		return logService;
-	}
-
-	/**
-	 * Sets LogService for logging via OSGi.
-	 * @param logService
-	 */
-	public void setLogService(LogService logService) {
-		this.logService = logService;
-	}
-// -------------------- LogService
 	
 	private static final String DEFAULT_PRIMTEXT_TYPENAME = "t";
 	
@@ -188,10 +130,10 @@ public class EXMARaLDA2SaltMapper
 	 */
 	private void checkProperties()
 	{
-		if (	(this.getProps()== null)||
-				(this.getProps().size()==0))
-			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+this.getDocumentFilePath()+"', because there are no special params given.");
-		String tokLayer= this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKEN);
+//		if (	(this.getProps()== null)||
+//				(this.getProps().size()==0))
+//			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+getResourceURI()+"', because there are no special params given.");
+		String tokLayer= this.getProps().getTokenTier();
 		
 		if(tokLayer != null)
 		{
@@ -205,9 +147,7 @@ public class EXMARaLDA2SaltMapper
 		
 		{//tiers to SLayer-objects
 			String tier2SLayerStr=null;
-			tier2SLayerStr= this.getProps().getProperty(EXMARaLDAImporter.PROP_LAYERS_SMALL);
-			if (tier2SLayerStr==null)
-				tier2SLayerStr=this.getProps().getProperty(EXMARaLDAImporter.PROP_LAYERS_BIG);
+			tier2SLayerStr= this.getProps().getLayers();
 			if (	(tier2SLayerStr!= null) &&
 					(!tier2SLayerStr.trim().isEmpty()))
 			{//if a tier to layer mapping is given
@@ -243,7 +183,7 @@ public class EXMARaLDA2SaltMapper
 					String sLayerName= matcher.group().replace(tierNameList, "").replace("}", "").replace("{", "");
 					SLayer sLayer = SaltFactory.eINSTANCE.createSLayer();
 					sLayer.setSName(sLayerName);
-					this.getsDocument().getSDocumentGraph().getSLayers().add(sLayer);
+					this.getSDocument().getSDocumentGraph().getSLayers().add(sLayer);
 					for (String tierName: tierNames)
 					{//put all tiernames in table to map them to the layer
 						this.tierNames2SLayers.put(tierName, sLayer);
@@ -259,12 +199,19 @@ public class EXMARaLDA2SaltMapper
 		}//tiers to SLayer-objects
 	}
 	
-	public void startMapping()
-	{
-		this.getsDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		this.getsDocument().getSDocumentGraph().setSId(this.getsDocument().getSId());
+	/**
+	 * {@inheritDoc PepperMapper#setSDocument(SDocument)}
+	 * 
+	 * OVERRIDE THIS METHOD FOR CUSTOMIZED MAPPING.
+	 */
+	@Override
+	public MAPPING_RESULT mapSDocument() {
+		if (this.getSDocument().getSDocumentGraph()== null)
+			this.getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+		this.getSDocument().getSDocumentGraph().setSId(this.getSDocument().getSId());
 		this.checkProperties();
-		this.mapDocument(this.getsDocument(), this.getBasicTranscription());
+		this.mapDocument(this.getSDocument(), this.getBasicTranscription());
+		return(MAPPING_RESULT.FINISHED);
 	}
 	
 	/**
@@ -320,7 +267,7 @@ public class EXMARaLDA2SaltMapper
 				(sDoc!= null))
 		{
 			this.setBasicTranscription(basicTranscription);
-			this.setsDocument(sDoc);
+			this.setSDocument(sDoc);
 			if (sDoc.getSDocumentGraph()== null)
 				sDoc.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
 			{//compute collection of tiers which belong together
@@ -343,9 +290,9 @@ public class EXMARaLDA2SaltMapper
 			{//mapping text and tokens
 			
 				Set<String> tokenTiers = new LinkedHashSet<String>();
-				if(this.getProps().containsKey(EXMARaLDAImporter.PROP_TOKEN))
+				if(this.getProps().getTokenTier()!=null)
 				{
-					String rawTokenText = this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKEN);
+					String rawTokenText = this.getProps().getTokenTier();
 					if(rawTokenText.startsWith("{"))
 					{
 						rawTokenText = rawTokenText.replace("{", "").replace("}", "");
@@ -390,9 +337,9 @@ public class EXMARaLDA2SaltMapper
 					
 				} // end for each slot of tierCollection
 				if (allTextSlots.size() == 0)
-					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because no textual source layer was found.");
+					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getResourceURI()+"', because no textual source layer was found.");
 				
-				if("true".equalsIgnoreCase(props.getProperty(EXBNameIdentifier.KW_EXB_CLEAN_MODEL, "false")))
+				if("true".equalsIgnoreCase(getProps().getCleanModel().toString()))
 				{
 					//run clean model
 					cleanModel(basicTranscription, allTextSlots.keySet());
@@ -492,7 +439,7 @@ public class EXMARaLDA2SaltMapper
 	private void mapSpeaker2SMetaAnnotation(Speaker speaker, SDocument sDocument)
 	{
 		if (sDocument== null)
-			throw new EXMARaLDAImporterException("Exception in method 'mapSpeaker2SMetaAnnotation()'. The given SDocument-object is null. Exception occurs in file '"+this.getDocumentFilePath()+"'.");
+			throw new EXMARaLDAImporterException("Exception in method 'mapSpeaker2SMetaAnnotation()'. The given SDocument-object is null. Exception occurs in file '"+this.getResourceURI()+"'.");
 		if (	(speaker!= null) &&
 				(speaker.getUdSpeakerInformations()!= null))
 		{
@@ -624,10 +571,10 @@ public class EXMARaLDA2SaltMapper
 	public void computeTierCollection()
 	{
 		this.tierCollection= new BasicEList<EList<Tier>>();
-		if (	(this.getProps().getProperty(EXMARaLDAImporter.PROP_TIERMERGE)!= null) &&
-				(!this.getProps().getProperty(EXMARaLDAImporter.PROP_TIERMERGE).isEmpty()))
+		if (	(this.getProps().getTierMerge()!= null) &&
+				(!this.getProps().getTierMerge().isEmpty()))
 		{
-			String[] slotStrings= this.getProps().getProperty(EXMARaLDAImporter.PROP_TIERMERGE).split("}");
+			String[] slotStrings= this.getProps().getTierMerge().split("}");
 			for (String slotString:slotStrings)
 			{
 				slotString = slotString.replace("{", "");
@@ -644,7 +591,7 @@ public class EXMARaLDA2SaltMapper
 						for (Tier tier: this.getBasicTranscription().getTiers())
 						{
 							if (tier.getCategory()== null)
-								throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getDocumentFilePath()+"', because there is a <tier> element ('id=\""+tier.getId()+"\"') without a @category attribute.");;
+								throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getResourceURI()+"', because there is a <tier> element ('id=\""+tier.getId()+"\"') without a @category attribute.");;
 							if (tier.getCategory().equalsIgnoreCase(tierCat))
 								slot.add(tier);
 						}	
@@ -720,7 +667,7 @@ public class EXMARaLDA2SaltMapper
 				SDataSourceSequence sequence= SaltFactory.eINSTANCE.createSDataSourceSequence();
 				sequence.setSStart(startPos);
 				sequence.setSEnd(endPos);
-				sequence.setSSequentialDS(getsDocument().getSDocumentGraph().getSTimeline());
+				sequence.setSSequentialDS(getSDocument().getSDocumentGraph().getSTimeline());
 				EList<SToken>  sTokens=this.sDocument.getSDocumentGraph().getSTokensBySequence(sequence);
 				
 				if (sTokens== null)
@@ -730,7 +677,7 @@ public class EXMARaLDA2SaltMapper
 							+ "for current tier: '"+ tier.getCategory() 
 							+"' in event number '"+eventCtr+"' having the value '"
 							+ eEvent.getValue()+"'. Exception occurs in file '"
-							+this.getDocumentFilePath()
+							+this.getResourceURI()
 							+"'. You can try to set the property \"cleanModel\" to \"true\".");
 				}
 				for (SToken sToken: sTokens)
@@ -738,7 +685,7 @@ public class EXMARaLDA2SaltMapper
 					SSpanningRelation spanRel= SaltFactory.eINSTANCE.createSSpanningRelation();
 					spanRel.setSSpan(sSpan);
 					spanRel.setSToken(sToken);
-					this.getsDocument().getSDocumentGraph().addSRelation(spanRel);
+					this.getSDocument().getSDocumentGraph().addSRelation(spanRel);
 				}
 				
 				//medium and url to SAnnotation
@@ -825,7 +772,7 @@ public class EXMARaLDA2SaltMapper
 			sTimeRel.setSToken(sToken);
 			sTimeRel.setSStart(startPos);
 			sTimeRel.setSEnd(endPos);
-			this.getsDocument().getSDocumentGraph().addSRelation(sTimeRel);
+			this.getSDocument().getSDocumentGraph().addSRelation(sTimeRel);
 		}
 	}
 	
@@ -919,12 +866,8 @@ public class EXMARaLDA2SaltMapper
 					SDataSourceSequence sequence= SaltFactory.eINSTANCE.createSDataSourceSequence();
 					sequence.setSStart(startPos);
 					sequence.setSEnd(endPos);
-					sequence.setSSequentialDS(getsDocument().getSDocumentGraph().getSTimeline());
+					sequence.setSSequentialDS(getSDocument().getSDocumentGraph().getSTimeline());
 					EList<SToken>  sTokens=this.sDocument.getSDocumentGraph().getSTokensBySequence(sequence);
-					
-//					SDocumentStructureAccessor timeAccessor= new SDocumentStructureAccessor(); 
-//					timeAccessor.setSDocumentGraph(this.sDocument.getSDocumentGraph());
-//					EList<SToken>  stokens= timeAccessor.getSTokensByTimeInterval(startPos, endPos);
 					
 					if (sTokens!= null)
 					{	
@@ -946,9 +889,9 @@ public class EXMARaLDA2SaltMapper
 	public void mapEvent2SNode(Tier tier, Event eEvent, SNode sNode)
 	{
 		SAnnotation sAnno= null;
-		String posTier= this.getProps().getProperty(EXMARaLDAImporter.PROP_SALT_SEMANTICS_POS);
-		String lemmaTier= this.getProps().getProperty(EXMARaLDAImporter.PROP_SALT_SEMANTICS_LEMMA);
-		String preUriTiers= this.getProps().getProperty(EXMARaLDAImporter.PROP_URI_ANNOTATION);
+		String posTier= this.getProps().getPOS();
+		String lemmaTier= this.getProps().getLemma();
+		String preUriTiers= this.getProps().getURIAnnotation();
 		EList<String> uriTiers= null;
 		if (	(preUriTiers!= null) && 
 				(!preUriTiers.isEmpty()))
@@ -971,7 +914,7 @@ public class EXMARaLDA2SaltMapper
 		else if (	(uriTiers!= null)&&
 					(uriTiers.contains(tier.getCategory())))
 		{
-			String pathName= this.getDocumentFilePath().toFileString().replace(this.getDocumentFilePath().lastSegment(),eEvent.getValue());
+			String pathName= this.getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(),eEvent.getValue());
 			File file= new File(pathName);
 			if (!file.exists())
 				this.getLogService().log(LogService.LOG_WARNING, "Cannot add the uri-annotation '"+eEvent.getValue()+"' of tier '"+tier.getCategory()+"', because the file '"+pathName+"' does not exist.");
@@ -1014,10 +957,10 @@ public class EXMARaLDA2SaltMapper
 	private String getTokenSepearator()
 	{
 		String retVal= null;
-		if (	(this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKENSEP)!= null) &&
-				(!this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKENSEP).isEmpty()))
+		if (	(this.getProps().getTokenSeparator()!= null) &&
+				(!this.getProps().getTokenSeparator().isEmpty()))
 		{
-			String preSep= this.getProps().getProperty(EXMARaLDAImporter.PROP_TOKENSEP);
+			String preSep= this.getProps().getTokenSeparator();
 			
 			if (preSep.length() > 2)
 			{//seperatorString has to be larger than 2, because of the form " "
@@ -1035,10 +978,10 @@ public class EXMARaLDA2SaltMapper
 	private String getSWordTier()
 	{
 		String retVal= null;
-		if (	(this.getProps().getProperty(EXMARaLDAImporter.PROP_SALT_SEMANTICS_WORD)!= null) &&
-				(!this.getProps().getProperty(EXMARaLDAImporter.PROP_SALT_SEMANTICS_WORD).isEmpty()))
+		if (	(this.getProps().getWord()!= null) &&
+				(!this.getProps().getWord().isEmpty()))
 		{
-			String wordTier= this.getProps().getProperty(EXMARaLDAImporter.PROP_SALT_SEMANTICS_WORD);
+			String wordTier= this.getProps().getWord();
 			
 			if (wordTier.length() > 2)
 			{//wordTier has to be larger than 2, because of the form " "

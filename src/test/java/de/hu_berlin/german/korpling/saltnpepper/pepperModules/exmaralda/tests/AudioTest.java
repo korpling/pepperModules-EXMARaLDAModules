@@ -20,7 +20,6 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -33,8 +32,10 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFac
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.MetaInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperty;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
@@ -56,6 +57,7 @@ public class AudioTest extends TestCase
 
 	public void setFixture(EXMARaLDA2SaltMapper fixture) {
 		this.fixture = fixture;
+		this.getFixture().setProperties(new EXMARaLDAImporterProperties());
 	}
 
 	protected void setUp() throws Exception 
@@ -77,9 +79,14 @@ public class AudioTest extends TestCase
 		Double end= 2.5677097899;
 		URI refFile= URI.createFileURI(testFile.getAbsolutePath());
 		
-		Properties props= new Properties();
-		props.put(EXMARaLDAImporter.PROP_TOKEN, txtTier);
-		this.getFixture().setProps(props);
+		
+		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporter.PROP_TOKEN);
+		prop.setValue(txtTier);
+		
+//		Properties props= new Properties();
+//		props.put(EXMARaLDAImporter.PROP_TOKEN, txtTier);
+		
+//		this.getFixture().setProperties(props);
 		
 		URL referencedFile= new URL(refFile.toString());
 		BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
@@ -142,9 +149,12 @@ public class AudioTest extends TestCase
 		Double end= 2.5677097899;
 		URI refFile= URI.createFileURI(testFile.getAbsolutePath());
 		
-		Properties props= new Properties();
-		props.put(EXMARaLDAImporter.PROP_TOKEN, txtTier);
-		this.getFixture().setProps(props);
+//		Properties props= new Properties();
+//		props.put(EXMARaLDAImporter.PROP_TOKEN, txtTier);
+//		this.getFixture().setProps(props);
+		
+		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporter.PROP_TOKEN);
+		prop.setValue(txtTier);
 		
 		URL referencedFile= new URL(refFile.toString()); 
 		BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
