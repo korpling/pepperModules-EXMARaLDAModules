@@ -37,15 +37,15 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 @Component(name="EXMARaLDAImporterJavaComponent", factory="PepperImporterComponentFactory")
 public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImporter
 {	
-	public static final String PROP_TOKEN="salt.token";
-	public static final String PROP_TOKENSEP="salt.tokenSeperator";
-	public static final String PROP_TIERMERGE="salt.tierMerge";
-	public static final String PROP_LAYERS_SMALL="salt.layers";
-	public static final String PROP_LAYERS_BIG="salt.Layers";
-	public static final String PROP_URI_ANNOTATION="salt.URIAnnotation";
-	public static final String PROP_SALT_SEMANTICS_POS="saltSemantics.POS";
-	public static final String PROP_SALT_SEMANTICS_LEMMA="saltSemantics.LEMMA";
-	public static final String PROP_SALT_SEMANTICS_WORD="saltSemantics.WORD";
+//	public static final String PROP_TOKEN="salt.token";
+//	public static final String PROP_TOKENSEP="salt.tokenSeperator";
+//	public static final String PROP_TIERMERGE="salt.tierMerge";
+//	public static final String PROP_LAYERS_SMALL="salt.layers";
+//	public static final String PROP_LAYERS_BIG="salt.Layers";
+//	public static final String PROP_URI_ANNOTATION="salt.URIAnnotation";
+//	public static final String PROP_SALT_SEMANTICS_POS="saltSemantics.POS";
+//	public static final String PROP_SALT_SEMANTICS_LEMMA="saltSemantics.LEMMA";
+//	public static final String PROP_SALT_SEMANTICS_WORD="saltSemantics.WORD";
 	
 	public static final String[] EXMARALDA_FILE_ENDINGS={"exb", "xml", "xmi", "exmaralda"};
 	

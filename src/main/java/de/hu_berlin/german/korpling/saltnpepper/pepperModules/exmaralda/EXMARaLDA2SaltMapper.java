@@ -141,7 +141,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			if(tokLayer.trim().length() == 0)
 			{
 				this.getLogService().log(LogService.LOG_WARNING, "\"" 
-						+ EXMARaLDAImporter.PROP_TOKEN + "\" property is empty");
+						+ EXMARaLDAImporterProperties.PROP_TOKEN_TIER + "\" property is empty");
 			} 
 		}
 		
@@ -163,7 +163,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 							numberOfClosingBrackets++;
 					}
 					if (numberOfClosingBrackets!= numberOfOpeningBrackets)
-						throw new EXMARaLDAImporterException("Cannot import the given data, because property file contains a corrupt value for property '"+EXMARaLDAImporter.PROP_LAYERS_BIG+"'. Please check the breckets you used.");
+						throw new EXMARaLDAImporterException("Cannot import the given data, because property file contains a corrupt value for property '"+EXMARaLDAImporterProperties.PROP_LAYERS_BIG+"'. Please check the breckets you used.");
 				}//check if number of closing brackets is identical to number of opening brackets
 				this.tierNames2SLayers= new Hashtable<String, SLayer>();
 				tier2SLayerStr= tier2SLayerStr.replace(" ", "");
@@ -193,7 +193,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				if (this.tierNames2SLayers.size()== 0)
 				{
 					if (this.getLogService()!= null)
-						this.getLogService().log(LogService.LOG_WARNING, "It seems as if there is a syntax failure in the given special-param file in property '"+EXMARaLDAImporter.PROP_LAYERS_BIG+"'. A value is given, but the layers to named could not have been extracted.");
+						this.getLogService().log(LogService.LOG_WARNING, "It seems as if there is a syntax failure in the given special-param file in property '"+EXMARaLDAImporterProperties.PROP_LAYERS_BIG+"'. A value is given, but the layers to named could not have been extracted.");
 				}
 			}//find all simple layer descriptions
 		}//tiers to SLayer-objects
@@ -675,7 +675,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					throw new EXMARaLDAImporterException(
 							"There are no matching tokens found on token-tier "
 							+ "for current tier: '"+ tier.getCategory() 
-							+"' in event number '"+eventCtr+"' having the value '"
+							+"' in event starting at '"+eEvent.getStart()+"' and ending at '"+eEvent.getEnd()+"' having the value '"
 							+ eEvent.getValue()+"'. Exception occurs in file '"
 							+this.getResourceURI()
 							+"'. You can try to set the property \"cleanModel\" to \"true\".");
