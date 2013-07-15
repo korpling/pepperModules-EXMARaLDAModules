@@ -36,17 +36,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 @Component(name="EXMARaLDAImporterJavaComponent", factory="PepperImporterComponentFactory")
 public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImporter
-{	
-//	public static final String PROP_TOKEN="salt.token";
-//	public static final String PROP_TOKENSEP="salt.tokenSeperator";
-//	public static final String PROP_TIERMERGE="salt.tierMerge";
-//	public static final String PROP_LAYERS_SMALL="salt.layers";
-//	public static final String PROP_LAYERS_BIG="salt.Layers";
-//	public static final String PROP_URI_ANNOTATION="salt.URIAnnotation";
-//	public static final String PROP_SALT_SEMANTICS_POS="saltSemantics.POS";
-//	public static final String PROP_SALT_SEMANTICS_LEMMA="saltSemantics.LEMMA";
-//	public static final String PROP_SALT_SEMANTICS_WORD="saltSemantics.WORD";
-	
+{		
 	public static final String[] EXMARALDA_FILE_ENDINGS={"exb", "xml", "xmi", "exmaralda"};
 	
 	public EXMARaLDAImporter()
@@ -118,79 +108,4 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 		}
 		return(mapper);
 	}
-	
-//	@Override
-//	public void start(SElementId sElementId) throws EXMARaLDAImporterException 
-//	{
-//		Long timeImportSDocumentStructure= System.nanoTime();
-//		{//checking special parameter
-//			if (this.getSpecialParams()== null)
-//				throw new EXMARaLDAImporterException("Cannot start converting, because no special parameters are set.");
-//			File specialParamFile= new File(this.getSpecialParams().toFileString());
-//			if (!specialParamFile.exists())
-//				throw new EXMARaLDAImporterException("Cannot start converting, because the file for special parameters does not exist: "+ specialParamFile);
-//			if (!specialParamFile.isFile())
-//				throw new EXMARaLDAImporterException("Cannot start converting, because the file for special parameters is not a file: "+ specialParamFile);
-//		}
-//		if(!	(	(sElementId.getSIdentifiableElement() instanceof SDocument) ||
-//					(sElementId.getSIdentifiableElement() instanceof SCorpus)))
-//			throw new EXMARaLDAImporterException("Cannot import data to given sElementID "+sElementId.getSId()+", because the corresponding element is not of kind SDocument. It is of kind: "+ sElementId.getSIdentifiableElement().getClass().getName());
-//		//getting uri of elementID
-//		if (sElementId.getSIdentifiableElement() instanceof SCorpus)
-//		{
-//			;
-//		}
-//		else if (sElementId.getSIdentifiableElement() instanceof SDocument)
-//		{//sElementId belongs to SDOcument-object
-//			URI documentPath= this.getSElementId2ResourceTable().get(sElementId);
-//			if (documentPath!= null)
-//			{
-//				BasicTranscription basicTranscription=null;
-//				{//loading exmaralda model
-//					Long timeToLoadSDocumentStructure= System.nanoTime();
-//					// create resource set and resource 
-//					ResourceSet resourceSet = new ResourceSetImpl();
-//	
-//					// Register XML resource factory
-//					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exmaralda",new XMIResourceFactoryImpl());
-//					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi",new XMIResourceFactoryImpl());
-//					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb",new EXBResourceFactory());
-//					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xml",new EXBResourceFactory());
-//					//load resource 
-//					Resource resource = resourceSet.createResource(documentPath);
-//					if (resource== null)
-//						throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ documentPath+", becuase the resource is null.");
-//					try {
-//						resource.load(null);
-//					} catch (IOException e) 
-//					{
-//						throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ documentPath+".", e);
-//					}
-//					basicTranscription= (BasicTranscription) resource.getContents().get(0);	
-//				}//loading exmaralda model
-//				
-//				{//creating and starting the mapping between exmaralda and salt
-//					Long timeToMapSDocumentStructure= System.nanoTime();
-//					EXMARaLDA2SaltMapper mapper= new EXMARaLDA2SaltMapper();
-//					Properties props= new Properties();
-//					try {
-//						props.load(new InputStreamReader(new FileInputStream(this.getSpecialParams().toFileString())));
-//					} catch (FileNotFoundException e) {
-//						
-//					} catch (IOException e) {
-//						throw new EXMARaLDAImporterException("Cannot start converting, because can not read the given file for special parameters: "+ this.getSpecialParams());
-//					}
-//					mapper.setProps(props);
-//					mapper.setsDocument((SDocument)sElementId.getIdentifiableElement());
-//					mapper.setBasicTranscription(basicTranscription);
-//					//setting the current file-path to current document
-//					mapper.setDocumentFilePath(documentPath);
-//					mapper.setLogService(this.getLogService());
-//					mapper.startMapping();
-//					this.totalTimeToMapDocument= this.totalTimeToMapDocument + (System.nanoTime()- timeToMapSDocumentStructure);
-//				}//creating and starting the mapping between exmaralda and salt
-//			}
-//		}
-//		this.totalTimeImportSDocumentStructure= this.totalTimeImportSDocumentStructure + (System.nanoTime()- timeImportSDocumentStructure);
-//	}
 }

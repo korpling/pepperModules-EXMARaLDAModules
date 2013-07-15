@@ -130,9 +130,6 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 */
 	private void checkProperties()
 	{
-//		if (	(this.getProps()== null)||
-//				(this.getProps().size()==0))
-//			throw new EXMARaLDAImporterException("Cannot convert the given exmaralda file '"+getResourceURI()+"', because there are no special params given.");
 		String tokLayer= this.getProps().getTokenTier();
 		
 		if(tokLayer != null)
