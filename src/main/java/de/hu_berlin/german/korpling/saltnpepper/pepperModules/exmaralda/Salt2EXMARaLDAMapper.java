@@ -17,15 +17,18 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.CommonTimeLine;
@@ -37,7 +40,11 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
+import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentDataEnricher;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentStructureAccessor;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentStructureAccessor.POTPair;
@@ -48,19 +55,8 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SMetaAnnotation;
 
-public class Salt2EXMARaLDAMapper 
+public class Salt2EXMARaLDAMapper extends PepperMapperImpl
 {
-	// -------------------- basic SDocument
-	private SDocument sDocument= null;
-
-	public void setsDocument(SDocument sDocument) {
-		this.sDocument = sDocument;
-	}
-
-	public SDocument getsDocument() {
-		return sDocument;
-	}
-// -------------------- basic SDocument
 // -------------------- basic transcription	
 	public void setBasicTranscription(BasicTranscription basicTranscription) {
 		this.basicTranscription = basicTranscription;
@@ -74,16 +70,6 @@ public class Salt2EXMARaLDAMapper
 
 	private BasicTranscription basicTranscription= null;
 // -------------------- basic transcription	
-// -------------------- properties	
-	private Properties props= null;
-	public void setProps(Properties props) {
-		this.props = props;
-	}
-
-	public Properties getProps() {
-		return props;
-	}
-// -------------------- properties
 // -------------------- start: helping structures
 	private EList<TLI2PointOfTime> tLI2PointOfTimeList = new BasicEList<TLI2PointOfTime>();
 	private class TLI2PointOfTime
@@ -108,44 +94,72 @@ public class Salt2EXMARaLDAMapper
 	}
 // -------------------- end: helping structures
 	
-	public void map2BasicTranscription(SDocument sDoc, BasicTranscription basicTranscription)
-	{
-		this.setsDocument(sDoc);
-		this.setBasicTranscription(basicTranscription);
-		{// mapping for MetaInformation
+	/**
+	 * {@inheritDoc PepperMapper#setSDocument(SDocument)}
+	 * 
+	 * OVERRIDE THIS METHOD FOR CUSTOMIZED MAPPING.
+	 */
+	@Override
+	public MAPPING_RESULT mapSDocument() {
+		if (getSDocument().getSDocumentGraph()== null)
+			getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+		
+		this.setBasicTranscription(ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription());
+		
+		// mapping for MetaInformation
 			MetaInformation metaInformation= ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
 			basicTranscription.setMetaInformation(metaInformation);
-			this.mapSDocuent2MetaInfo(sDoc, metaInformation);
-		}
-		{//creating timeline
-			if (this.getsDocument().getSDocumentGraph().getSTimeline()== null)
+			this.mapSDocuent2MetaInfo(getSDocument(), metaInformation);
+		
+		//creating timeline
+			if (this.getSDocument().getSDocumentGraph().getSTimeline()== null)
 			{//if no timeline is included, create one
 				SDocumentDataEnricher dataEnricher= new SDocumentDataEnricher();
-				dataEnricher.setSDocumentGraph(this.getsDocument().getSDocumentGraph());
+				dataEnricher.setSDocumentGraph(this.getSDocument().getSDocumentGraph());
 				dataEnricher.createSTimeline();
 			}
 			CommonTimeLine cTimeLine= ExmaraldaBasicFactory.eINSTANCE.createCommonTimeLine();
 			basicTranscription.setCommonTimeLine(cTimeLine);
-			this.map2CommonTimeLine(sDoc.getSDocumentGraph().getSTimeline(), cTimeLine);
-		}
-		{//creating token tier
+			this.map2CommonTimeLine(getSDocument().getSDocumentGraph().getSTimeline(), cTimeLine);
+		
+		//creating token tier
 			Tier tokenTier= ExmaraldaBasicFactory.eINSTANCE.createTier();
 			basicTranscription.getTiers().add(tokenTier);
-			this.mapSToken2Tier(sDoc.getSDocumentGraph().getSTokens(), tokenTier);
-		}
-		{//map all SStructuredNodes to tiers
+			this.mapSToken2Tier(getSDocument().getSDocumentGraph().getSTokens(), tokenTier);
+		//map all SStructuredNodes to tiers
 			
 			EList<SStructuredNode> structuredNodes= new BasicEList<SStructuredNode>();
 			//add all SToken to mapping list 
-			structuredNodes.addAll(sDoc.getSDocumentGraph().getSTokens());	
+			structuredNodes.addAll(getSDocument().getSDocumentGraph().getSTokens());	
 			//add all SToken to mapping list 
-			structuredNodes.addAll(sDoc.getSDocumentGraph().getSSpans());
+			structuredNodes.addAll(getSDocument().getSDocumentGraph().getSSpans());
 			//add all SToken to mapping list 
-			structuredNodes.addAll(sDoc.getSDocumentGraph().getSStructures());
+			structuredNodes.addAll(getSDocument().getSDocumentGraph().getSStructures());
 			
 			//map
 			this.mapSStructuredNode2Tiers(structuredNodes);
-		}
+			
+			saveToFile(basicTranscription);
+			
+		return(MAPPING_RESULT.FINISHED);
+	}
+	
+	private void saveToFile(BasicTranscription basicTranscription)
+	{
+		// create resource set and resource 
+		ResourceSet resourceSet = new ResourceSetImpl();
+		// Register XML resource factory
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(EXMARaLDAExporter.FILE_EXTENION,new EXBResourceFactory());
+		//load resource 
+		Resource resource = resourceSet.createResource(getResourceURI());
+		if (resource== null)
+			throw new EXMARaLDAExporterException("Cannot save a resource to uri '"+getResourceURI()+"', because the given resource is null.");
+		
+		resource.getContents().add(basicTranscription);
+		try{
+			resource.save(null);
+		} catch (IOException e)
+		{ throw new EXMARaLDAExporterException("Cannot write exmaradla basic transcription to uri '"+getResourceURI()+"'.", e);}
 	}
 	
 	
@@ -199,8 +213,8 @@ public class Salt2EXMARaLDAMapper
 				(sTimeline.getSPointsOfTime()== null)||
 				(sTimeline.getSPointsOfTime().size()==0));
 		{
-			this.getsDocument().getSDocumentGraph().createSTimeline();
-			sTimeline= this.getsDocument().getSDocumentGraph().getSTimeline();
+			this.getSDocument().getSDocumentGraph().createSTimeline();
+			sTimeline= this.getSDocument().getSDocumentGraph().getSTimeline();
 		}
 		String TLI_id= "T";
 		int i= 0;
@@ -268,7 +282,7 @@ public class Salt2EXMARaLDAMapper
 	private void mapSToken2Event(SToken sToken, Event event)
 	{
 		SDocumentStructureAccessor acc= new SDocumentStructureAccessor();
-		acc.setSDocumentGraph(this.getsDocument().getSDocumentGraph());
+		acc.setSDocumentGraph(this.getSDocument().getSDocumentGraph());
 		String text= acc.getSOverlappedText(sToken);
 		event.setValue(text);
 		POTPair potPair= acc.getPOT(sToken);
@@ -348,7 +362,7 @@ public class Salt2EXMARaLDAMapper
 	private void mapSStructuredNode2Event(SStructuredNode sNode, String sAnnotationQName, Event event)
 	{
 		SDocumentStructureAccessor acc= new SDocumentStructureAccessor();
-		acc.setSDocumentGraph(this.getsDocument().getSDocumentGraph());
+		acc.setSDocumentGraph(this.getSDocument().getSDocumentGraph());
 		POTPair potPair= acc.getPOT(sNode);
 		event.setStart(this.getTLI(potPair.getStartPot().toString()));
 		event.setEnd(this.getTLI(potPair.getEndPot().toString()));

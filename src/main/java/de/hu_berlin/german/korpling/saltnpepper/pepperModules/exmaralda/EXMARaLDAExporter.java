@@ -17,26 +17,23 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
-import java.io.IOException;
-
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.osgi.service.component.annotations.Component;
 
-import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
-import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFactory;
-import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperFWException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperExporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperExporterImpl;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 @Component(name="EXMARaLDAExporterJavaComponent", factory="PepperExporterComponentFactory")
 public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExporter
 {
+	/** ending of exmaralda files **/
+	public static final String FILE_EXTENION="exb";
+	
 	public EXMARaLDAExporter()
 	{
 		super();
@@ -45,50 +42,75 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		//set list of formats supported by this module
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
 	}
-
-	public static final String FILE_EXTENION="exb";
+	
+	/**
+	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}.
+	 * {@inheritDoc PepperModule#createPepperMapper(SElementId)}
+	 */
+	@Override
+	public PepperMapper createPepperMapper(SElementId sElementId){
+		Salt2EXMARaLDAMapper mapper= new Salt2EXMARaLDAMapper();
+		mapper.setResourceURI(getSElementId2ResourceTable().get(sElementId));
+		return(mapper);
+	}
 	
 	@Override
-	public void start(SElementId sElementId) throws PepperModuleException 
+	public void exportCorpusStructure(SCorpusGraph sCorpusGraph)
 	{
-		if (sElementId.getSIdentifiableElement() instanceof SDocument)
+		if (sCorpusGraph== null)
+			throw new PepperFWException("No SCorpusGraph was passed for exportCorpusStructure(SCorpusGraph corpusGraph). This might be a bug of the pepper framework.");
+		else 
 		{
-			SDocument sDoc= (SDocument) sElementId.getSIdentifiableElement();
-			BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
-			
-			// start: mapping
-				Salt2EXMARaLDAMapper mapper= new Salt2EXMARaLDAMapper();
-				try
-				{
-					mapper.map2BasicTranscription(sDoc, basicTranscription);
-				}catch (Exception e) {
-					e.printStackTrace();
-				}
-			// start: mapping
-			
-			this.createFolderStructure(sElementId);
-			//create uri to save
-			URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sElementId.getSElementPath().toFileString()+ "." + FILE_EXTENION);
-			try {
-				this.saveToFile(uri, basicTranscription);
-			} catch (IOException e) {
-				throw new EXMARaLDAExporterException("Cannot write document with id: '"+sElementId.getSElementPath().lastSegment()+"' into uri: '"+uri+"'.", e);
+			for (SDocument sDocument: sCorpusGraph.getSDocuments())
+			{
+				this.createFolderStructure(sDocument.getSElementId());
+				URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sDocument.getSElementPath().toFileString()+ "." + FILE_EXTENION);
+				this.getSElementId2ResourceTable().put(sDocument.getSElementId(), uri);
 			}
 		}
 	}
 	
-	private void saveToFile(URI uri, BasicTranscription basicTranscription) throws IOException
-	{
-		// create resource set and resource 
-		ResourceSet resourceSet = new ResourceSetImpl();
-		// Register XML resource factory
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb",new EXBResourceFactory());
-		//load resource 
-		Resource resource = resourceSet.createResource(uri);
-		if (resource== null)
-			throw new EXMARaLDAExporterException("Cannot save a resource to uri '"+uri+"', because the given resource is null.");
-		
-		resource.getContents().add(basicTranscription);
-		resource.save(null);
-	}
+//	@Override
+//	public void start(SElementId sElementId) throws PepperModuleException 
+//	{
+//		if (sElementId.getSIdentifiableElement() instanceof SDocument)
+//		{
+//			SDocument sDoc= (SDocument) sElementId.getSIdentifiableElement();
+//			BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
+//			
+//			// start: mapping
+//				Salt2EXMARaLDAMapper mapper= new Salt2EXMARaLDAMapper();
+//				try
+//				{
+//					mapper.map2BasicTranscription(sDoc, basicTranscription);
+//				}catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			// start: mapping
+//			
+//			this.createFolderStructure(sElementId);
+//			//create uri to save
+//			URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sElementId.getSElementPath().toFileString()+ "." + FILE_EXTENION);
+//			try {
+//				this.saveToFile(uri, basicTranscription);
+//			} catch (IOException e) {
+//				throw new EXMARaLDAExporterException("Cannot write document with id: '"+sElementId.getSElementPath().lastSegment()+"' into uri: '"+uri+"'.", e);
+//			}
+//		}
+//	}
+	
+//	private void saveToFile(URI uri, BasicTranscription basicTranscription) throws IOException
+//	{
+//		// create resource set and resource 
+//		ResourceSet resourceSet = new ResourceSetImpl();
+//		// Register XML resource factory
+//		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb",new EXBResourceFactory());
+//		//load resource 
+//		Resource resource = resourceSet.createResource(uri);
+//		if (resource== null)
+//			throw new EXMARaLDAExporterException("Cannot save a resource to uri '"+uri+"', because the given resource is null.");
+//		
+//		resource.getContents().add(basicTranscription);
+//		resource.save(null);
+//	}
 }
