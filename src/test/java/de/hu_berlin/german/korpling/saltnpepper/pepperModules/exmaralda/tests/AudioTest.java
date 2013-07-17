@@ -80,13 +80,8 @@ public class AudioTest extends TestCase
 		URI refFile= URI.createFileURI(testFile.getAbsolutePath());
 		
 		
-		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporter.PROP_TOKEN);
+		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
 		prop.setValue(txtTier);
-		
-//		Properties props= new Properties();
-//		props.put(EXMARaLDAImporter.PROP_TOKEN, txtTier);
-		
-//		this.getFixture().setProperties(props);
 		
 		URL referencedFile= new URL(refFile.toString());
 		BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
@@ -149,11 +144,7 @@ public class AudioTest extends TestCase
 		Double end= 2.5677097899;
 		URI refFile= URI.createFileURI(testFile.getAbsolutePath());
 		
-//		Properties props= new Properties();
-//		props.put(EXMARaLDAImporter.PROP_TOKEN, txtTier);
-//		this.getFixture().setProps(props);
-		
-		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporter.PROP_TOKEN);
+		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
 		prop.setValue(txtTier);
 		
 		URL referencedFile= new URL(refFile.toString()); 
