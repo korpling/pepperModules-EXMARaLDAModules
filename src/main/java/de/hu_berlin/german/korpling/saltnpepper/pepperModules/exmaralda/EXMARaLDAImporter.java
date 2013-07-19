@@ -86,7 +86,6 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 	public PepperMapper createPepperMapper(SElementId sElementId)
 	{
 		EXMARaLDA2SaltMapper mapper= new EXMARaLDA2SaltMapper();
-		System.out.println("this.getSElementId2ResourceTable(): "+ this.getSElementId2ResourceTable());
 		URI resourcePath= this.getSElementId2ResourceTable().get(sElementId);
 		if (sElementId.getSIdentifiableElement() instanceof SDocument)
 		{
