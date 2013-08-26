@@ -404,12 +404,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl
 	{
 		String retString= uncleanedString;
 		if (retString!= null)
-		{	retString = StringEscapeUtils.escapeXml(uncleanedString);
-//			retString= retString.replace("&", "&amp;");
-//			retString= retString.replace("'", "&apos;");
-//			retString= retString.replace("<", "&lt;");
-//			retString= retString.replace(">", "&gt;");
-//			retString= retString.replace("\"", "&quot;");
+		{	
+			retString = StringEscapeUtils.escapeXml(uncleanedString);
 			
 			retString= retString.replace("Ä", "&#196;");
 			retString= retString.replace("Ö", "&#214;");
