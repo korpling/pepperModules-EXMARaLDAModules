@@ -18,6 +18,7 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
@@ -30,6 +31,8 @@ import java.util.regex.Pattern;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.osgi.service.log.LogService;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
@@ -88,6 +91,16 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	public BasicTranscription getBasicTranscription() {
 		return basicTranscription;
+	}
+	
+	private ResourceSet resourceSet= null;
+	
+	public void setResourceSet(ResourceSet resourceSet) {
+		this.resourceSet = resourceSet;
+	}
+
+	public ResourceSet getResourceSet() {
+		return resourceSet;
 	}
 
 	/** casts {@link PepperModuleProperties} to {@link EXMARaLDAImporterProperties} **/
@@ -205,9 +218,28 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	public MAPPING_RESULT mapSDocument() {
 		if (this.getSDocument().getSDocumentGraph()== null)
 			this.getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+		
+		//load resource 
+		Resource resource = getResourceSet().createResource(getResourceURI());
+		if (resource== null)
+			throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ getResourceURI()+", becuase the resource is null.");
+		try {
+			resource.load(null);
+		} catch (IOException e) 
+		{
+			throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ getResourceURI()+".", e);
+		}
+		
+		BasicTranscription basicTranscription=null;
+		basicTranscription= (BasicTranscription) resource.getContents().get(0);	
+		setBasicTranscription(basicTranscription);
+		
+		addProgress(0.5);
+		
 		this.getSDocument().getSDocumentGraph().setSId(this.getSDocument().getSId());
 		this.checkProperties();
 		this.mapDocument(this.getSDocument(), this.getBasicTranscription());
+		setProgress(1.0);
 		return(MAPPING_RESULT.FINISHED);
 	}
 	
