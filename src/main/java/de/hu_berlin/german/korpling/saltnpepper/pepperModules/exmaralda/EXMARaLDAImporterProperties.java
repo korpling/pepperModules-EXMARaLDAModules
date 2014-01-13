@@ -17,12 +17,8 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperty;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
 
 /**
  * Defines the properties to be used for the {@link EXMARaLDAImporter}. 
@@ -31,6 +27,11 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModul
  */
 public class EXMARaLDAImporterProperties extends PepperModuleProperties 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3941331601854796510L;
+
 	public static final String PREFIX="exmaralda.importer.";
 	
 	public static final String PROP_TOKEN_TIER="salt.token";

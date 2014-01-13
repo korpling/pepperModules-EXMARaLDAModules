@@ -43,10 +43,11 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.DOCUMENT_STATUS;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperModuleDataException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SAudioDSRelation;
@@ -173,7 +174,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 							numberOfClosingBrackets++;
 					}
 					if (numberOfClosingBrackets!= numberOfOpeningBrackets)
-						throw new EXMARaLDAImporterException("Cannot import the given data, because property file contains a corrupt value for property '"+EXMARaLDAImporterProperties.PROP_LAYERS_BIG+"'. Please check the breckets you used.");
+						throw new PepperModuleDataException(this, "Cannot import the given data, because property file contains a corrupt value for property '"+EXMARaLDAImporterProperties.PROP_LAYERS_BIG+"'. Please check the breckets you used.");
 				}//check if number of closing brackets is identical to number of opening brackets
 				this.tierNames2SLayers= new Hashtable<String, SLayer>();
 				tier2SLayerStr= tier2SLayerStr.replace(" ", "");
@@ -215,19 +216,19 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 * OVERRIDE THIS METHOD FOR CUSTOMIZED MAPPING.
 	 */
 	@Override
-	public MAPPING_RESULT mapSDocument() {
+	public DOCUMENT_STATUS mapSDocument() {
 		if (this.getSDocument().getSDocumentGraph()== null)
 			this.getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
 		
 		//load resource 
 		Resource resource = getResourceSet().createResource(getResourceURI());
 		if (resource== null)
-			throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ getResourceURI()+", becuase the resource is null.");
+			throw new PepperModuleDataException(this, "Cannot load the exmaralda file: "+ getResourceURI()+", becuase the resource is null.");
 		try {
 			resource.load(null);
 		} catch (IOException e) 
 		{
-			throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ getResourceURI()+".", e);
+			throw new PepperModuleDataException(this, "Cannot load the exmaralda file: "+ getResourceURI()+".", e);
 		}
 		
 		BasicTranscription basicTranscription=null;
@@ -240,7 +241,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		this.checkProperties();
 		this.mapDocument(this.getSDocument(), this.getBasicTranscription());
 		setProgress(1.0);
-		return(MAPPING_RESULT.FINISHED);
+		return(DOCUMENT_STATUS.COMPLETED);
 	}
 	
 	/**
@@ -366,7 +367,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					
 				} // end for each slot of tierCollection
 				if (allTextSlots.size() == 0)
-					throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getResourceURI()+"', because no textual source layer was found.");
+					throw new PepperModuleDataException(this, "Cannot convert given exmaralda file '"+this.getResourceURI()+"', because no textual source layer was found.");
 				
 				if("true".equalsIgnoreCase(getProps().getCleanModel().toString()))
 				{
@@ -468,7 +469,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	private void mapSpeaker2SMetaAnnotation(Speaker speaker, SDocument sDocument)
 	{
 		if (sDocument== null)
-			throw new EXMARaLDAImporterException("Exception in method 'mapSpeaker2SMetaAnnotation()'. The given SDocument-object is null. Exception occurs in file '"+this.getResourceURI()+"'.");
+			throw new PepperModuleDataException(this, "Exception in method 'mapSpeaker2SMetaAnnotation()'. The given SDocument-object is null. Exception occurs in file '"+this.getResourceURI()+"'.");
 		if (	(speaker!= null) &&
 				(speaker.getUdSpeakerInformations()!= null))
 		{
@@ -620,7 +621,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 						for (Tier tier: this.getBasicTranscription().getTiers())
 						{
 							if (tier.getCategory()== null)
-								throw new EXMARaLDAImporterException("Cannot convert given exmaralda file '"+this.getResourceURI()+"', because there is a <tier> element ('id=\""+tier.getId()+"\"') without a @category attribute.");;
+								throw new PepperModuleDataException(this, "Cannot convert given exmaralda file '"+this.getResourceURI()+"', because there is a <tier> element ('id=\""+tier.getId()+"\"') without a @category attribute.");;
 							if (tier.getCategory().equalsIgnoreCase(tierCat))
 								slot.add(tier);
 						}	
@@ -701,7 +702,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				
 				if (sTokens== null)
 				{	
-					throw new EXMARaLDAImporterException(
+					throw new PepperModuleDataException(this, 
 							"There are no matching tokens found on token-tier "
 							+ "for current tier: '"+ tier.getCategory() 
 							+"' in event starting at '"+eEvent.getStart()+"' and ending at '"+eEvent.getEnd()+"' having the value '"

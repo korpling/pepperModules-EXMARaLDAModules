@@ -21,11 +21,13 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.emf.common.util.URI;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.CorpusDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.FormatDefinition;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperModulesFactory;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testSuite.moduleTests.PepperExporterTest;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.CorpusDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperExporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAExporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
@@ -40,7 +42,8 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 {
 	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
 	
-	protected void setUp()
+	@Before
+	public void setUp()
 	{
 		super.setFixture(new EXMARaLDAExporter());
 		super.getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
@@ -50,24 +53,24 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		super.setTemprorariesURI(temporaryURI);
 		
 		//set formats to support
-		FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
+		FormatDesc formatDef= new FormatDesc();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);
 		
 		// set corpus definition
-		CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
-		corpDef.setFormatDefinition(formatDef);
+		CorpusDesc corpDef= new CorpusDesc();
+		corpDef.setFormatDesc(formatDef);
 	}
-	
+	@Test
 	public void testSetGetCorpusDefinition()
 	{
 		//TODO something to test???
-		CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
-		FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
+		CorpusDesc corpDef= new CorpusDesc();
+		FormatDesc formatDef= new FormatDesc();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
-		corpDef.setFormatDefinition(formatDef);
+		corpDef.setFormatDesc(formatDef);
 	}
 
 	private void removeDirRec(File dir)
@@ -96,6 +99,7 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 	 * and {@link SaltSample#createInformationStructureAnnotations(SDocument)}.  
 	 * @throws IOException 
 	 */
+	@Test
 	public void testStart1() throws IOException
 	{
 		File corpusPathFile= new File("./_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda/current");
@@ -106,20 +110,14 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		URI currentURI = URI.createFileURI(currentFile.getCanonicalPath());
 		URI expectedURI= URI.createFileURI(expectedFile.getCanonicalPath());
 		
-//		if (new File(expectedURI.toFileString()).exists()){
-//			System.out.println(new File(expectedURI.toFileString()).getAbsolutePath() + " exists");
-//		} else {
-//			throw new PepperModuleTestException(expectedFile.getAbsolutePath() + " does not exist");
-//		}
-		
 		this.removeDirRec(new File(corpusPath.toFileString()));
 		
 		{//creating and setting corpus definition
-			CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
-			FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
+			CorpusDesc corpDef= new CorpusDesc();
+			FormatDesc formatDef= new FormatDesc();
 			formatDef.setFormatName("EXMARaLDA");
 			formatDef.setFormatVersion("1.0");
-			corpDef.setFormatDefinition(formatDef);
+			corpDef.setFormatDesc(formatDef);
 			corpDef.setCorpusPath(corpusPath);
 			this.getFixture().setCorpusDefinition(corpDef);
 		}
@@ -144,72 +142,6 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 			assertTrue("The files '"+expectedURI+"' and '"+currentURI+"' aren't identical. ", this.compareFiles(expectedURI, currentURI));
 		}
 	}
-	
-//	/**
-//	 * Tests importing a corpus with one document and without a timeline. The timeline has to be computed. 
-//	 * @throws IOException 
-//	 */
-//	public void testStart2() throws IOException
-//	{
-//		URI corpusPath= URI.createFileURI("_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda/current");
-//		URI currentURI = URI.createFileURI("_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda/current/corp1/doc1.exb");
-//		URI inputURI   = URI.createFileURI("src/test/resources/EXMARaLDAExporter/expected/sample2/sampleCorpus1.saltCommon");
-//		URI expectedURI= URI.createFileURI("src/test/resources/EXMARaLDAExporter/expected/sample2/corp1/doc1.exb");
-////		URI dotOutputPath= URI.createFileURI("./src/test/resources/dotOutput/");
-//		
-//		//this.removeDirRec(new File(corpusPath.toFileString()));
-//		{//creating and setting corpus definition
-//			CorpusDefinition corpDef= PepperModulesFactory.eINSTANCE.createCorpusDefinition();
-//			FormatDefinition formatDef= PepperModulesFactory.eINSTANCE.createFormatDefinition();
-//			formatDef.setFormatName("EXMARaLDA");
-//			formatDef.setFormatVersion("1.0");
-//			corpDef.setFormatDefinition(formatDef);
-//			corpDef.setCorpusPath(corpusPath);
-//			this.getFixture().setCorpusDefinition(corpDef);
-//		}
-//		//create corpus structure
-//		SDocument sDoc= this.createCorpusStructure();
-//		{//load document structure
-//			// create resource set and resource 
-//			ResourceSet resourceSet = new ResourceSetImpl();
-//
-//			//register packages 
-//			resourceSet.getPackageRegistry().put(SaltSemanticsPackage.eINSTANCE.getNsURI(), SaltSemanticsPackage.eINSTANCE);
-//			
-//			// Register XML resource factory
-//			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("saltCommon",new XMIResourceFactoryImpl());
-//			resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi",new XMIResourceFactoryImpl());
-//			
-//			//load resource 
-//			Resource resource = resourceSet.createResource(inputURI);
-//			
-//			if (resource== null)
-//				throw new PepperModuleTestException("Cannot load the exmaralda file: "+ inputURI+", becuase the resource is null.");
-//			try {
-//				resource.load(null);
-//			} catch (IOException e) 
-//			{
-//				throw new PepperModuleTestException("Cannot load the exmaralda file: "+ inputURI+".", e);
-//			}
-//			
-//			SDocumentGraph sDocGraph= (SDocumentGraph) resource.getContents().get(0);
-//			sDoc.setSDocumentGraph(sDocGraph);
-//		}
-//		
-////		{//print saltGraph to dot (just for testing)
-////			Salt2DOT salt2Dot= new Salt2DOT();
-////			salt2Dot.salt2Dot(sDoc.getSElementId(), URI.createFileURI(dotOutputPath.toFileString() + "/doc1.dot"));
-////		}
-//		
-//		{//exporting document
-//			this.start();
-//		}
-//		
-//		
-//		{//checking if export was correct
-//			assertTrue("The files '"+expectedURI+"' and '"+currentURI+"' aren't identical. ", this.compareFiles(expectedURI, currentURI));
-//		}
-//	}
 	
 	/**
 	 * Creates a corpus structure with one corpus and one document. It returns the created document.

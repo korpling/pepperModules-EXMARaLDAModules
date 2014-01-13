@@ -41,9 +41,10 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.DOCUMENT_STATUS;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperModuleDataException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentDataEnricher;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentStructureAccessor;
@@ -100,7 +101,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl
 	 * OVERRIDE THIS METHOD FOR CUSTOMIZED MAPPING.
 	 */
 	@Override
-	public MAPPING_RESULT mapSDocument() {
+	public DOCUMENT_STATUS mapSDocument() {
 		if (getSDocument().getSDocumentGraph()== null)
 			getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
 		
@@ -141,7 +142,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl
 			
 			saveToFile(basicTranscription);
 			
-		return(MAPPING_RESULT.FINISHED);
+		return(DOCUMENT_STATUS.COMPLETED);
 	}
 	
 	private void saveToFile(BasicTranscription basicTranscription)
@@ -153,13 +154,13 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl
 		//load resource 
 		Resource resource = resourceSet.createResource(getResourceURI());
 		if (resource== null)
-			throw new EXMARaLDAExporterException("Cannot save a resource to uri '"+getResourceURI()+"', because the given resource is null.");
+			throw new PepperModuleDataException(this, "Cannot save a resource to uri '"+getResourceURI()+"', because the given resource is null.");
 		
 		resource.getContents().add(basicTranscription);
 		try{
 			resource.save(null);
 		} catch (IOException e)
-		{ throw new EXMARaLDAExporterException("Cannot write exmaradla basic transcription to uri '"+getResourceURI()+"'.", e);}
+		{ throw new PepperModuleDataException(this, "Cannot write exmaradla basic transcription to uri '"+getResourceURI()+"'.", e);}
 	}
 	
 	
@@ -288,11 +289,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl
 		POTPair potPair= acc.getPOT(sToken);
 		
 		if (potPair== null)
-			throw new PepperModuleException("Cannot map token to event, because there is no point of time for SToken: "+ sToken.getSId());
+			throw new PepperModuleDataException(this, "Cannot map token to event, because there is no point of time for SToken: "+ sToken.getSId());
 		if (potPair.getStartPot()== null)
-			throw new PepperModuleException("Cannot map token to event, because start of pot for following token is empty: "+ sToken.getSId());
+			throw new PepperModuleDataException(this, "Cannot map token to event, because start of pot for following token is empty: "+ sToken.getSId());
 		if (potPair.getEndPot()== null)
-			throw new PepperModuleException("Cannot map token to event, because end of pot for following token is empty: "+ sToken.getSId());
+			throw new PepperModuleDataException(this, "Cannot map token to event, because end of pot for following token is empty: "+ sToken.getSId());
 		event.setStart(this.getTLI(potPair.getStartPot().toString()));
 		event.setEnd(this.getTLI(potPair.getEndPot().toString()));
 	}
