@@ -223,6 +223,13 @@
                             <entry>optional</entry>
                             <entry>--</entry>
                         </row>
+                        <row>
+                            <entry><xref linkend="prop_prop9" endterm="importer_prop9_title"
+                            /></entry>
+                            <entry>Boolean</entry>
+                            <entry>optional</entry>
+                            <entry>--</entry>
+                        </row>
                     </tbody>
                 </tgroup>
             </table>
@@ -362,6 +369,24 @@
                 <title xml:id="importer_prop8_title">saltSemantics.WORD</title>
                 <para>You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing. The currently available semantic enrichments are:</para>
                 <para>When using the property saltSemantics.WORD a structural object like a SSToken or a SSpan object will be additionally annotated to represent a word.</para>
+            </sect2>
+            <sect2 xml:id="prop_prop9">
+                <title xml:id="importer_prop9_title">cleanModel</title>
+                <para>Given two or more timeline objects having no corresponding event object on
+                    token tier, setting this property to true will create artificial event objects,
+                    having empty values. In an EXMARaLDA model it is possible, to have annotations
+                    which just overlap a part of the primary data. This is possible, because of the
+                    event-based concept of EXMARaLDA. Imagine the following sample: <figure
+                        xml:id="cleanModel">
+                        <title>sample of annotation having no corespondent event in primary
+                            data</title>
+                        <mediaobject>
+                            <imageobject>
+                                <imagedata fileref="images/cleanModel.png"/>
+                            </imageobject>
+                        </mediaobject>
+                    </figure> Setting this property to true, adds an additional event in tier
+                    'primary data' corresponding to event 'anno2' in tier 'annotation'. </para>
             </sect2>
         </sect1>
     </chapter>
