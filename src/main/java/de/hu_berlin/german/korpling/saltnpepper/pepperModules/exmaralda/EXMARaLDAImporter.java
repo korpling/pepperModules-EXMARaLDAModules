@@ -17,16 +17,12 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
-import java.io.IOException;
-
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.osgi.service.component.annotations.Component;
 
-import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperImporter;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperMapper;
@@ -89,21 +85,8 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 		URI resourcePath= this.getSElementId2ResourceTable().get(sElementId);
 		if (sElementId.getSIdentifiableElement() instanceof SDocument)
 		{
-			//load resource 
-			Resource resource = getResourceSet().createResource(resourcePath);
-			if (resource== null)
-				throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ resourcePath+", becuase the resource is null.");
-			try {
-				resource.load(null);
-			} catch (IOException e) 
-			{
-				throw new EXMARaLDAImporterException("Cannot load the exmaralda file: "+ resourcePath+".", e);
-			}
-			
-			BasicTranscription basicTranscription=null;
-			basicTranscription= (BasicTranscription) resource.getContents().get(0);	
-			
-			mapper.setBasicTranscription(basicTranscription);
+			mapper.setResourceURI(resourcePath);
+			mapper.setResourceSet(getResourceSet());
 		}
 		return(mapper);
 	}
