@@ -44,7 +44,7 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBReso
 import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperModuleDataException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentDataEnricher;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.modules.SDocumentStructureAccessor;

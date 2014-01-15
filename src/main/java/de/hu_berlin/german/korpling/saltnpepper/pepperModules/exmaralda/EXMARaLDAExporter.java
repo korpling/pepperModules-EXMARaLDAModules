@@ -21,9 +21,9 @@ import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperFWException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperExporterImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperExporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.impl.PepperExporterImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;

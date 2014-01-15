@@ -24,9 +24,9 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.osgi.service.component.annotations.Component;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperImporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperImporterImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperImporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.impl.PepperImporterImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 

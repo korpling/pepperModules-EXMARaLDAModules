@@ -32,7 +32,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactor
 public class EXMARaLDAImporterTest extends PepperImporterTest
 {	
 	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
-	URI temproraryURI= URI.createFileURI("_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
 	
 	@Before
 	public void setUp() throws Exception 
@@ -40,10 +39,8 @@ public class EXMARaLDAImporterTest extends PepperImporterTest
 		super.setFixture(new EXMARaLDAImporter());
 		super.getFixture().setSaltProject(SaltCommonFactory.eINSTANCE.createSaltProject());
 		super.setResourcesURI(resourceURI);
-		super.setTemprorariesURI(temproraryURI);
 		
-		//setting temproraries and resources
-		this.getFixture().setTemproraries(temproraryURI);
+		//setting resources
 		this.getFixture().setResources(resourceURI);
 		
 		//set formats to support

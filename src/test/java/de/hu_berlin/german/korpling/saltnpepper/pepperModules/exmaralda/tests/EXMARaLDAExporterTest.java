@@ -17,13 +17,14 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.CorpusDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.FormatDesc;
@@ -48,9 +49,6 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		super.setFixture(new EXMARaLDAExporter());
 		super.getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
 		super.setResourcesURI(resourceURI);
-		URI temporaryURI= URI.createFileURI("_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
-		//System.out.println("Exporter Temp-URI: "+new File(temporaryURI.toFileString()).getAbsolutePath());
-		super.setTemprorariesURI(temporaryURI);
 		
 		//set formats to support
 		FormatDesc formatDef= new FormatDesc();

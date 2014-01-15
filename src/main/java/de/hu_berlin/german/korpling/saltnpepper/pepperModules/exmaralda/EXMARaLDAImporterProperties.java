@@ -17,8 +17,8 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperModuleProperty;
 
 /**
  * Defines the properties to be used for the {@link EXMARaLDAImporter}. 
