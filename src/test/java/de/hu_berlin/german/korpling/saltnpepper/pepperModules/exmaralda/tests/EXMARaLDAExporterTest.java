@@ -110,16 +110,14 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		
 		this.removeDirRec(new File(corpusPath.toFileString()));
 		
-		{//creating and setting corpus definition
+		//creating and setting corpus definition
 			CorpusDesc corpDef= new CorpusDesc();
 			FormatDesc formatDef= new FormatDesc();
 			formatDef.setFormatName("EXMARaLDA");
 			formatDef.setFormatVersion("1.0");
 			corpDef.setFormatDesc(formatDef);
 			corpDef.setCorpusPath(corpusPath);
-			this.getFixture().setCorpusDefinition(corpDef);
-		}
-		
+			getFixture().setCorpusDefinition(corpDef);
 		
 		//start: create sample
 			//start:create corpus structure
@@ -131,14 +129,13 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 			SaltSample.createInformationStructureSpan(sDoc);
 			SaltSample.createInformationStructureAnnotations(sDoc);
 		//end: create sample
-		
+			
 		//start: exporting document
-			this.start();
+			start();
 		//end: exporting document
 		
-		{//checking if export was correct
-			assertTrue("The files '"+expectedURI+"' and '"+currentURI+"' aren't identical. ", this.compareFiles(expectedURI, currentURI));
-		}
+		//checking if export was correct
+		assertTrue("The files '"+expectedURI+"' and '"+currentURI+"' aren't identical. ", this.compareFiles(expectedURI, currentURI));
 	}
 	
 	/**
