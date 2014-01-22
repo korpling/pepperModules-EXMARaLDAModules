@@ -64,7 +64,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 			for (SDocument sDocument: sCorpusGraph.getSDocuments())
 			{
 				this.createFolderStructure(sDocument.getSElementId());
-				URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sDocument.getSElementPath().toFileString()+ "." + FILE_EXTENION);
+				URI uri= URI.createFileURI(this.getCorpusDesc().getCorpusPath().toFileString()+ "/" + sDocument.getSElementPath().toFileString()+ "." + FILE_EXTENION);
 				this.getSElementId2ResourceTable().put(sDocument.getSElementId(), uri);
 			}
 		}

@@ -117,7 +117,7 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 			formatDef.setFormatVersion("1.0");
 			corpDef.setFormatDesc(formatDef);
 			corpDef.setCorpusPath(corpusPath);
-			getFixture().setCorpusDefinition(corpDef);
+			getFixture().setCorpusDesc(corpDef);
 		
 		//start: create sample
 			//start:create corpus structure
