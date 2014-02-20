@@ -26,8 +26,8 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.CorpusDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.FormatDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperExporterTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAExporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
@@ -100,8 +100,8 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 	@Test
 	public void testStart1() throws IOException
 	{
-		File corpusPathFile= new File("./_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda/current");
-		File currentFile = new File("./_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda/current/corp1/doc1.exb");
+		File corpusPathFile= new File(getTempPtah("exmaraldaExporterTest").getAbsolutePath()+"/current");
+		File currentFile= new File(getTempPtah("exmaraldaExporterTest").getAbsolutePath()+"/current/corp1/doc1.exb");
 		File expectedFile= new File("./src/test/resources/EXMARaLDAExporter/expected/sample1/corp1/doc1.exb");
 		
 		URI corpusPath= URI.createFileURI(corpusPathFile.getCanonicalPath());

@@ -33,7 +33,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.CommonTimeLine;
@@ -43,11 +44,11 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.communication.DOCUMENT_STATUS;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperModuleDataException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.core.impl.PepperMapperImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleDataException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SAudioDSRelation;
@@ -83,6 +84,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltSemantics.SaltSemantics
  */
 public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapper
 {
+	private static final Logger logger= LoggerFactory.getLogger(EXMARaLDA2SaltMapper.class);
 // -------------------- basic transcription	
 	private BasicTranscription basicTranscription= null;
 	
@@ -151,7 +153,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			// check that no empty token layer was given
 			if(tokLayer.trim().length() == 0)
 			{
-				this.getLogService().log(LogService.LOG_WARNING, "\"" 
+				logger.warn("\"" 
 						+ EXMARaLDAImporterProperties.PROP_TOKEN_TIER + "\" property is empty");
 			} 
 		}
@@ -203,8 +205,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				
 				if (this.tierNames2SLayers.size()== 0)
 				{
-					if (this.getLogService()!= null)
-						this.getLogService().log(LogService.LOG_WARNING, "It seems as if there is a syntax failure in the given special-param file in property '"+EXMARaLDAImporterProperties.PROP_LAYERS_BIG+"'. A value is given, but the layers to named could not have been extracted.");
+					logger.warn("It seems as if there is a syntax failure in the given special-param file in property '"+EXMARaLDAImporterProperties.PROP_LAYERS_BIG+"'. A value is given, but the layers to named could not have been extracted.");
 				}
 			}//find all simple layer descriptions
 		}//tiers to SLayer-objects
@@ -427,13 +428,9 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		if (basicTranscription.getMetaInformation().getReferencedFile()!= null)
 		{//map referencedFile to SAudioDataSource
 			File audioFile= new File(basicTranscription.getMetaInformation().getReferencedFile().getFile());
-			if (!audioFile.exists())
-			{
-				if (this.getLogService()!= null)
-					this.getLogService().log(LogService.LOG_WARNING, "The file refered in exmaralda model '"+audioFile.getAbsolutePath()+"' does not exist and cannot be mapped to a salt model. It will be ignored.");
-			}
-			else
-			{
+			if (!audioFile.exists()){
+				logger.warn("The file refered in exmaralda model '"+audioFile.getAbsolutePath()+"' does not exist and cannot be mapped to a salt model. It will be ignored.");
+			}else{
 				SAudioDataSource sAudioDS= SaltFactory.eINSTANCE.createSAudioDataSource();
 				sAudioDS.setSAudioReference(URI.createFileURI(audioFile.getAbsolutePath()));
 				sDoc.getSDocumentGraph().addSNode(sAudioDS);
@@ -875,8 +872,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					sAudioDSRelation.setSEnd(audioEnd);
 					sDocument.getSDocumentGraph().addSRelation(sAudioDSRelation);
 				} catch (NumberFormatException e) {
-					if (this.getLogService()!= null)
-						this.getLogService().log(LogService.LOG_WARNING, "Cannot map time attribute of timeline to SStart or SEnd, because value '"+event.getStart().getTime()+"' is not mappable to a double value.");
+					logger.warn("Cannot map time attribute of timeline to SStart or SEnd, because value '"+event.getStart().getTime()+"' is not mappable to a double value.");
 				}
 			}//end: creating SAudioDSRelation
 			
@@ -946,25 +942,22 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		{
 			String pathName= this.getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(),eEvent.getValue());
 			File file= new File(pathName);
-			if (!file.exists())
-				this.getLogService().log(LogService.LOG_WARNING, "Cannot add the uri-annotation '"+eEvent.getValue()+"' of tier '"+tier.getCategory()+"', because the file '"+pathName+"' does not exist.");
-			else
-			{	
+			if (!file.exists()){
+				logger.warn("Cannot add the uri-annotation '"+eEvent.getValue()+"' of tier '"+tier.getCategory()+"', because the file '"+pathName+"' does not exist.");
+			}else{	
 				URI corpusFilePath=  URI.createFileURI(file.getAbsolutePath());
 				sAnno= SaltFactory.eINSTANCE.createSAnnotation();
 				sAnno.setSName(tier.getCategory());
 				sAnno.setSValue(corpusFilePath);
 			}
-		}
-		else
-		{	
+		}else{	
 			sAnno= SaltFactory.eINSTANCE.createSAnnotation();
 			sAnno.setSName(tier.getCategory());
 			sAnno.setSValue(eEvent.getValue());
-		}
-		if (	(eEvent.getUdInformations() != null) &&
-				(eEvent.getUdInformations().size() > 0))
+		}if (	(eEvent.getUdInformations() != null) &&
+				(eEvent.getUdInformations().size() > 0)){
 			this.mapUDInformations2SMetaAnnotatableElement(eEvent.getUdInformations(), sNode);
+		}
 		sNode.addSAnnotation(sAnno);
 	}
 	

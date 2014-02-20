@@ -30,7 +30,7 @@
 <event start="T6" end="T7">it</event>
 <event start="T7" end="T8">appears</event>
 <event start="T8" end="T9">to</event>
-<event start="T9" end="T10">be</event>
+<event start="T9" end="T10">be?</event>
 </tier>
 <tier id="TIE1" category="POS" type="t" display-name="[POS]">
 <event start="T0" end="T1">VBZ</event>
