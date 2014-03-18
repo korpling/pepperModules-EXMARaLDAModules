@@ -17,13 +17,18 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import junit.framework.TestCase;
-
 import org.eclipse.emf.common.util.URI;
+import org.junit.Before;
+import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.CommonTimeLine;
@@ -43,7 +48,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
  * @author Florian Zipser
  *
  */
-public class AudioTest extends TestCase
+public class AudioTest
 {	
 	File testFolder= new File("./src/test/resources/EXMARaLDAImporter/Audio1/");
 	URI temproraryURI= URI.createFileURI("_TMP/de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.exmaralda");
@@ -59,7 +64,8 @@ public class AudioTest extends TestCase
 		this.getFixture().setProperties(new EXMARaLDAImporterProperties());
 	}
 
-	protected void setUp() throws Exception 
+	@Before
+	public void setUp() throws Exception 
 	{
 		this.setFixture(new EXMARaLDA2SaltMapper());
 	}
@@ -68,6 +74,7 @@ public class AudioTest extends TestCase
 	 * Checks one token referring to a start and end {@link TLI} object, both having a time value.
 	 * @throws MalformedURLException
 	 */
+	@Test
 	public void testImportAudio1() throws MalformedURLException
 	{
 		File testFile= new File(testFolder.getAbsolutePath()+ "/WikinewsSpecialReportAyala.ogg");
@@ -132,6 +139,7 @@ public class AudioTest extends TestCase
 	 * in end {@link TLI} object.
 	 * @throws MalformedURLException
 	 */
+	@Test
 	public void testImportAudio2() throws MalformedURLException
 	{
 		File testFile= new File(testFolder.getAbsolutePath()+ "/WikinewsSpecialReportAyala.ogg");

@@ -676,7 +676,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			{
 				eventCtr++;
 				SSpan sSpan= SaltFactory.eINSTANCE.createSSpan();
-				this.sDocument.getSDocumentGraph().addSNode(sSpan);
+				getSDocument().getSDocumentGraph().addSNode(sSpan);
 				this.mapEvent2SNode(tier, eEvent, sSpan);
 				
 				if (sLayer!= null)
@@ -695,7 +695,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				sequence.setSStart(startPos);
 				sequence.setSEnd(endPos);
 				sequence.setSSequentialDS(getSDocument().getSDocumentGraph().getSTimeline());
-				EList<SToken>  sTokens=this.sDocument.getSDocumentGraph().getSTokensBySequence(sequence);
+				EList<SToken>  sTokens=getSDocument().getSDocumentGraph().getSTokensBySequence(sequence);
 				
 				if (sTokens== null)
 				{	
@@ -827,7 +827,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				text.append(sep);
 			//creating and adding token
 			SToken sToken= SaltFactory.eINSTANCE.createSToken();
-			this.sDocument.getSDocumentGraph().addSNode(sToken);
+			getSDocument().getSDocumentGraph().addSNode(sToken);
 			if (this.tierNames2SLayers!= null)
 			{//add sToken to layer if required
 				SLayer sLayer= this.tierNames2SLayers.get(eTextTier.getCategory());
@@ -850,10 +850,10 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			sTextRel.setSToken(sToken);
 			sTextRel.setSStart(start);
 			sTextRel.setSEnd(end);
-			sDocument.getSDocumentGraph().addSRelation(sTextRel);
+			getSDocument().getSDocumentGraph().addSRelation(sTextRel);
 			
-			if (	(sDocument.getSDocumentGraph().getSAudioDataSources()!= null)&&
-					(sDocument.getSDocumentGraph().getSAudioDataSources().size()> 0)&&
+			if (	(getSDocument().getSDocumentGraph().getSAudioDataSources()!= null)&&
+					(getSDocument().getSDocumentGraph().getSAudioDataSources().size()> 0)&&
 					(	(event.getStart().getTime()!= null)||
 						(event.getEnd().getTime()!= null)))
 			{//start: creating SAudioDSRelation
@@ -867,17 +867,17 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					
 					SAudioDSRelation sAudioDSRelation= SaltFactory.eINSTANCE.createSAudioDSRelation();
 					sAudioDSRelation.setSToken(sToken);
-					sAudioDSRelation.setSAudioDS(sDocument.getSDocumentGraph().getSAudioDataSources().get(0));
+					sAudioDSRelation.setSAudioDS(getSDocument().getSDocumentGraph().getSAudioDataSources().get(0));
 					sAudioDSRelation.setSStart(audioStart);
 					sAudioDSRelation.setSEnd(audioEnd);
-					sDocument.getSDocumentGraph().addSRelation(sAudioDSRelation);
+					getSDocument().getSDocumentGraph().addSRelation(sAudioDSRelation);
 				} catch (NumberFormatException e) {
 					logger.warn("Cannot map time attribute of timeline to SStart or SEnd, because value '"+event.getStart().getTime()+"' is not mappable to a double value.");
 				}
 			}//end: creating SAudioDSRelation
 			
 			//creating timelineRel
-			this.mapEvent2SToken(event, this.getBasicTranscription().getCommonTimeLine(), sToken, this.sDocument.getSDocumentGraph().getSTimeline());
+			this.mapEvent2SToken(event, this.getBasicTranscription().getCommonTimeLine(), sToken, getSDocument().getSDocumentGraph().getSTimeline());
 		}	
 		sText.setSText(text.toString());
 		for (Tier tier: textSlot)
@@ -893,7 +893,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					sequence.setSStart(startPos);
 					sequence.setSEnd(endPos);
 					sequence.setSSequentialDS(getSDocument().getSDocumentGraph().getSTimeline());
-					EList<SToken>  sTokens=this.sDocument.getSDocumentGraph().getSTokensBySequence(sequence);
+					EList<SToken>  sTokens=getSDocument().getSDocumentGraph().getSTokensBySequence(sequence);
 					
 					if (sTokens!= null)
 					{	
