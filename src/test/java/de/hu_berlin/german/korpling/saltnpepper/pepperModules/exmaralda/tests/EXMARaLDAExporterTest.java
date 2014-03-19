@@ -133,7 +133,7 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 		//start: exporting document
 			start();
 		//end: exporting document
-		
+			
 		//checking if export was correct
 		assertTrue("The files '"+expectedURI+"' and '"+currentURI+"' aren't identical. ", this.compareFiles(expectedURI, currentURI));
 	}
