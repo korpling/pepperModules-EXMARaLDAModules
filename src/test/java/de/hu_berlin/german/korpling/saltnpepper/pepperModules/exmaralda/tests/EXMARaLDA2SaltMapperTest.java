@@ -17,10 +17,12 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
+import org.junit.Before;
+import org.junit.Test;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Event;
@@ -29,7 +31,7 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
 
-public class EXMARaLDA2SaltMapperTest extends TestCase 
+public class EXMARaLDA2SaltMapperTest 
 {
 	private EXMARaLDA2SaltMapper fixture= null;
 
@@ -47,6 +49,7 @@ public class EXMARaLDA2SaltMapperTest extends TestCase
 		return fixture;
 	}
 	
+	@Before
 	public void setUp()
 	{
 		this.setFixture(new EXMARaLDA2SaltMapper());
@@ -59,6 +62,7 @@ public class EXMARaLDA2SaltMapperTest extends TestCase
 	 *  e T e
 	 * 1|2|3|4
 	 */
+	@Test
 	public void testCleanModel()
 	{
 		BasicTranscription basicTranscription = ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
@@ -106,6 +110,7 @@ public class EXMARaLDA2SaltMapperTest extends TestCase
 	 *  T e T
 	 * 1|2|3|4
 	 */
+	@Test
 	public void testCleanModel2()
 	{
 		BasicTranscription basicTranscription = ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();

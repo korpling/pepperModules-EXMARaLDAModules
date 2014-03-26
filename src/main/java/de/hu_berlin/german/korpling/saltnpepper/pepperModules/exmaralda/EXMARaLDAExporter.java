@@ -20,10 +20,10 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperFWException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperExporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperExporterImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.exceptions.PepperFWException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperExporterImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
@@ -38,7 +38,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 	{
 		super();
 		//setting name of module
-		this.name= "EXMARaLDAExporter";
+		setName("EXMARaLDAExporter");
 		//set list of formats supported by this module
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
 	}
@@ -64,7 +64,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 			for (SDocument sDocument: sCorpusGraph.getSDocuments())
 			{
 				this.createFolderStructure(sDocument.getSElementId());
-				URI uri= URI.createFileURI(this.getCorpusDefinition().getCorpusPath().toFileString()+ "/" + sDocument.getSElementPath().toFileString()+ "." + FILE_EXTENION);
+				URI uri= URI.createFileURI(this.getCorpusDesc().getCorpusPath().toFileString()+ "/" + sDocument.getSElementPath().toFileString()+ "." + FILE_EXTENION);
 				this.getSElementId2ResourceTable().put(sDocument.getSElementId(), uri);
 			}
 		}
