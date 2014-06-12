@@ -100,8 +100,8 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 	@Test
 	public void testStart1() throws IOException
 	{
-		File corpusPathFile= new File(getTempPtah("exmaraldaExporterTest").getAbsolutePath()+"/current");
-		File currentFile= new File(getTempPtah("exmaraldaExporterTest").getAbsolutePath()+"/current/corp1/doc1.exb");
+		File corpusPathFile= new File(getTempPath("exmaraldaExporterTest").getAbsolutePath()+"/current");
+		File currentFile= new File(getTempPath("exmaraldaExporterTest").getAbsolutePath()+"/current/corp1/doc1.exb");
 		File expectedFile= new File("./src/test/resources/EXMARaLDAExporter/expected/sample1/corp1/doc1.exb");
 		
 		URI corpusPath= URI.createFileURI(corpusPathFile.getCanonicalPath());
