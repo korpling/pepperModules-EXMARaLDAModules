@@ -89,10 +89,9 @@ public class AudioTest
 		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
 		prop.setValue(txtTier);
 		
-		URL referencedFile= new URL(refFile.toString());
 		BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
 		MetaInformation metaInformation= ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
-		metaInformation.setReferencedFile(referencedFile);
+		metaInformation.setReferencedFile(refFile.toString());
 		basicTranscription.setMetaInformation(metaInformation);
 		
 		CommonTimeLine timeline= ExmaraldaBasicFactory.eINSTANCE.createCommonTimeLine();
@@ -154,10 +153,9 @@ public class AudioTest
 		PepperModuleProperty<String> prop= (PepperModuleProperty<String>)this.getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
 		prop.setValue(txtTier);
 		
-		URL referencedFile= new URL(refFile.toString()); 
 		BasicTranscription basicTranscription= ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
 		MetaInformation metaInformation= ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
-		metaInformation.setReferencedFile(referencedFile);
+		metaInformation.setReferencedFile(refFile.toString());
 		basicTranscription.setMetaInformation(metaInformation);
 		
 		CommonTimeLine timeline= ExmaraldaBasicFactory.eINSTANCE.createCommonTimeLine();

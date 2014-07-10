@@ -194,7 +194,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			// map referenced file
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_REFERENCED_FILE)) {
 				try {
-					metaInfo.setReferencedFile(new URL(sMetaAnno.getValueString()));
+					new URL(sMetaAnno.getValueString());
+					metaInfo.setReferencedFile(sMetaAnno.getValueString());
 				} catch (MalformedURLException e) {
 				}
 			} else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_COMMENT))
@@ -346,7 +347,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 						event.setMedium(EVENT_MEDIUM.get(sMediumAnno.getSValue().toString()));
 					if (sURLAnno != null) {
 						try {
-							event.setUrl(new URL(sMediumAnno.getSValue().toString()));
+							new URL(sMediumAnno.getSValue().toString());
+							event.setUrl(sMediumAnno.getSValue().toString());
 						} catch (MalformedURLException e) {
 						}
 					}

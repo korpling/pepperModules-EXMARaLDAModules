@@ -427,12 +427,20 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		
 		if (basicTranscription.getMetaInformation().getReferencedFile()!= null)
 		{//map referencedFile to SAudioDataSource
-			File audioFile= new File(basicTranscription.getMetaInformation().getReferencedFile().getFile());
-			if (!audioFile.exists()){
-				logger.warn("The file refered in exmaralda model '"+audioFile.getAbsolutePath()+"' does not exist and cannot be mapped to a salt model. It will be ignored.");
+			URI audioURI= URI.createURI(basicTranscription.getMetaInformation().getReferencedFile());
+			File audioFile= null;
+			if (	(audioURI.scheme()!= null)&&
+					(!audioURI.scheme().isEmpty())){
+				audioFile= new File(audioURI.toFileString());
+			}else{
+				audioFile= new File(audioURI.toString());
+			}
+			if (	(audioFile== null)||
+					(!audioFile.exists())){
+				logger.warn("The file refered in exmaralda model '"+audioURI+"' does not exist and cannot be mapped to a salt model. It will be ignored.");
 			}else{
 				SAudioDataSource sAudioDS= SaltFactory.eINSTANCE.createSAudioDataSource();
-				sAudioDS.setSAudioReference(URI.createFileURI(audioFile.getAbsolutePath()));
+				sAudioDS.setSAudioReference(audioURI);
 				sDoc.getSDocumentGraph().addSNode(sAudioDS);
 			}
 		}//map referencedFile to SAudioDataSource
