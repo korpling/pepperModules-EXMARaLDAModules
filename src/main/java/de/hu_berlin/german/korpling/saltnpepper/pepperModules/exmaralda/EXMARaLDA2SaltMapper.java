@@ -611,15 +611,14 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	private void mapTiers2SNodes(EList<Tier> slot) {
 		for (Tier tier : slot) {
+			logger.debug("mapping tier '{}'. "+ tier.getCategory());
 			SLayer sLayer = null;
 			if ((this.tierNames2SLayers != null)) {
 				// if current tier shall be added to a layer
 				sLayer = this.tierNames2SLayers.get(tier.getCategory());
 			}
 
-			int eventCtr = 0;
 			for (Event eEvent : tier.getEvents()) {
-				eventCtr++;
 				SSpan sSpan = SaltFactory.eINSTANCE.createSSpan();
 				getSDocument().getSDocumentGraph().addSNode(sSpan);
 				this.mapEvent2SNode(tier, eEvent, sSpan);
@@ -636,11 +635,24 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				this.mapUDInformations2SMetaAnnotatableElement(eEvent.getUdInformations(), sSpan);
 
 				Integer startPos = getBasicTranscription().getCommonTimeLine().getTLIs().indexOf(eEvent.getStart());
+				if (startPos < 0){
+					if (getBasicTranscription().getCommonTimeLine().getTLIs().contains(eEvent.getStart())){
+						logger.warn("[EXMARaLDAImporter] Can not map an event '"+eEvent.getValue()+ "' of tier '"+tier.getCategory()+ "' because its start value reffering to timeline is less than 0.");
+					}else logger.warn("[EXMARaLDAImporter] Can not map an event '"+eEvent.getValue()+ "' of tier '"+tier.getCategory()+ "' because this event is not connected to the timeline.");
+					break;
+				}
 				Integer endPos = getBasicTranscription().getCommonTimeLine().getTLIs().indexOf(eEvent.getEnd());
+				if (endPos < 0){
+					if (getBasicTranscription().getCommonTimeLine().getTLIs().contains(eEvent.getEnd())){
+						logger.warn("[EXMARaLDAImporter] Can not map an event '"+eEvent.getValue()+ "' of tier "+tier.getCategory()+ "' because its end value reffering to timeline is less than 0.");
+					}else logger.warn("[EXMARaLDAImporter] Can not map an event '"+eEvent.getValue()+ "' of tier "+tier.getCategory()+ "' because this event is not connected to the timeline.");
+					break;
+				}
 				SDataSourceSequence sequence = SaltFactory.eINSTANCE.createSDataSourceSequence();
 				sequence.setSStart(startPos);
 				sequence.setSEnd(endPos);
 				sequence.setSSequentialDS(getSDocument().getSDocumentGraph().getSTimeline());
+				
 				EList<SToken> sTokens = getSDocument().getSDocumentGraph().getSTokensBySequence(sequence);
 
 				if (sTokens == null) {
@@ -667,20 +679,13 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 * @param sNode
 	 */
 	private void mapMediumURL2SSNode(Event event, SNode sNode) {
-		SAnnotation sAnno = null;
 		// mapMedium to SAnnotation
 		if (event.getMedium() != null) {
-			sAnno = SaltFactory.eINSTANCE.createSAnnotation();
-			sAnno.setSName(EXBNameIdentifier.KW_EXB_EVENT_MEDIUM);
-			sAnno.setSValue(event.getMedium());
-			sNode.addSAnnotation(sAnno);
+			sNode.createSAnnotation(null, EXBNameIdentifier.KW_EXB_EVENT_MEDIUM, event.getMedium().toString());
 		}
 		// mapURL to SAnnotation
 		if (event.getUrl() != null) {
-			sAnno = SaltFactory.eINSTANCE.createSAnnotation();
-			sAnno.setSName(EXBNameIdentifier.KW_EXB_EVENT_URL);
-			sAnno.setSValue(event.getUrl());
-			sNode.addSAnnotation(sAnno);
+			sNode.createSAnnotation(null, EXBNameIdentifier.KW_EXB_EVENT_URL, event.getUrl());
 		}
 	}
 
@@ -692,10 +697,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 */
 	public void mapCommonTimeLine2STimeine(CommonTimeLine eTimeLine, STimeline sTimeLine) {
 		for (TLI tli : eTimeLine.getTLIs()) {
-			if (tli.getTime() == null)
+			if (tli.getTime() == null){
 				sTimeLine.addSPointOfTime("");
-			else
+			}else{
 				sTimeLine.addSPointOfTime(tli.getTime());
+			}
 		}
 	}
 
@@ -836,7 +842,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 * @param sNode
 	 */
 	public void mapEvent2SNode(Tier tier, Event eEvent, SNode sNode) {
-		SAnnotation sAnno = null;
+//		SAnnotation sAnno = null;
 		String posTier = this.getProps().getPOS();
 		String lemmaTier = this.getProps().getLemma();
 		String preUriTiers = this.getProps().getURIAnnotation();
@@ -849,12 +855,14 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 		if (tier.getCategory().equalsIgnoreCase(posTier)) {
 			// this tier has special annotations: pos annotations
-			sAnno = SaltSemanticsFactory.eINSTANCE.createSPOSAnnotation();
+			SAnnotation sAnno = SaltSemanticsFactory.eINSTANCE.createSPOSAnnotation();
 			sAnno.setSValue(eEvent.getValue());
+			sNode.addSAnnotation(sAnno);
 		} else if (tier.getCategory().equalsIgnoreCase(lemmaTier)) {
 			// this tier has special annotations: lemma annotations
-			sAnno = SaltSemanticsFactory.eINSTANCE.createSLemmaAnnotation();
+			SAnnotation sAnno = SaltSemanticsFactory.eINSTANCE.createSLemmaAnnotation();
 			sAnno.setSValue(eEvent.getValue());
+			sNode.addSAnnotation(sAnno);
 		} else if ((uriTiers != null) && (uriTiers.contains(tier.getCategory()))) {
 			String pathName = this.getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(), eEvent.getValue());
 			File file = new File(pathName);
@@ -862,19 +870,19 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				logger.warn("Cannot add the uri-annotation '" + eEvent.getValue() + "' of tier '" + tier.getCategory() + "', because the file '" + pathName + "' does not exist.");
 			} else {
 				URI corpusFilePath = URI.createFileURI(file.getAbsolutePath());
-				sAnno = SaltFactory.eINSTANCE.createSAnnotation();
-				sAnno.setSName(tier.getCategory());
-				sAnno.setSValue(corpusFilePath);
+				sNode.createSAnnotation(null, tier.getCategory(), corpusFilePath.toFileString());
 			}
 		} else {
-			sAnno = SaltFactory.eINSTANCE.createSAnnotation();
-			sAnno.setSName(tier.getCategory());
-			sAnno.setSValue(eEvent.getValue());
+			String namespace= null;
+			if (eEvent.getTier().getSpeaker()!= null){
+				namespace= eEvent.getTier().getSpeaker().getAbbreviation(); 
+			}
+			sNode.createSAnnotation(namespace, tier.getCategory(), eEvent.getValue());
 		}
 		if ((eEvent.getUdInformations() != null) && (eEvent.getUdInformations().size() > 0)) {
 			this.mapUDInformations2SMetaAnnotatableElement(eEvent.getUdInformations(), sNode);
 		}
-		sNode.addSAnnotation(sAnno);
+		
 	}
 
 	/**

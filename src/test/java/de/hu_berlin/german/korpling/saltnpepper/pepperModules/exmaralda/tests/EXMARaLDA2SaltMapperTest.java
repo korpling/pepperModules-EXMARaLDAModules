@@ -28,6 +28,7 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscriptio
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Event;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFactory;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
+import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
@@ -161,16 +162,17 @@ public class EXMARaLDA2SaltMapperTest {
 		basicTranscription.getCommonTimeLine().getTLIs().add(tli1);
 		TLI tli2 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		tli2.setId("2");
+		basicTranscription.getCommonTimeLine().getTLIs().add(tli2);
 		
 		Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		tokenTier.setCategory("tok");
 		basicTranscription.getTiers().add(tokenTier);
 
-		Event event1 = ExmaraldaBasicFactory.eINSTANCE.createEvent();
-		event1.setValue("sample");
-		event1.setStart(tli1);
-		event1.setEnd(tli2);
-		tokenTier.getEvents().add(event1);
+		Event tok = ExmaraldaBasicFactory.eINSTANCE.createEvent();
+		tok.setValue("sample");
+		tok.setStart(tli1);
+		tok.setEnd(tli2);
+		tokenTier.getEvents().add(tok);
 		
 		Speaker speaker= ExmaraldaBasicFactory.eINSTANCE.createSpeaker();
 		speaker.setId("spk0");
@@ -178,15 +180,16 @@ public class EXMARaLDA2SaltMapperTest {
 		basicTranscription.getSpeakertable().add(speaker);
 		
 		Tier tier= ExmaraldaBasicFactory.eINSTANCE.createTier();
+		tier.setType(TIER_TYPE.A);
 		tier.setCategory("anno");
 		tier.setSpeaker(speaker);
 		basicTranscription.getTiers().add(tier);
 		
 		Event event= ExmaraldaBasicFactory.eINSTANCE.createEvent();
 		event.setStart(tli1);
-		event.setStart(tli2);
-		event.setTier(tier);
+		event.setEnd(tli2);
 		event.setValue("value");
+		tier.getEvents().add(event);
 		
 		getFixture().setBasicTranscription(basicTranscription);
 		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
@@ -195,12 +198,11 @@ public class EXMARaLDA2SaltMapperTest {
 		getFixture().mapSDocument();
 		
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTokens().size());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotations().size());
+		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().size());
 		
-		SAnnotation sAnno= getFixture().getSDocument().getSDocumentGraph().getSTokens().get(0).getSAnnotations().get(0);
-		assertEquals(sAnno.getSName(), "anno");
-		assertEquals(sAnno.getSValue(), "value");
-		assertEquals(sAnno.getSNS(), "Bart");
+		SAnnotation sAnno= getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0);
+		assertEquals("anno", sAnno.getSName());
+		assertEquals("value", sAnno.getSValue());
+		assertEquals("Bart", sAnno.getSNS());
 	}
 }
