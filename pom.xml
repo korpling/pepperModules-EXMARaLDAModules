@@ -35,9 +35,9 @@
   </scm>
   <dependencies>
     <dependency>
-      <groupId>de.hu_berlin.german.korpling.saltnpepper</groupId>
+      <groupId>de.hu_berlin.german.korpling</groupId>
       <artifactId>exmaralda-emf-api</artifactId>
-      <version>[1.1.3,)</version>
+      <version>[1.1.5,)</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
