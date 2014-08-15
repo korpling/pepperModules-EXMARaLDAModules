@@ -411,10 +411,13 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			// map referencedFile to SAudioDataSource
 			URI audioURI = URI.createURI(basicTranscription.getMetaInformation().getReferencedFile());
 			File audioFile = null;
-			if ((audioURI.scheme() != null) && (!audioURI.scheme().isEmpty())) {
-				audioFile = new File(audioURI.toFileString());
-			} else {
-				audioFile = new File(audioURI.toString());
+			if (audioURI!= null){
+				if (	("file".equals(audioURI.scheme())) && 
+						(!audioURI.scheme().isEmpty())) {
+					audioFile = new File(audioURI.toFileString());
+				} else {
+					audioFile = new File(audioURI.toString());
+				}
 			}
 			if ((audioFile == null) || (!audioFile.exists())) {
 				logger.warn("The file refered in exmaralda model '" + audioURI + "' does not exist and cannot be mapped to a salt model. It will be ignored.");
