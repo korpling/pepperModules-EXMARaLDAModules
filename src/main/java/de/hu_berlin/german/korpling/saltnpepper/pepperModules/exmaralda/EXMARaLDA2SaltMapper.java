@@ -688,7 +688,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		}
 		// mapURL to SAnnotation
 		if (event.getUrl() != null) {
-			sNode.createSAnnotation(null, EXBNameIdentifier.KW_EXB_EVENT_URL, event.getUrl());
+			sNode.createSAnnotation(null, EXBNameIdentifier.KW_EXB_EVENT_URL, event.getUrl().toString());
 		}
 	}
 

@@ -36,7 +36,7 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltSample.SaltSample;
+import de.hu_berlin.german.korpling.saltnpepper.salt.samples.SampleGenerator;
 
 
 public class EXMARaLDAExporterTest extends PepperExporterTest
@@ -92,9 +92,9 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 	 *		|
 	 *		doc1
 	 * Tests importing a corpus with one document and without a timeline. The timeline has to be computed.
-	 * This test checks the sample of {@link SaltSample} created by the methods {@link SaltSample#createPrimaryData(SDocument)},
-	 * {@link SaltSample#createTokens(SDocument)}, {@link SaltSample#createMorphologyAnnotations(SDocument)}, {@link SaltSample#createInformationStructureSpan(SDocument)}
-	 * and {@link SaltSample#createInformationStructureAnnotations(SDocument)}.  
+	 * This test checks the sample of {@link SampleGenerator} created by the methods {@link SampleGenerator#createPrimaryData(SDocument)},
+	 * {@link SampleGenerator#createTokens(SDocument)}, {@link SampleGenerator#createMorphologyAnnotations(SDocument)}, {@link SampleGenerator#createInformationStructureSpan(SDocument)}
+	 * and {@link SampleGenerator#createInformationStructureAnnotations(SDocument)}.  
 	 * @throws IOException 
 	 */
 	@Test
@@ -123,11 +123,11 @@ public class EXMARaLDAExporterTest extends PepperExporterTest
 			//start:create corpus structure
 				SDocument sDoc= this.createCorpusStructure();
 			//end:create corpus structure
-			SaltSample.createPrimaryData(sDoc);
-			SaltSample.createTokens(sDoc);
-			SaltSample.createMorphologyAnnotations(sDoc);
-			SaltSample.createInformationStructureSpan(sDoc);
-			SaltSample.createInformationStructureAnnotations(sDoc);
+			SampleGenerator.createPrimaryData(sDoc);
+			SampleGenerator.createTokens(sDoc);
+			SampleGenerator.createMorphologyAnnotations(sDoc);
+			SampleGenerator.createInformationStructureSpan(sDoc);
+			SampleGenerator.createInformationStructureAnnotations(sDoc);
 		//end: create sample
 			
 		//start: exporting document
