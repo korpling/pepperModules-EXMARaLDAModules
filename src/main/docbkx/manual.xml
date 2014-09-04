@@ -162,13 +162,6 @@
                     </thead>
                     <tbody>
                         <row>
-                            <entry><xref linkend="prop_prop1" endterm="importer_prop1_title"
-                            /></entry>
-                            <entry>Tier.categoryName</entry>
-                            <entry>optional</entry>
-                            <entry>--</entry>
-                        </row>
-                        <row>
                             <entry><xref linkend="prop_prop2" endterm="importer_prop2_title"
                             /></entry>
                             <entry>String</entry>
@@ -227,25 +220,6 @@
                     </tbody>
                 </tgroup>
             </table>
-            <sect2 xml:id="prop_prop1">
-                <title xml:id="importer_prop1_title">salt.token</title>
-                <para>With the property <property>salt.token</property> you can mark the Tier object
-                    which shall be interpreted as the one containing the tokenization and the
-                    primary text.</para>
-                <para><code>salt.token=Tier.categoryName</code></para>
-                <para>Imagine the example of <xref linkend="primaryData_exm"/>, there we have a Tier
-                    object with categorical name txt displayed as X[txt]. <figure
-                        xml:id="primaryData_exm">
-                        <title>primary data in EXMARaLDA</title>
-                        <mediaobject>
-                            <imageobject>
-                                <imagedata fileref="images/primaryData_exm.jpg"/>
-                            </imageobject>
-                        </mediaobject>
-                    </figure> This Tier object contains the data representing the primary text. To
-                    map them in correct way to Salt, you need to set the property “salt.token”: </para>
-                <para><code>salt.token=txt</code></para>
-            </sect2>
             <sect2 xml:id="prop_prop2">
                 <title xml:id="importer_prop2_title">salt.tokenSeparator</title>
                 <para>With the property <property>salt.tokenSeparator</property>you can set a single

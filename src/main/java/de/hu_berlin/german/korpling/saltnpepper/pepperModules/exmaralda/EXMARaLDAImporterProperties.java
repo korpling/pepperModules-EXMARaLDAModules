@@ -18,7 +18,9 @@
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +48,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 
 	public static final String PREFIX="exmaralda.importer.";
 	
+	@Deprecated
 	public static final String PROP_TOKEN_TIER="salt.token";
 	public static final String PROP_TOKENSEP="salt.tokenSeperator";
 	public static final String PROP_TIERMERGE="salt.tierMerge";
@@ -70,10 +73,24 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 		this.addProperty(new PepperModuleProperty<String>(PROP_SALT_SEMANTICS_WORD, String.class, "You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing.", false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_CLEAN_MODEL, Boolean.class, "....", false, false));
 	}
-	
-	public String getTokenTier()
+	@Deprecated
+	public Set<String> getTokenTiers()
 	{
-		return((String)this.getProperty(PROP_TOKEN_TIER).getValue());
+		String prop= ((String)this.getProperty(PROP_TOKEN_TIER).getValue());
+		Set<String> tokenTiers = new LinkedHashSet<String>();
+		if 	(	(prop != null)&&
+				(!prop.isEmpty())){
+			if (prop.startsWith("{")) {
+				prop = prop.replace("{", "").replace("}", "");
+				String[] splitted = prop.split(",");
+				for (String s : splitted) {
+					tokenTiers.add(s.trim());
+				}
+			} else {
+				tokenTiers.add(prop.trim());
+			}
+		}
+		return(tokenTiers);
 	}
 	public String getTokenSeparator()
 	{
@@ -177,7 +194,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 			}
 
 			if (tierNames2SLayers.size() == 0) {
-				logger.warn("It seems as if there is a syntax failure in the given special-param file in property '" + EXMARaLDAImporterProperties.PROP_LAYERS_BIG + "'. A value is given, but the layers to named could not have been extracted.");
+				logger.warn("[EXMARaLDAImporter] It seems as if there is a syntax failure in the given special-param file in property '" + EXMARaLDAImporterProperties.PROP_LAYERS_BIG + "'. A value is given, but the layers to named could not have been extracted.");
 			}
 		}
 		return(tierNames2SLayers);

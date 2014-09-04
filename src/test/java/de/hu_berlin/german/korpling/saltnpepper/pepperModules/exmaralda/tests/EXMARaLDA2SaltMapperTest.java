@@ -17,7 +17,10 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -34,8 +37,10 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 public class EXMARaLDA2SaltMapperTest {
@@ -131,6 +136,28 @@ public class EXMARaLDA2SaltMapperTest {
 		assertEquals("text", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
 		assertEquals("Oh", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
 		assertEquals("yes", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
+	}
+	/**
+	 * Tests the helper method, for the following case:
+	 * <table border= "1">
+	 *   <tr><td>This</td><td>is</td><td>a</td><td>sample</td><td>text</td></tr>
+	 * </table>  
+	 * with the sequence from 6 to 12
+	 */
+	@Test
+	public void testGetAdjacentSTokens(){
+		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
+		getFixture().getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
+		STextualDS text= getFixture().getSDocument().getSDocumentGraph().createSTextualDS("This is a sample text");
+		getFixture().getSDocument().getSDocumentGraph().tokenize();
+		
+		SDataSourceSequence sequence= SaltFactory.eINSTANCE.createSDataSourceSequence();
+		sequence.setSSequentialDS(text);
+		sequence.setSStart(6);
+		sequence.setSEnd(12);
+		
+		List<SToken> tokens= getFixture().getAdjacentSTokens(sequence);
+		assertEquals(3, tokens.size());
 	}
 	
 	/**

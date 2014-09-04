@@ -118,7 +118,9 @@ public class AudioTest
 		basicTranscription.getTiers().add(tier1);
 		
 		SDocument sDoc= SaltFactory.eINSTANCE.createSDocument();
-		this.getFixture().mapDocument(sDoc, basicTranscription);
+		getFixture().setSDocument(sDoc);
+		getFixture().setBasicTranscription(basicTranscription);
+		getFixture().mapSDocument();
 		
 		assertNotNull(sDoc.getSDocumentGraph());
 		assertNotNull(sDoc.getSDocumentGraph().getSTextualDSs());
@@ -191,7 +193,9 @@ public class AudioTest
 		basicTranscription.getTiers().add(tier1);
 		
 		SDocument sDoc= SaltFactory.eINSTANCE.createSDocument();
-		this.getFixture().mapDocument(sDoc, basicTranscription);
+		getFixture().setSDocument(sDoc);
+		getFixture().setBasicTranscription(basicTranscription);
+		getFixture().mapSDocument();
 		
 		assertNotNull(sDoc.getSDocumentGraph());
 		assertNotNull(sDoc.getSDocumentGraph().getSTextualDSs());
