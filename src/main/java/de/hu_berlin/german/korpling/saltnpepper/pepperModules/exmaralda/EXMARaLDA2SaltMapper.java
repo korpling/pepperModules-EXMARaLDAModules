@@ -614,7 +614,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	private void mapTiers2SNodes(EList<Tier> slot) {
 		for (Tier tier : slot) {
-			logger.debug("mapping tier '{}'. "+ tier.getCategory());
+			logger.debug("mapping tier '{}'. ", tier.getCategory());
 			SLayer sLayer = null;
 			if ((this.tierNames2SLayers != null)) {
 				// if current tier shall be added to a layer
