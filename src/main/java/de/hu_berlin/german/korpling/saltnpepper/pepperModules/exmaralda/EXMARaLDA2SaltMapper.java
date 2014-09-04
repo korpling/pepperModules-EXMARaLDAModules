@@ -20,13 +20,10 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -41,6 +38,7 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.CommonTimeLine;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Event;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFactory;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
+import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
@@ -113,101 +111,10 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	public EXMARaLDAImporterProperties getProps() {
 		return ((EXMARaLDAImporterProperties) this.getProperties());
 	}
-
-	private static final String DEFAULT_PRIMTEXT_TYPENAME = "t";
-
-	/**
-	 * Relates the name of the tiers to the layers, to which they shall be
-	 * append.
-	 */
-	private Hashtable<String, SLayer> tierNames2SLayers = null;
-
-	/**
-	 * String for regex for for tier to layer mapping
-	 */
-	private static final String TIER_NAME_DESC = "(_|-|[A-Z]|[a-z]|[0-9])+";
-	/**
-	 * String for regex for for tier to layer mapping
-	 */
-	private static final String SIMPLE_TIER_LIST_DESC = "\\{" + TIER_NAME_DESC + "(,\\s?" + TIER_NAME_DESC + ")*" + "\\}";
-	/**
-	 * String for regex for for tier to layer mapping
-	 */
-	private static final String LAYER_NAME_DESC = "(_|-|[A-Z]|[a-z]|[0-9])+";
-	/**
-	 * String for regex for for tier to layer mapping
-	 */
-	private static final String SIMPLE_LAYER_DESC = "\\{" + LAYER_NAME_DESC + SIMPLE_TIER_LIST_DESC + "\\}";
-	/**
-	 * String for regex for for tier to layer mapping
-	 */
-	private static final String LAYER_DESC = SIMPLE_LAYER_DESC + "(," + SIMPLE_LAYER_DESC + ")*";
-
-	/**
-	 * Checks the given properties, if the necessary ones are given and creates
-	 * the data-structures being needed to store the properties. Throws an
-	 * exception, if the needed properties are not there.
-	 */
-	private void checkProperties() {
-		String tokLayer = this.getProps().getTokenTier();
-
-		if (tokLayer != null) {
-			// check that no empty token layer was given
-			if (tokLayer.trim().length() == 0) {
-				logger.warn("\"" + EXMARaLDAImporterProperties.PROP_TOKEN_TIER + "\" property is empty");
-			}
-		}
-
-		// tiers to SLayer-objects
-		String tier2SLayerStr = null;
-		tier2SLayerStr = this.getProps().getLayers();
-		if ((tier2SLayerStr != null) && (!tier2SLayerStr.trim().isEmpty())) {
-			// if a tier to layer mapping is given
-			// check if number of closing brackets is identical to number of
-			// opening brackets
-			char[] tier2SLayerChar = tier2SLayerStr.toCharArray();
-			int numberOfOpeningBrackets = 0;
-			int numberOfClosingBrackets = 0;
-			for (int i = 0; i < tier2SLayerChar.length; i++) {
-				if (tier2SLayerChar.equals('{'))
-					numberOfOpeningBrackets++;
-				else if (tier2SLayerChar.equals('}'))
-					numberOfClosingBrackets++;
-			}
-			if (numberOfClosingBrackets != numberOfOpeningBrackets)
-				throw new PepperModuleDataException(this, "Cannot import the given data, because property file contains a corrupt value for property '" + EXMARaLDAImporterProperties.PROP_LAYERS_BIG + "'. Please check the breckets you used.");
-
-			this.tierNames2SLayers = new Hashtable<String, SLayer>();
-			tier2SLayerStr = tier2SLayerStr.replace(" ", "");
-			Pattern pattern = Pattern.compile(SIMPLE_LAYER_DESC, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(tier2SLayerStr);
-			while (matcher.find()) {
-				// find all simple layer descriptions
-				String[] tierNames = null;
-				String tierNameList = null;
-				Pattern pattern1 = Pattern.compile(SIMPLE_TIER_LIST_DESC, Pattern.CASE_INSENSITIVE);
-				Matcher matcher1 = pattern1.matcher(matcher.group());
-				while (matcher1.find()) {
-					// find all tier lists
-					tierNameList = matcher1.group();
-					tierNames = tierNameList.replace("}", "").replace("{", "").split(",");
-				}
-				String sLayerName = matcher.group().replace(tierNameList, "").replace("}", "").replace("{", "");
-				SLayer sLayer = SaltFactory.eINSTANCE.createSLayer();
-				sLayer.setSName(sLayerName);
-				this.getSDocument().getSDocumentGraph().getSLayers().add(sLayer);
-				for (String tierName : tierNames) {
-					// put all tiernames in table to map them to the layer
-					this.tierNames2SLayers.put(tierName, sLayer);
-				}
-			}
-
-			if (this.tierNames2SLayers.size() == 0) {
-				logger.warn("It seems as if there is a syntax failure in the given special-param file in property '" + EXMARaLDAImporterProperties.PROP_LAYERS_BIG + "'. A value is given, but the layers to named could not have been extracted.");
-			}
-		}
-	}
-
+	
+	/** Relates the name of the tiers to the layers, to which they shall be append.**/
+	private Map<String, SLayer> tierNames2SLayers = null;
+	
 	/**
 	 * {@inheritDoc PepperMapper#setSDocument(SDocument)}
 	 * 
@@ -237,7 +144,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		addProgress(0.5);
 
 		this.getSDocument().getSDocumentGraph().setSId(this.getSDocument().getSId());
-		this.checkProperties();
+		tierNames2SLayers= getProps().getTier2SLayers();
+		if (tierNames2SLayers.size()> 0){
+			for (SLayer sLayer: tierNames2SLayers.values()){
+				getSDocument().getSDocumentGraph().getSLayers().add(sLayer);
+			}
+		}
 		this.mapDocument(this.getSDocument(), this.getBasicTranscription());
 		setProgress(1.0);
 		return (DOCUMENT_STATUS.COMPLETED);
@@ -344,7 +256,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					if (tokenTiers.size() > 0 && tokenTiers.contains(tier.getCategory().trim())) {
 						eTextTier = tier;
 						break;
-					} else if (tier.getType().getName().trim().equalsIgnoreCase(DEFAULT_PRIMTEXT_TYPENAME)) {
+					} else if (tier.getType().getName().trim().equalsIgnoreCase(TIER_TYPE.T.toString())) {
 						eTextTier = tier;
 						break;
 					}
@@ -555,7 +467,8 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	private EList<EList<Tier>> tierCollection = null;
 
 	/**
-	 * Compute which tiers belong together and stores it in tierCollection.
+	 * Compute which tiers belong together and stores them in tierCollection. Therefore the property {@link EXMARaLDAImporterProperties#getTierMerge()}
+	 * is used. 
 	 */
 	public void computeTierCollection() {
 		this.tierCollection = new BasicEList<EList<Tier>>();
@@ -611,7 +524,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			}
 		}
 	}
-
+	
 	private void mapTiers2SNodes(EList<Tier> slot) {
 		for (Tier tier : slot) {
 			logger.debug("mapping tier '{}'. ", tier.getCategory());

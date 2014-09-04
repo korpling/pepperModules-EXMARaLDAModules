@@ -128,18 +128,12 @@
         <para>General information about this importer.</para>
         <sect1>
             <title>Mapping to Salt</title>
-            <para>To represent this model in Salt we mapped the time based event concept to the
-                token concept of Salt. A general difference between both models is the handling of
-                primary texts. EXMARaLDA, does not care about primary texts, because of the event
-                based concept. Therefore it is necessary to define one or more tiers to contain the
-                primary text resource in the EXB model when mapping the data to Salt. This is done
-                via an entry in the property file needed by the EXMARaLDAImporter (see
-                “salt.Token“). The values of each Event objects contained in the marked Tier object
-                will be concatenated and mapped to a primary text (STextualDS object). If there are
-                two or more Tier objects marked, each will be mapped to a separate primary text.
-                Next to this each Event object contained in this Tier object will also be mapped to
-                a SToken object. A Timeline object of EXMARaLDA will be mapped to the STimeline
-                object of Salt. Each SToken object will refer to the range (via SPointOfTime
+            <para>To represent an EXMARaLDA model in Salt we mapped the time based event concept to the
+                token concept of Salt. This means, that an Event in EXMARaLDA is mapped to a token in Salt. A token
+                always needs a reference to a primary text, therefore during the mapping primary data objects are created for each tier in EXMARaLDA which has the type 't' (t for transcription).
+                If there are two or more tiers having type 't', each will be mapped to a separate primary text.
+                The EXMARaLDA timeline is mapped to the STimeline
+                object of Salt. Each SToken object refers to the range (via SPointOfTime
                 objects) of time inside the STimeline object. After mapping, the range of time of a
                 SToken object is the same as for the corresponding Event object. Event objects not
                 part of the marked Tier object will be mapped to a SSpan object. The value of the

@@ -34,6 +34,8 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
+import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 public class EXMARaLDA2SaltMapperTest {
@@ -59,6 +61,78 @@ public class EXMARaLDA2SaltMapperTest {
 		this.setFixture(new EXMARaLDA2SaltMapper());
 	}
 
+	/**
+	 * Tests the mapping of two transcription tiers having parallel events 
+	 * to two {@link STextualDS} objects.
+	 */
+	public void test(){
+		BasicTranscription basicTranscription = ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
+		TLI t1= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		basicTranscription.getCommonTimeLine().getTLIs().add(t1);
+		TLI t2= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		basicTranscription.getCommonTimeLine().getTLIs().add(t2);
+		TLI t3= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		basicTranscription.getCommonTimeLine().getTLIs().add(t3);
+		TLI t4= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		basicTranscription.getCommonTimeLine().getTLIs().add(t4);
+		TLI t5= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		basicTranscription.getCommonTimeLine().getTLIs().add(t5);
+		
+		Tier text1= ExmaraldaBasicFactory.eINSTANCE.createTier();
+		text1.setType(TIER_TYPE.T);
+		basicTranscription.getTiers().add(text1);
+		
+		Event a= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+		a.setValue("A");
+		a.setStart(t1);
+		a.setEnd(t2);
+		text1.getEvents().add(a);
+		
+		Event sample= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+		sample.setValue("Sample");
+		sample.setStart(t2);
+		sample.setEnd(t3);
+		text1.getEvents().add(sample);
+		
+		Event text= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+		text.setValue("Text");
+		text.setStart(t3);
+		text.setEnd(t4);
+		text1.getEvents().add(text);
+		
+		Tier text2= ExmaraldaBasicFactory.eINSTANCE.createTier();
+		text2.setType(TIER_TYPE.T);
+		basicTranscription.getTiers().add(text2);
+		
+		Event oh= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+		oh.setValue("Oh");
+		oh.setStart(t2);
+		oh.setEnd(t3);
+		text1.getEvents().add(oh);
+		
+		Event yes= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+		yes.setValue("yes");
+		yes.setStart(t3);
+		yes.setEnd(t4);
+		text1.getEvents().add(yes);
+		
+		getFixture().setBasicTranscription(basicTranscription);
+		getFixture().mapSDocument();
+		
+		SDocumentGraph sDocGraph= getFixture().getSDocument().getSDocumentGraph(); 
+		assertNotNull(sDocGraph);
+		assertEquals(2, sDocGraph.getSTextualDSs().size());
+		assertEquals("A sample text", sDocGraph.getSTextualDSs().get(0).getSText());
+		assertEquals("oh yes", sDocGraph.getSTextualDSs().get(1).getSText());
+		
+		assertEquals(5, sDocGraph.getSTokens().size());
+		assertEquals("A", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
+		assertEquals("sample", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
+		assertEquals("text", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
+		assertEquals("Oh", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
+		assertEquals("yes", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
+	}
+	
 	/**
 	 * Checks if completion in missing coverage of {@link TLI} objects by
 	 * {@link Event} contained in token {@link Tier} objects works correctly. e=
