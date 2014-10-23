@@ -186,23 +186,23 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		for (SMetaAnnotation sMetaAnno : sDoc.getSMetaAnnotations()) {
 			// map project name
 			if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_PROJECT_NAME)) {
-				metaInfo.setProjectName(sMetaAnno.getValueString());
+				metaInfo.setProjectName(sMetaAnno.getValue().toString());
 			}
 			// map transcription name
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_NAME))
-				metaInfo.setTranscriptionName(sMetaAnno.getValueString());
+				metaInfo.setTranscriptionName(sMetaAnno.getValue().toString());
 			// map referenced file
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_REFERENCED_FILE)) {
 				/*try {*/
-//					new URL(sMetaAnno.getValueString());
-					metaInfo.setReferencedFile(sMetaAnno.getValueString());
+//					new URL(sMetaAnno.getValue().toString());
+					metaInfo.setReferencedFile(sMetaAnno.getValue().toString());
 				/*} catch (MalformedURLException e) {
 				}*/
 			} else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_COMMENT))
-				metaInfo.setComment(sMetaAnno.getValueString());
+				metaInfo.setComment(sMetaAnno.getValue().toString());
 			// map transcription convention
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION))
-				metaInfo.setTranscriptionConvention(sMetaAnno.getValueString());
+				metaInfo.setTranscriptionConvention(sMetaAnno.getValue().toString());
 			else {
 				UDInformation udInfo = ExmaraldaBasicFactory.eINSTANCE.createUDInformation();
 				this.mapSMetaAnnotation2UDInformation(sMetaAnno, udInfo);
