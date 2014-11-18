@@ -50,7 +50,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 	
 	@Deprecated
 	public static final String PROP_TOKEN_TIER="salt.token";
-	public static final String PROP_TOKENSEP="salt.tokenSeperator";
+	public static final String PROP_TOKENSEP="salt.tokenSeparator";
 	public static final String PROP_TIERMERGE="salt.tierMerge";
 	public static final String PROP_LAYERS_SMALL="salt.layers";
 	public static final String PROP_LAYERS_BIG="salt.Layers";

@@ -722,8 +722,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				text.append(event.getValue());
 			end = text.length();
 			String sep = this.getTokenSepearator();
-			if ((eventValue != null) && (sep != null))
+			System.out.println("SEPARATOR: "+ sep);
+			if ((eventValue != null) && (sep != null)){
 				text.append(sep);
+				System.out.println("APPEND SEPARATOR: "+ sep);
+			}
 			// creating and adding token
 			SToken sToken = SaltFactory.eINSTANCE.createSToken();
 			getSDocument().getSDocumentGraph().addSNode(sToken);
