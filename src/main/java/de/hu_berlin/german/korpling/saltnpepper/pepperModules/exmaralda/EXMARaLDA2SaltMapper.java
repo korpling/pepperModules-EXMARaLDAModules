@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -718,14 +717,13 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		for (Event event : eTextTier.getEvents()) {
 			start = text.length();
 			String eventValue = event.getValue();
-			if (eventValue != null)
+			if (eventValue != null){
 				text.append(event.getValue());
+			}
 			end = text.length();
 			String sep = this.getTokenSepearator();
-			System.out.println("SEPARATOR: "+ sep);
 			if ((eventValue != null) && (sep != null)){
 				text.append(sep);
-				System.out.println("APPEND SEPARATOR: "+ sep);
 			}
 			// creating and adding token
 			SToken sToken = SaltFactory.eINSTANCE.createSToken();
