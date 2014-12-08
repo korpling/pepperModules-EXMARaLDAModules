@@ -732,7 +732,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				// add sToken to layer if required
 				SLayer sLayer = this.tierNames2SLayers.get(eTextTier.getCategory());
 				if (sLayer != null) {
-					sLayer.getSNodes().add(sToken);
+					sToken.getSLayers().add(sLayer);
 				}
 			}
 			// creating annotation for token
