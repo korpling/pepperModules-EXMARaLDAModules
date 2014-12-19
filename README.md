@@ -135,7 +135,9 @@ In this case all Event objects of tier with categorical name categoryname1 and c
 All Event objects contained in a tier to be merged, must refer to the same time ranges. Gaps in time line are allowed, see the events of column 3:
 
 ![token annotation in EXMARaLDA](./gh-site/img/tokAnnos_exm.jpg)
+
 and the mapped salt model .
+
 ![token annotation in salt](./gh-site/img/tokAnnos_salt.jpg)
 
 The two figures above show the representation in EXMARaLDA Partitur Editor, beyond the representation in Salt after mapping with the properties: 
@@ -158,8 +160,11 @@ salt.layers={layerName{Tier1.categoryName, Tier2.categoryName,...}},{...}
 ```
 
 Imagine the example of figures 
+
 ![layers in EXMARaLDA](./gh-site/img/layers_exm.jpg)
+
 and
+
 ![layers in salt](./gh-site/img/layers_salt.jpg)
 
 The two figures above show the representation in EXMARaLDA Partitur Editor, beyond the representation in Salt after mapping with the properties: 
@@ -185,5 +190,7 @@ When using the property saltSemantics.WORD a structural object like a SSToken or
 
 ### cleanModel
 Given two or more timeline objects having no corresponding event object on token tier, setting this property to true will create artificial event objects, having empty values. In an EXMARaLDA model it is possible, to have annotations which just overlap a part of the primary data. This is possible, because of the event-based concept of EXMARaLDA. Imagine the following sample: 
+
 ![sample of annotation having no corespondent event in primary data](./gh-site/img/cleanModel.png)
+
 Setting this property to true, adds an additional event in tier 'primary data' corresponding to event 'anno2' in tier 'annotation'. 
