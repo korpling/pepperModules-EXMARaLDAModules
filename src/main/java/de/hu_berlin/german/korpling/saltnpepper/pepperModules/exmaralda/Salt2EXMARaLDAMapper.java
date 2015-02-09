@@ -19,8 +19,6 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -92,12 +90,13 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	@Override
 	public DOCUMENT_STATUS mapSCorpus() {
-		if (getResourceURI()!= null){
-			File resourceFile= new File(getResourceURI().toFileString());
+		if (getResourceURI() != null) {
+			File resourceFile = new File(getResourceURI().toFileString());
 			resourceFile.mkdirs();
 		}
-		return(DOCUMENT_STATUS.COMPLETED);
+		return (DOCUMENT_STATUS.COMPLETED);
 	}
+
 	/**
 	 * {@inheritDoc PepperMapper#setSDocument(SDocument)}
 	 * 
@@ -105,11 +104,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 */
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
-		if (getSDocument().getSDocumentGraph() == null){
+		if (getSDocument().getSDocumentGraph() == null) {
 			getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
 		}
-		if (getResourceURI()!= null){
-			File resourceFile= new File(getResourceURI().toFileString());
+		if (getResourceURI() != null) {
+			File resourceFile = new File(getResourceURI().toFileString());
 			resourceFile.getParentFile().mkdirs();
 		}
 		this.setBasicTranscription(ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription());
@@ -193,11 +192,12 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 				metaInfo.setTranscriptionName(sMetaAnno.getValue().toString());
 			// map referenced file
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_REFERENCED_FILE)) {
-				/*try {*/
-//					new URL(sMetaAnno.getValue().toString());
-					metaInfo.setReferencedFile(sMetaAnno.getValue().toString());
-				/*} catch (MalformedURLException e) {
-				}*/
+				/* try { */
+				// new URL(sMetaAnno.getValue().toString());
+				metaInfo.setReferencedFile(sMetaAnno.getValue().toString());
+				/*
+				 * } catch (MalformedURLException e) { }
+				 */
 			} else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_COMMENT))
 				metaInfo.setComment(sMetaAnno.getValue().toString());
 			// map transcription convention
@@ -346,11 +346,17 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					if (sMediumAnno != null)
 						event.setMedium(EVENT_MEDIUM.get(sMediumAnno.getSValue().toString()));
 					if (sURLAnno != null) {
-						/*try {
-//							new URL(sMediumAnno.getSValue().toString());*/
-							event.setUrl(sMediumAnno.getSValue().toString());/*
-						} catch (MalformedURLException e) {
-						}*/
+						/*
+						 * try { // new URL(sMediumAnno.getSValue().toString());
+						 */
+						event.setUrl(sMediumAnno.getSValue().toString());/*
+																		 * }
+																		 * catch
+																		 * (
+																		 * MalformedURLException
+																		 * e) {
+																		 * }
+																		 */
 					}
 					this.mapSStructuredNode2Event(sNode, sAnno.getQName(), event);
 				}

@@ -30,64 +30,57 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperImport
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
-@Component(name="EXMARaLDAImporterJavaComponent", factory="PepperImporterComponentFactory")
-public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImporter
-{		
-	public static final String[] EXMARALDA_FILE_ENDINGS={"exb", "xml", "xmi", "exmaralda"};
-	
-	public EXMARaLDAImporter()
-	{
+@Component(name = "EXMARaLDAImporterJavaComponent", factory = "PepperImporterComponentFactory")
+public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImporter {
+	public static final String[] EXMARALDA_FILE_ENDINGS = { "exb", "xml", "xmi", "exmaralda" };
+
+	public EXMARaLDAImporter() {
 		super();
-		//setting name of module
+		// setting name of module
 		setName("EXMARaLDAImporter");
 
 		this.setProperties(new EXMARaLDAImporterProperties());
-		//set list of formats supported by this module
+		// set list of formats supported by this module
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
-		
-		//adding all file endings to list of endings for documents (necessary for importCorpusStructure)
-		for (String ending: EXMARALDA_FILE_ENDINGS)
+
+		// adding all file endings to list of endings for documents (necessary
+		// for importCorpusStructure)
+		for (String ending : EXMARALDA_FILE_ENDINGS)
 			this.getSDocumentEndings().add(ending);
 	}
 
 	/** emf resource loader **/
 	private ResourceSet resourceSet = null;
 
-	private ResourceSet getResourceSet()
-	{
-		if (resourceSet== null)
-		{
-			synchronized (this)
-			{
-				if (resourceSet== null)
-				{
+	private ResourceSet getResourceSet() {
+		if (resourceSet == null) {
+			synchronized (this) {
+				if (resourceSet == null) {
 					resourceSet = new ResourceSetImpl();
 					// Register XML resource factory
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exmaralda",new XMIResourceFactoryImpl());
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi",new XMIResourceFactoryImpl());
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb",new EXBResourceFactory());
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xml",new EXBResourceFactory());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exmaralda", new XMIResourceFactoryImpl());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb", new EXBResourceFactory());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xml", new EXBResourceFactory());
 				}
-				
+
 			}
 		}
-		return(resourceSet);
+		return (resourceSet);
 	}
-	
+
 	/**
-	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}.
-	 * {@inheritDoc PepperModule#createPepperMapper(SElementId)}
+	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}. {@inheritDoc
+	 * PepperModule#createPepperMapper(SElementId)}
 	 */
 	@Override
-	public PepperMapper createPepperMapper(SElementId sElementId)
-	{
-		EXMARaLDA2SaltMapper mapper= new EXMARaLDA2SaltMapper();
-		URI resourcePath= this.getSElementId2ResourceTable().get(sElementId);
-		if (sElementId.getSIdentifiableElement() instanceof SDocument)
-		{
+	public PepperMapper createPepperMapper(SElementId sElementId) {
+		EXMARaLDA2SaltMapper mapper = new EXMARaLDA2SaltMapper();
+		URI resourcePath = this.getSElementId2ResourceTable().get(sElementId);
+		if (sElementId.getSIdentifiableElement() instanceof SDocument) {
 			mapper.setResourceURI(resourcePath);
 			mapper.setResourceSet(getResourceSet());
 		}
-		return(mapper);
+		return (mapper);
 	}
 }

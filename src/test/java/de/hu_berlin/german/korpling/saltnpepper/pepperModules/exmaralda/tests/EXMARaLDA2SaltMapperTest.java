@@ -67,69 +67,69 @@ public class EXMARaLDA2SaltMapperTest {
 	}
 
 	/**
-	 * Tests the mapping of two transcription tiers having parallel events 
-	 * to two {@link STextualDS} objects.
+	 * Tests the mapping of two transcription tiers having parallel events to
+	 * two {@link STextualDS} objects.
 	 */
-	public void test(){
+	public void test() {
 		BasicTranscription basicTranscription = ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
-		TLI t1= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		TLI t1 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		basicTranscription.getCommonTimeLine().getTLIs().add(t1);
-		TLI t2= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		TLI t2 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		basicTranscription.getCommonTimeLine().getTLIs().add(t2);
-		TLI t3= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		TLI t3 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		basicTranscription.getCommonTimeLine().getTLIs().add(t3);
-		TLI t4= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		TLI t4 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		basicTranscription.getCommonTimeLine().getTLIs().add(t4);
-		TLI t5= ExmaraldaBasicFactory.eINSTANCE.createTLI();
+		TLI t5 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		basicTranscription.getCommonTimeLine().getTLIs().add(t5);
-		
-		Tier text1= ExmaraldaBasicFactory.eINSTANCE.createTier();
+
+		Tier text1 = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		text1.setType(TIER_TYPE.T);
 		basicTranscription.getTiers().add(text1);
-		
-		Event a= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+
+		Event a = ExmaraldaBasicFactory.eINSTANCE.createEvent();
 		a.setValue("A");
 		a.setStart(t1);
 		a.setEnd(t2);
 		text1.getEvents().add(a);
-		
-		Event sample= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+
+		Event sample = ExmaraldaBasicFactory.eINSTANCE.createEvent();
 		sample.setValue("Sample");
 		sample.setStart(t2);
 		sample.setEnd(t3);
 		text1.getEvents().add(sample);
-		
-		Event text= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+
+		Event text = ExmaraldaBasicFactory.eINSTANCE.createEvent();
 		text.setValue("Text");
 		text.setStart(t3);
 		text.setEnd(t4);
 		text1.getEvents().add(text);
-		
-		Tier text2= ExmaraldaBasicFactory.eINSTANCE.createTier();
+
+		Tier text2 = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		text2.setType(TIER_TYPE.T);
 		basicTranscription.getTiers().add(text2);
-		
-		Event oh= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+
+		Event oh = ExmaraldaBasicFactory.eINSTANCE.createEvent();
 		oh.setValue("Oh");
 		oh.setStart(t2);
 		oh.setEnd(t3);
 		text1.getEvents().add(oh);
-		
-		Event yes= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+
+		Event yes = ExmaraldaBasicFactory.eINSTANCE.createEvent();
 		yes.setValue("yes");
 		yes.setStart(t3);
 		yes.setEnd(t4);
 		text1.getEvents().add(yes);
-		
+
 		getFixture().setBasicTranscription(basicTranscription);
 		getFixture().mapSDocument();
-		
-		SDocumentGraph sDocGraph= getFixture().getSDocument().getSDocumentGraph(); 
+
+		SDocumentGraph sDocGraph = getFixture().getSDocument().getSDocumentGraph();
 		assertNotNull(sDocGraph);
 		assertEquals(2, sDocGraph.getSTextualDSs().size());
 		assertEquals("A sample text", sDocGraph.getSTextualDSs().get(0).getSText());
 		assertEquals("oh yes", sDocGraph.getSTextualDSs().get(1).getSText());
-		
+
 		assertEquals(5, sDocGraph.getSTokens().size());
 		assertEquals("A", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
 		assertEquals("sample", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
@@ -137,29 +137,36 @@ public class EXMARaLDA2SaltMapperTest {
 		assertEquals("Oh", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
 		assertEquals("yes", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
 	}
+
 	/**
 	 * Tests the helper method, for the following case:
 	 * <table border= "1">
-	 *   <tr><td>This</td><td>is</td><td>a</td><td>sample</td><td>text</td></tr>
-	 * </table>  
+	 * <tr>
+	 * <td>This</td>
+	 * <td>is</td>
+	 * <td>a</td>
+	 * <td>sample</td>
+	 * <td>text</td>
+	 * </tr>
+	 * </table>
 	 * with the sequence from 6 to 12
 	 */
 	@Test
-	public void testGetAdjacentSTokens(){
+	public void testGetAdjacentSTokens() {
 		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
 		getFixture().getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		STextualDS text= getFixture().getSDocument().getSDocumentGraph().createSTextualDS("This is a sample text");
+		STextualDS text = getFixture().getSDocument().getSDocumentGraph().createSTextualDS("This is a sample text");
 		getFixture().getSDocument().getSDocumentGraph().tokenize();
-		
-		SDataSourceSequence sequence= SaltFactory.eINSTANCE.createSDataSourceSequence();
+
+		SDataSourceSequence sequence = SaltFactory.eINSTANCE.createSDataSourceSequence();
 		sequence.setSSequentialDS(text);
 		sequence.setSStart(6);
 		sequence.setSEnd(12);
-		
-		List<SToken> tokens= getFixture().getAdjacentSTokens(sequence);
+
+		List<SToken> tokens = getFixture().getAdjacentSTokens(sequence);
 		assertEquals(3, tokens.size());
 	}
-	
+
 	/**
 	 * Checks if completion in missing coverage of {@link TLI} objects by
 	 * {@link Event} contained in token {@link Tier} objects works correctly. e=
@@ -255,8 +262,9 @@ public class EXMARaLDA2SaltMapperTest {
 		assertEquals(tli3, event2.getStart());
 		assertEquals(tli4, event2.getEnd());
 	}
+
 	@Test
-	public void test_Speaker2SLayer(){
+	public void test_Speaker2SLayer() {
 		BasicTranscription basicTranscription = ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
 		TLI tli1 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		tli1.setId("1");
@@ -264,7 +272,7 @@ public class EXMARaLDA2SaltMapperTest {
 		TLI tli2 = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 		tli2.setId("2");
 		basicTranscription.getCommonTimeLine().getTLIs().add(tli2);
-		
+
 		Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		tokenTier.setCategory("tok");
 		basicTranscription.getTiers().add(tokenTier);
@@ -274,34 +282,34 @@ public class EXMARaLDA2SaltMapperTest {
 		tok.setStart(tli1);
 		tok.setEnd(tli2);
 		tokenTier.getEvents().add(tok);
-		
-		Speaker speaker= ExmaraldaBasicFactory.eINSTANCE.createSpeaker();
+
+		Speaker speaker = ExmaraldaBasicFactory.eINSTANCE.createSpeaker();
 		speaker.setId("spk0");
 		speaker.setAbbreviation("Bart");
 		basicTranscription.getSpeakertable().add(speaker);
-		
-		Tier tier= ExmaraldaBasicFactory.eINSTANCE.createTier();
+
+		Tier tier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		tier.setType(TIER_TYPE.A);
 		tier.setCategory("anno");
 		tier.setSpeaker(speaker);
 		basicTranscription.getTiers().add(tier);
-		
-		Event event= ExmaraldaBasicFactory.eINSTANCE.createEvent();
+
+		Event event = ExmaraldaBasicFactory.eINSTANCE.createEvent();
 		event.setStart(tli1);
 		event.setEnd(tli2);
 		event.setValue("value");
 		tier.getEvents().add(event);
-		
+
 		getFixture().setBasicTranscription(basicTranscription);
 		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
 		getFixture().setProperties(new EXMARaLDAImporterProperties());
 		getFixture().getProperties().setPropertyValue(EXMARaLDAImporterProperties.PROP_TOKEN_TIER, "tok");
 		getFixture().mapSDocument();
-		
+
 		assertNotNull(getFixture().getSDocument().getSDocumentGraph());
 		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().size());
-		
-		SAnnotation sAnno= getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0);
+
+		SAnnotation sAnno = getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0);
 		assertEquals("anno", sAnno.getSName());
 		assertEquals("value", sAnno.getSValue());
 		assertEquals("Bart", sAnno.getSNS());
