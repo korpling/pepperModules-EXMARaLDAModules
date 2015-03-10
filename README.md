@@ -64,13 +64,13 @@ or
 ### c) Use properties
 ```xml
 <importer name="EXMARaLDAImporter" path="PATH_TO_CORPUS">
-  <property key="PROPERTY_NAME">PROPERTY_VALUE</key>
+  <property key="PROPERTY_NAME">PROPERTY_VALUE</property>
 </importer>
 ```
 or
 ```xml
 <exporter name="EXMARaLDAExporter" path="PATH_TO_CORPUS">
-  <property key="PROPERTY_NAME">PROPERTY_VALUE</key>
+  <property key="PROPERTY_NAME">PROPERTY_VALUE</property>
 </exporter>
 ```
 
