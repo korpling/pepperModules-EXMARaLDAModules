@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Humboldt University of Berlin, INRIA.
+ * Copyright 2009 Humboldt-Universität zu Berlin, INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,36 +34,35 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
- * Defines the properties to be used for the {@link EXMARaLDAImporter}. 
+ * Defines the properties to be used for the {@link EXMARaLDAImporter}.
+ * 
  * @author Florian Zipser
  *
  */
-public class EXMARaLDAImporterProperties extends PepperModuleProperties 
-{
-	private static final Logger logger= LoggerFactory.getLogger(EXMARaLDAImporter.class);
+public class EXMARaLDAImporterProperties extends PepperModuleProperties {
+	private static final Logger logger = LoggerFactory.getLogger(EXMARaLDAImporter.class);
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3941331601854796510L;
 
-	public static final String PREFIX="exmaralda.importer.";
-	
+	public static final String PREFIX = "exmaralda.importer.";
+
 	@Deprecated
-	public static final String PROP_TOKEN_TIER="salt.token";
-	public static final String PROP_TOKENSEP="salt.tokenSeperator";
-	public static final String PROP_TIERMERGE="salt.tierMerge";
-	public static final String PROP_LAYERS_SMALL="salt.layers";
-	public static final String PROP_LAYERS_BIG="salt.Layers";
-	public static final String PROP_URI_ANNOTATION="salt.URIAnnotation";
-	public static final String PROP_SALT_SEMANTICS_POS="saltSemantics.POS";
-	public static final String PROP_SALT_SEMANTICS_LEMMA="saltSemantics.LEMMA";
-	public static final String PROP_SALT_SEMANTICS_WORD="saltSemantics.WORD";
-	public static final String PROP_CLEAN_MODEL= "cleanModel";
-	
-	public EXMARaLDAImporterProperties()
-	{
-		this.addProperty(new PepperModuleProperty<String>(PROP_TOKEN_TIER, String.class, "With this property you can mark the Tier object which shall be interpreted as the one containing the tokenization and the primary text.", true));
-		this.addProperty(new PepperModuleProperty<String>(PROP_TOKENSEP, String.class, "With this property you can set a single sign or a sequence of signs which shall be used between the concatenation of event values representing the primary data.",false));
+	public static final String PROP_TOKEN_TIER = "salt.token";
+	public static final String PROP_TOKENSEP = "salt.tokenSeparator";
+	public static final String PROP_TIERMERGE = "salt.tierMerge";
+	public static final String PROP_LAYERS_SMALL = "salt.layers";
+	public static final String PROP_LAYERS_BIG = "salt.Layers";
+	public static final String PROP_URI_ANNOTATION = "salt.URIAnnotation";
+	public static final String PROP_SALT_SEMANTICS_POS = "saltSemantics.POS";
+	public static final String PROP_SALT_SEMANTICS_LEMMA = "saltSemantics.LEMMA";
+	public static final String PROP_SALT_SEMANTICS_WORD = "saltSemantics.WORD";
+	public static final String PROP_CLEAN_MODEL = "cleanModel";
+
+	public EXMARaLDAImporterProperties() {
+		this.addProperty(new PepperModuleProperty(PROP_TOKEN_TIER, String.class, "With this property you can mark the Tier object which shall be interpreted as the one containing the tokenization and the primary text.", true));
+		this.addProperty(new PepperModuleProperty<String>(PROP_TOKENSEP, String.class, "With this property you can set a single sign or a sequence of signs which shall be used between the concatenation of event values representing the primary data.", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_TIERMERGE, String.class, "In EXMARaLDA there is just one value per each Event object. When mapping those data to Salt, this restriction results, that a SSpan or SToken object will be created for each Event object. To avoid this, you can mark a sequence of sets of tiers to map them to a single SSpan or SToken object in Salt.", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_LAYERS_SMALL, String.class, "With this property you can use the layer mechanism of Salt. This means, with this property, you can map all SToken or SSpan object caused by Event objects to an SLayer object. You can also group SToken or SSpan coming from Event objects contained in several Tier objects to the same SLayer object.", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_LAYERS_BIG, String.class, "With this property you can use the layer mechanism of Salt. This means, with this property, you can map all SToken or SSpan object caused by Event objects to an SLayer object. You can also group SToken or SSpan coming from Event objects contained in several Tier objects to the same SLayer object.", false));
@@ -73,13 +72,12 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 		this.addProperty(new PepperModuleProperty<String>(PROP_SALT_SEMANTICS_WORD, String.class, "You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing.", false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_CLEAN_MODEL, Boolean.class, "....", false, false));
 	}
+
 	@Deprecated
-	public Set<String> getTokenTiers()
-	{
-		String prop= ((String)this.getProperty(PROP_TOKEN_TIER).getValue());
+	public Set<String> getTokenTiers() {
+		String prop = ((String) this.getProperty(PROP_TOKEN_TIER).getValue());
 		Set<String> tokenTiers = new LinkedHashSet<String>();
-		if 	(	(prop != null)&&
-				(!prop.isEmpty())){
+		if ((prop != null) && (!prop.isEmpty())) {
 			if (prop.startsWith("{")) {
 				prop = prop.replace("{", "").replace("}", "");
 				String[] splitted = prop.split(",");
@@ -90,37 +88,37 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 				tokenTiers.add(prop.trim());
 			}
 		}
-		return(tokenTiers);
+		return (tokenTiers);
 	}
-	public String getTokenSeparator()
-	{
-		return((String)this.getProperty(PROP_TOKENSEP).getValue());
+
+	public String getTokenSeparator() {
+		return ((String) this.getProperty(PROP_TOKENSEP).getValue());
 	}
-	public String getTierMerge()
-	{
-		return((String)this.getProperty(PROP_TIERMERGE).getValue());
+
+	public String getTierMerge() {
+		return ((String) this.getProperty(PROP_TIERMERGE).getValue());
 	}
-	public String getURIAnnotation()
-	{
-		return((String)this.getProperty(PROP_URI_ANNOTATION).getValue());
+
+	public String getURIAnnotation() {
+		return ((String) this.getProperty(PROP_URI_ANNOTATION).getValue());
 	}
-	public String getPOS()
-	{
-		return((String)this.getProperty(PROP_SALT_SEMANTICS_POS).getValue());
+
+	public String getPOS() {
+		return ((String) this.getProperty(PROP_SALT_SEMANTICS_POS).getValue());
 	}
-	public String getLemma()
-	{
-		return((String)this.getProperty(PROP_SALT_SEMANTICS_LEMMA).getValue());
+
+	public String getLemma() {
+		return ((String) this.getProperty(PROP_SALT_SEMANTICS_LEMMA).getValue());
 	}
-	public String getWord()
-	{
-		return((String)this.getProperty(PROP_SALT_SEMANTICS_WORD).getValue());
+
+	public String getWord() {
+		return ((String) this.getProperty(PROP_SALT_SEMANTICS_WORD).getValue());
 	}
-	public Boolean getCleanModel()
-	{
-		return((Boolean)this.getProperty(PROP_CLEAN_MODEL).getValue());
+
+	public Boolean getCleanModel() {
+		return ((Boolean) this.getProperty(PROP_CLEAN_MODEL).getValue());
 	}
-	
+
 	/**
 	 * String for regex for for tier to layer mapping
 	 */
@@ -137,23 +135,24 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 	 * String for regex for for tier to layer mapping
 	 */
 	private static final String SIMPLE_LAYER_DESC = "\\{" + LAYER_NAME_DESC + SIMPLE_TIER_LIST_DESC + "\\}";
-	
+
 	/**
 	 * Checks the given properties, if the necessary ones are given and creates
 	 * the data-structures being needed to store the properties. Throws an
 	 * exception, if the needed properties are not there.
-	 * @return Relates the name of the tiers to the layers, to which they shall be
-	 * append.
+	 * 
+	 * @return Relates the name of the tiers to the layers, to which they shall
+	 *         be append.
 	 */
 	public Map<String, SLayer> getTier2SLayers() {
 		Hashtable<String, SLayer> tierNames2SLayers = new Hashtable<String, SLayer>();
-		
+
 		// tiers to SLayer-objects
-		String tier2SLayerStr = (String)this.getProperty(PROP_LAYERS_SMALL).getValue();
-		if (tier2SLayerStr== null){
-			tier2SLayerStr= (String)this.getProperty(PROP_LAYERS_BIG).getValue();
+		String tier2SLayerStr = (String) this.getProperty(PROP_LAYERS_SMALL).getValue();
+		if (tier2SLayerStr == null) {
+			tier2SLayerStr = (String) this.getProperty(PROP_LAYERS_BIG).getValue();
 		}
-		
+
 		if ((tier2SLayerStr != null) && (!tier2SLayerStr.trim().isEmpty())) {
 			// if a tier to layer mapping is given
 			// check if number of closing brackets is identical to number of
@@ -167,7 +166,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 				else if (tier2SLayerChar.equals('}'))
 					numberOfClosingBrackets++;
 			}
-			if (numberOfClosingBrackets != numberOfOpeningBrackets){
+			if (numberOfClosingBrackets != numberOfOpeningBrackets) {
 				throw new PepperModuleException("Cannot import the given data, because property file contains a corrupt value for property '" + EXMARaLDAImporterProperties.PROP_LAYERS_BIG + "'. Please check the breckets you used.");
 			}
 			tier2SLayerStr = tier2SLayerStr.replace(" ", "");
@@ -197,6 +196,6 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties
 				logger.warn("[EXMARaLDAImporter] It seems as if there is a syntax failure in the given special-param file in property '" + EXMARaLDAImporterProperties.PROP_LAYERS_BIG + "'. A value is given, but the layers to named could not have been extracted.");
 			}
 		}
-		return(tierNames2SLayers);
+		return (tierNames2SLayers);
 	}
 }

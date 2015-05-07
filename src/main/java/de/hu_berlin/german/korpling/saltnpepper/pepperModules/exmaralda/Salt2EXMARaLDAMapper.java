@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Humboldt University of Berlin, INRIA.
+ * Copyright 2009 Humboldt-Universität zu Berlin, INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -92,12 +90,13 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	@Override
 	public DOCUMENT_STATUS mapSCorpus() {
-		if (getResourceURI()!= null){
-			File resourceFile= new File(getResourceURI().toFileString());
+		if (getResourceURI() != null) {
+			File resourceFile = new File(getResourceURI().toFileString());
 			resourceFile.mkdirs();
 		}
-		return(DOCUMENT_STATUS.COMPLETED);
+		return (DOCUMENT_STATUS.COMPLETED);
 	}
+
 	/**
 	 * {@inheritDoc PepperMapper#setSDocument(SDocument)}
 	 * 
@@ -105,11 +104,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 */
 	@Override
 	public DOCUMENT_STATUS mapSDocument() {
-		if (getSDocument().getSDocumentGraph() == null){
+		if (getSDocument().getSDocumentGraph() == null) {
 			getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
 		}
-		if (getResourceURI()!= null){
-			File resourceFile= new File(getResourceURI().toFileString());
+		if (getResourceURI() != null) {
+			File resourceFile = new File(getResourceURI().toFileString());
 			resourceFile.getParentFile().mkdirs();
 		}
 		this.setBasicTranscription(ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription());
@@ -186,23 +185,24 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		for (SMetaAnnotation sMetaAnno : sDoc.getSMetaAnnotations()) {
 			// map project name
 			if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_PROJECT_NAME)) {
-				metaInfo.setProjectName(sMetaAnno.getValueString());
+				metaInfo.setProjectName(sMetaAnno.getValue().toString());
 			}
 			// map transcription name
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_NAME))
-				metaInfo.setTranscriptionName(sMetaAnno.getValueString());
+				metaInfo.setTranscriptionName(sMetaAnno.getValue().toString());
 			// map referenced file
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_REFERENCED_FILE)) {
-				/*try {*/
-//					new URL(sMetaAnno.getValueString());
-					metaInfo.setReferencedFile(sMetaAnno.getValueString());
-				/*} catch (MalformedURLException e) {
-				}*/
+				/* try { */
+				// new URL(sMetaAnno.getValue().toString());
+				metaInfo.setReferencedFile(sMetaAnno.getValue().toString());
+				/*
+				 * } catch (MalformedURLException e) { }
+				 */
 			} else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_COMMENT))
-				metaInfo.setComment(sMetaAnno.getValueString());
+				metaInfo.setComment(sMetaAnno.getValue().toString());
 			// map transcription convention
 			else if (sMetaAnno.getSName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION))
-				metaInfo.setTranscriptionConvention(sMetaAnno.getValueString());
+				metaInfo.setTranscriptionConvention(sMetaAnno.getValue().toString());
 			else {
 				UDInformation udInfo = ExmaraldaBasicFactory.eINSTANCE.createUDInformation();
 				this.mapSMetaAnnotation2UDInformation(sMetaAnno, udInfo);
@@ -346,11 +346,17 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					if (sMediumAnno != null)
 						event.setMedium(EVENT_MEDIUM.get(sMediumAnno.getSValue().toString()));
 					if (sURLAnno != null) {
-						/*try {
-//							new URL(sMediumAnno.getSValue().toString());*/
-							event.setUrl(sMediumAnno.getSValue().toString());/*
-						} catch (MalformedURLException e) {
-						}*/
+						/*
+						 * try { // new URL(sMediumAnno.getSValue().toString());
+						 */
+						event.setUrl(sMediumAnno.getSValue().toString());/*
+																		 * }
+																		 * catch
+																		 * (
+																		 * MalformedURLException
+																		 * e) {
+																		 * }
+																		 */
 					}
 					this.mapSStructuredNode2Event(sNode, sAnno.getQName(), event);
 				}

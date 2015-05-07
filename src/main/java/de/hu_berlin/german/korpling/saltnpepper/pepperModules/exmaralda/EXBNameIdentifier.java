@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Humboldt University of Berlin, INRIA.
+ * Copyright 2009 Humboldt-Universität zu Berlin, INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,14 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
-public class EXBNameIdentifier 
-{
-	public static String KW_EXB_PROJECT_NAME= "projectName"; 
-	public static String KW_EXB_TRANSCRIPTION_NAME= "transcriptionName";
-	public static String KW_EXB_REFERENCED_FILE= "referencedFile";
-	public static String KW_EXB_COMMENT= "comment";
-	public static String KW_EXB_TRANSCRIPTION_CONVENTION= "transcriptionConvention";
-	public static String KW_EXB_EVENT_MEDIUM= "medium";
-	public static String KW_EXB_EVENT_URL= "url";
-	public static String KW_EXB_CLEAN_MODEL= "cleanModel";
-	
-	
+public class EXBNameIdentifier {
+	public static String KW_EXB_PROJECT_NAME = "projectName";
+	public static String KW_EXB_TRANSCRIPTION_NAME = "transcriptionName";
+	public static String KW_EXB_REFERENCED_FILE = "referencedFile";
+	public static String KW_EXB_COMMENT = "comment";
+	public static String KW_EXB_TRANSCRIPTION_CONVENTION = "transcriptionConvention";
+	public static String KW_EXB_EVENT_MEDIUM = "medium";
+	public static String KW_EXB_EVENT_URL = "url";
+	public static String KW_EXB_CLEAN_MODEL = "cleanModel";
 
 }

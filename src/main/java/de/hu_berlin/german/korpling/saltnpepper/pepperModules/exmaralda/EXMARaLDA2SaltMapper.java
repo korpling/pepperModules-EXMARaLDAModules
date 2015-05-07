@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Humboldt University of Berlin, INRIA.
+ * Copyright 2009 Humboldt-Universität zu Berlin, INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -46,7 +45,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleDataException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
@@ -109,7 +107,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * casts {@link PepperModuleProperties} to
+	 * casts {@link PepperModulePropertiesImpl} to
 	 * {@link EXMARaLDAImporterProperties}
 	 **/
 	public EXMARaLDAImporterProperties getProps() {
@@ -149,7 +147,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		}
 
 		addProgress(0.5);
-		//creates some indexes to speed up computing
+		// creates some indexes to speed up computing
 		createIndexes();
 		this.getSDocument().getSDocumentGraph().setSId(this.getSDocument().getSId());
 		tierNames2SLayers = getProps().getTier2SLayers();
@@ -225,24 +223,29 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		setProgress(1.0);
 		return (DOCUMENT_STATUS.COMPLETED);
 	}
-	/** Stores all tokens corresponding to their start and end value in timeline. Start and end value are separated by # **/
-	private Map<String, List<SToken>> timelineIndex= new Hashtable<String, List<SToken>>();
+
 	/**
-	 * Creates an index for all Tokens, and their start and end value concerning the timeline (key is start value + # + end value). This index is used in method
-	 * {@link #mapTier2STextualDS(Tier, STextualDS, List)}. 
+	 * Stores all tokens corresponding to their start and end value in timeline.
+	 * Start and end value are separated by #
+	 **/
+	private Map<String, List<SToken>> timelineIndex = new Hashtable<String, List<SToken>>();
+
+	/**
+	 * Creates an index for all Tokens, and their start and end value concerning
+	 * the timeline (key is start value + # + end value). This index is used in
+	 * method {@link #mapTier2STextualDS(Tier, STextualDS, List)}.
 	 */
-	private void createIndexes(){
-		for (STimelineRelation rel: getSDocument().getSDocumentGraph().getSTimelineRelations()){
-			String id= rel.getSStart()+"#"+rel.getSEnd();
-			List<SToken> tokens= timelineIndex.get(id); 
-			if (tokens== null){
-				tokens= new ArrayList<SToken>();
+	private void createIndexes() {
+		for (STimelineRelation rel : getSDocument().getSDocumentGraph().getSTimelineRelations()) {
+			String id = rel.getSStart() + "#" + rel.getSEnd();
+			List<SToken> tokens = timelineIndex.get(id);
+			if (tokens == null) {
+				tokens = new ArrayList<SToken>();
 				timelineIndex.put(id, tokens);
-			}	
-			tokens.add((SToken)rel.getSSource());
+			}
+			tokens.add((SToken) rel.getSSource());
 		}
 	}
-	
 
 	/**
 	 * Checks a given EXMARalDA model given by the {@link BasicTranscription}
@@ -564,8 +567,8 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					} else
 						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier " + tier.getCategory() + "' because this event is not connected to the timeline.");
 					break;
-				}				
-				List<SToken> sTokens = timelineIndex.get(startPos+"#"+endPos);
+				}
+				List<SToken> sTokens = timelineIndex.get(startPos + "#" + endPos);
 
 				if (sTokens == null) {
 					SDataSourceSequence sequence = SaltFactory.eINSTANCE.createSDataSourceSequence();
@@ -573,12 +576,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					sequence.setSEnd(endPos);
 					sequence.setSSequentialDS(getSDocument().getSDocumentGraph().getSTimeline());
 
-					sTokens= getAdjacentSTokens(sequence);
-					if (sTokens.isEmpty()){
-						if (!getProps().getCleanModel()){
+					sTokens = getAdjacentSTokens(sequence);
+					if (sTokens.isEmpty()) {
+						if (!getProps().getCleanModel()) {
 							throw new PepperModuleDataException(this, "There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. Exception occurs in file '" + this.getResourceURI() + "'. You can try to set the property \"cleanModel\" to \"true\".");
-						}else{
-							throw new PepperModuleDataException(this, "There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. Exception occurs in file '" + this.getResourceURI() + "'. Unfortunatly property '"+EXMARaLDAImporterProperties.PROP_CLEAN_MODEL+"' did not helped here. ");
+						} else {
+							throw new PepperModuleDataException(this, "There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. Exception occurs in file '" + this.getResourceURI() + "'. Unfortunatly property '" + EXMARaLDAImporterProperties.PROP_CLEAN_MODEL + "' did not helped here. ");
 						}
 					}
 				}
@@ -596,47 +599,60 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * Returns a list of tokens, which are not exactly in the passed sequence. That means, each token
-	 * starting or ending inside the range is returned.
-	 * This method should help in case of a token tier was not minimal. For instance imagine a tier containing A, B and C.
+	 * Returns a list of tokens, which are not exactly in the passed sequence.
+	 * That means, each token starting or ending inside the range is returned.
+	 * This method should help in case of a token tier was not minimal. For
+	 * instance imagine a tier containing A, B and C.
 	 * <table border= "1">
-	 *   <tr><td>t1</td><td>t2</td><td>t3</td><td>t4</td><td>t5</td></tr>
-	 *   <tr><td></td><td colspan="3">token</td><td/></tr>
-	 *   <tr><td colspan="2">A</td><td>B</td><td colspan="2">C</td></tr>
-	 * </table>  
+	 * <tr>
+	 * <td>t1</td>
+	 * <td>t2</td>
+	 * <td>t3</td>
+	 * <td>t4</td>
+	 * <td>t5</td>
+	 * </tr>
+	 * <tr>
+	 * <td></td>
+	 * <td colspan="3">token</td>
+	 * <td/>
+	 * </tr>
+	 * <tr>
+	 * <td colspan="2">A</td>
+	 * <td>B</td>
+	 * <td colspan="2">C</td>
+	 * </tr>
+	 * </table>
+	 * 
 	 * @param sequence
 	 * @return
 	 */
-	public List<SToken> getAdjacentSTokens(SDataSourceSequence sequence){
-		List<SToken> sTokens= new ArrayList<SToken>();
-		EList<? extends SSequentialRelation> sSeqRels= null;
+	public List<SToken> getAdjacentSTokens(SDataSourceSequence sequence) {
+		List<SToken> sTokens = new ArrayList<SToken>();
+		EList<? extends SSequentialRelation> sSeqRels = null;
 		if (sequence.getSSequentialDS() instanceof STextualDS)
-			sSeqRels= getSDocument().getSDocumentGraph().getSTextualRelations();
+			sSeqRels = getSDocument().getSDocumentGraph().getSTextualRelations();
 		else if (sequence.getSSequentialDS() instanceof STimeline)
-			sSeqRels=getSDocument().getSDocumentGraph().getSTimelineRelations();
-		else 
+			sSeqRels = getSDocument().getSDocumentGraph().getSTimelineRelations();
+		else
 			throw new SaltModuleException("Cannot compute overlaped nodes, because the given dataSource is not supported by this method.");
-		
-		for (SSequentialRelation rel: sSeqRels){
-			// walk through all textual  relations
-			if (sequence.getSSequentialDS().equals(rel.getSTarget())){
-				if (	(rel.getSStart()<= sequence.getSStart())&&
-						(rel.getSEnd() > sequence.getSStart())){
-					if (rel.getSSource() instanceof SToken){
-						sTokens.add((SToken)rel.getSSource());
+
+		for (SSequentialRelation rel : sSeqRels) {
+			// walk through all textual relations
+			if (sequence.getSSequentialDS().equals(rel.getSTarget())) {
+				if ((rel.getSStart() <= sequence.getSStart()) && (rel.getSEnd() > sequence.getSStart())) {
+					if (rel.getSSource() instanceof SToken) {
+						sTokens.add((SToken) rel.getSSource());
 					}
-				}else if (	(rel.getSStart() >= sequence.getSStart())&&
-							(rel.getSStart() < sequence.getSEnd())){
-					if (rel.getSSource() instanceof SToken){
-						sTokens.add((SToken)rel.getSSource());
+				} else if ((rel.getSStart() >= sequence.getSStart()) && (rel.getSStart() < sequence.getSEnd())) {
+					if (rel.getSSource() instanceof SToken) {
+						sTokens.add((SToken) rel.getSSource());
 					}
 				}
 			}
 		}
-		return(sTokens);
+		return (sTokens);
 	}
-	
-	
+
 	/**
 	 * Maps the medium and url of an event and maps it to SAnnotations of an
 	 * SNode.
@@ -718,12 +734,14 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		for (Event event : eTextTier.getEvents()) {
 			start = text.length();
 			String eventValue = event.getValue();
-			if (eventValue != null)
+			if (eventValue != null) {
 				text.append(event.getValue());
+			}
 			end = text.length();
 			String sep = this.getTokenSepearator();
-			if ((eventValue != null) && (sep != null))
+			if ((eventValue != null) && (sep != null)) {
 				text.append(sep);
+			}
 			// creating and adding token
 			SToken sToken = SaltFactory.eINSTANCE.createSToken();
 			getSDocument().getSDocumentGraph().addSNode(sToken);
@@ -731,7 +749,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				// add sToken to layer if required
 				SLayer sLayer = this.tierNames2SLayers.get(eTextTier.getCategory());
 				if (sLayer != null) {
-					sLayer.getSNodes().add(sToken);
+					sToken.getSLayers().add(sLayer);
 				}
 			}
 			// creating annotation for token
@@ -776,7 +794,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			this.mapEvent2SToken(event, this.getBasicTranscription().getCommonTimeLine(), sToken, getSDocument().getSDocumentGraph().getSTimeline());
 		}
 		sText.setSText(text.toString());
-		
+
 		for (Tier tier : textSlot) {
 			if (!tier.equals(eTextTier)) {
 				// if tier is annotation tier
@@ -788,7 +806,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					sequence.setSStart(startPos);
 					sequence.setSEnd(endPos);
 					sequence.setSSequentialDS(getSDocument().getSDocumentGraph().getSTimeline());
-					
+
 					List<SToken> sTokens = getSDocument().getSDocumentGraph().getSTokensBySequence(sequence);
 
 					if (sTokens != null) {

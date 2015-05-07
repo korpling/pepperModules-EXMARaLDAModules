@@ -1,5 +1,5 @@
 /**
- * Copyright 2009 Humboldt University of Berlin, INRIA.
+ * Copyright 2009 Humboldt-Universität zu Berlin, INRIA.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,33 +29,30 @@ import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImpor
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
 
-public class EXMARaLDAImporterTest extends PepperImporterTest
-{	
-	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
-	
+public class EXMARaLDAImporterTest extends PepperImporterTest {
+	URI resourceURI = URI.createFileURI(new File(".").getAbsolutePath());
+
 	@Before
-	public void setUp() throws Exception 
-	{
+	public void setUp() throws Exception {
 		super.setFixture(new EXMARaLDAImporter());
 		super.getFixture().setSaltProject(SaltCommonFactory.eINSTANCE.createSaltProject());
 		super.setResourcesURI(resourceURI);
-		
-		//setting resources
+
+		// setting resources
 		this.getFixture().setResources(resourceURI);
-		
-		//set formats to support
-		FormatDesc formatDef= new FormatDesc();
+
+		// set formats to support
+		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		this.supportedFormatsCheck.add(formatDef);
 	}
-	
+
 	@Test
-	public void testSetGetCorpusDefinition()
-	{
-		//TODO somethong to test???
-		CorpusDesc corpDef= new CorpusDesc();
-		FormatDesc formatDef= new FormatDesc();
+	public void testSetGetCorpusDefinition() {
+		// TODO somethong to test???
+		CorpusDesc corpDef = new CorpusDesc();
+		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		corpDef.setFormatDesc(formatDef);
