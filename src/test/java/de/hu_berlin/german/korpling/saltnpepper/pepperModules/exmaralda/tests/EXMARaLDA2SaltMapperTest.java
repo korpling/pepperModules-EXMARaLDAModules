@@ -273,8 +273,14 @@ public class EXMARaLDA2SaltMapperTest {
 		tli2.setId("2");
 		basicTranscription.getCommonTimeLine().getTLIs().add(tli2);
 
+		Speaker speaker = ExmaraldaBasicFactory.eINSTANCE.createSpeaker();
+		speaker.setId("spk0");
+		speaker.setAbbreviation("Bart");
+		basicTranscription.getSpeakertable().add(speaker);
+		
 		Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		tokenTier.setCategory("tok");
+		tokenTier.setSpeaker(speaker);
 		basicTranscription.getTiers().add(tokenTier);
 
 		Event tok = ExmaraldaBasicFactory.eINSTANCE.createEvent();
@@ -283,10 +289,6 @@ public class EXMARaLDA2SaltMapperTest {
 		tok.setEnd(tli2);
 		tokenTier.getEvents().add(tok);
 
-		Speaker speaker = ExmaraldaBasicFactory.eINSTANCE.createSpeaker();
-		speaker.setId("spk0");
-		speaker.setAbbreviation("Bart");
-		basicTranscription.getSpeakertable().add(speaker);
 
 		Tier tier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		tier.setType(TIER_TYPE.A);
