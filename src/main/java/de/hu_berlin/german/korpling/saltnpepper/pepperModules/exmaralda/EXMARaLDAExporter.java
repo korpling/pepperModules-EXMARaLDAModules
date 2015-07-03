@@ -17,6 +17,7 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
 
+import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
@@ -33,6 +34,9 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		super();
 		// setting name of module
 		setName("EXMARaLDAExporter");
+		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-EXMARaLDAModules"));
+		setDesc("This exporter transforms a Salt model into the exb format for EXMARaLDA.  ");
 		// set list of formats supported by this module
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
 		setSDocumentEnding(FILE_EXTENION);

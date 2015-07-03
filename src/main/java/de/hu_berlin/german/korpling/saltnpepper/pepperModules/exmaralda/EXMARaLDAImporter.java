@@ -38,7 +38,9 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 		super();
 		// setting name of module
 		setName("EXMARaLDAImporter");
-
+		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-EXMARaLDAModules"));
+		setDesc("This importer transforms data in the exb format of EXMARaLDA to a Salt model. ");
 		this.setProperties(new EXMARaLDAImporterProperties());
 		// set list of formats supported by this module
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
