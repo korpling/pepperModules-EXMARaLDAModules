@@ -729,7 +729,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			start = text.length();
 			String eventValue = event.getValue();
 			if (eventValue != null) {
-				text.append(event.getValue());
+				if (getProps().isTrimToken()) {
+					text.append(eventValue.trim());
+				}else{
+					text.append(eventValue);
+				}
 			}
 			end = text.length();
 			String sep = this.getTokenSepearator();

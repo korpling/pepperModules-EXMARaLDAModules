@@ -39,15 +39,10 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
  * @author Florian Zipser
  *
  */
+@SuppressWarnings("serial")
 public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	private static final Logger logger = LoggerFactory.getLogger(EXMARaLDAImporter.class);
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3941331601854796510L;
-
-	public static final String PREFIX = "exmaralda.importer.";
-
+	
 	@Deprecated
 	public static final String PROP_TOKEN_TIER = "salt.token";
 	public static final String PROP_TOKENSEP = "salt.tokenSeparator";
@@ -59,6 +54,8 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	public static final String PROP_SALT_SEMANTICS_LEMMA = "saltSemantics.LEMMA";
 	public static final String PROP_SALT_SEMANTICS_WORD = "saltSemantics.WORD";
 	public static final String PROP_CLEAN_MODEL = "cleanModel";
+	/** When this property is true, all tokens defined in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed. **/
+	public static final String PROP_TRIM_TOKEN = "trimToken";
 
 	public EXMARaLDAImporterProperties() {
 		this.addProperty(new PepperModuleProperty(PROP_TOKEN_TIER, String.class, "With this property you can mark the Tier object which shall be interpreted as the one containing the tokenization and the primary text.", true));
@@ -71,6 +68,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 		this.addProperty(new PepperModuleProperty<String>(PROP_SALT_SEMANTICS_LEMMA, String.class, "You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing.", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_SALT_SEMANTICS_WORD, String.class, "You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing.", false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_CLEAN_MODEL, Boolean.class, "....", false, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(PROP_TRIM_TOKEN, Boolean.class, "When this property is true, all tokens defined in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed. ", false, false));
 	}
 
 	@Deprecated
@@ -119,6 +117,9 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 		return ((Boolean) this.getProperty(PROP_CLEAN_MODEL).getValue());
 	}
 
+	public Boolean isTrimToken() {
+		return ((Boolean) this.getProperty(PROP_TRIM_TOKEN).getValue());
+	}
 	/**
 	 * String for regex for for tier to layer mapping
 	 */

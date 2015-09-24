@@ -114,6 +114,7 @@ properties to customize importer behaviour
 |saltSemantics.LEMMA |Tier.categoryName	                                            |optional            |	-- |
 |saltSemantics.WORD  |Tier.categoryName	                                            |optional            |	-- |
 |cleanModel          |Boolean	                                                    |optional            |	-- |
+|trimToken           |Boolean	                                                    |optional            |	-- |
 
 ### salt.tokenSeparator
 With the property salt.tokenSeparatoryou can set a single sign or a sequence of signs which shall be used between the concatenation of event values representing the primary data. 
@@ -194,3 +195,6 @@ Given two or more timeline objects having no corresponding event object on token
 ![sample of annotation having no corespondent event in primary data](./gh-site/img/cleanModel.png)
 
 Setting this property to true, adds an additional event in tier 'primary data' corresponding to event 'anno2' in tier 'annotation'. 
+
+### trimToken
+When this property is true, all tokens defined in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed.
