@@ -240,7 +240,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 * <ul>
 	 * <li>Given two or more {@link TLI} objects having no corresponding
 	 * {@link Event} object on token tier: Create artificial {@link Event}
-	 * objects, having empty values.</li>
+	 * objects, a space character as value.</li>
 	 * </ul>
 	 * 
 	 * @param basicTranscription
@@ -270,7 +270,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 						if (!hasEvent) {
 							// missing event found
 							Event event = ExmaraldaBasicFactory.eINSTANCE.createEvent();
-							event.setValue("");
+							event.setValue(" ");
 							event.setStart(tli);
 							int endTliPos = basicTranscription.getCommonTimeLine().getTLIs().indexOf(tli) + 1;
 							event.setEnd(basicTranscription.getCommonTimeLine().getTLIs().get(endTliPos));
