@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
+package org.corpus_tools.peppermodules.exmaralda.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.net.MalformedURLException;
 
+import org.corpus_tools.peppermodules.exmaralda.EXMARaLDA2SaltMapper;
+import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAImporterProperties;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +39,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.MetaInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 

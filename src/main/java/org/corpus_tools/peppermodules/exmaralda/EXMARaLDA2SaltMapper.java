@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
+package org.corpus_tools.peppermodules.exmaralda;
 
 import java.io.File;
 import java.io.IOException;

@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
+package org.corpus_tools.peppermodules.exmaralda;
 
 import java.util.Hashtable;
 import java.util.LinkedHashSet;

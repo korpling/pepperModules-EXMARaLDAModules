@@ -15,10 +15,11 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
+package org.corpus_tools.peppermodules.exmaralda.tests;
 
 import java.io.File;
 
+import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAImporter;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +27,6 @@ import org.junit.Test;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImporterTest;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporter;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
 
 public class EXMARaLDAImporterTest extends PepperImporterTest {

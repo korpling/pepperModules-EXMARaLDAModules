@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda;
+package org.corpus_tools.peppermodules.exmaralda;
 
 public class EXBNameIdentifier {
 	public static String KW_EXB_PROJECT_NAME = "projectName";

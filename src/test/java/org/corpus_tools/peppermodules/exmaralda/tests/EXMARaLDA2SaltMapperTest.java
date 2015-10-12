@@ -15,13 +15,15 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.tests;
+package org.corpus_tools.peppermodules.exmaralda.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.corpus_tools.peppermodules.exmaralda.EXMARaLDA2SaltMapper;
+import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAImporterProperties;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.junit.Before;
@@ -34,8 +36,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDA2SaltMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.exmaralda.EXMARaLDAImporterProperties;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
