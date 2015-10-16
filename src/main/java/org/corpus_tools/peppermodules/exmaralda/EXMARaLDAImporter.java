@@ -17,6 +17,12 @@
  */
 package org.corpus_tools.peppermodules.exmaralda;
 
+import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.impl.PepperImporterImpl;
+import org.corpus_tools.pepper.modules.PepperImporter;
+import org.corpus_tools.pepper.modules.PepperMapper;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -24,11 +30,6 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.osgi.service.component.annotations.Component;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperImporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperImporterImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 @Component(name = "EXMARaLDAImporterJavaComponent", factory = "PepperImporterComponentFactory")
 public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImporter {
@@ -38,17 +39,18 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 		super();
 		// setting name of module
 		setName("EXMARaLDAImporter");
-		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setSupplierContact(URI.createURI(PepperConfiguration.EMAIL));
 		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-EXMARaLDAModules"));
 		setDesc("This importer transforms data in the exb format of EXMARaLDA to a Salt model. ");
-		this.setProperties(new EXMARaLDAImporterProperties());
+		setProperties(new EXMARaLDAImporterProperties());
 		// set list of formats supported by this module
-		this.addSupportedFormat("EXMARaLDA", "1.0", null);
+		addSupportedFormat("EXMARaLDA", "1.0", null);
 
 		// adding all file endings to list of endings for documents (necessary
 		// for importCorpusStructure)
-		for (String ending : EXMARALDA_FILE_ENDINGS)
-			this.getSDocumentEndings().add(ending);
+		for (String ending : EXMARALDA_FILE_ENDINGS){
+			getDocumentEndings().add(ending);
+		}
 	}
 
 	/** emf resource loader **/
@@ -73,13 +75,13 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 
 	/**
 	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}. {@inheritDoc
-	 * PepperModule#createPepperMapper(SElementId)}
+	 * PepperModule#createPepperMapper(Identifier)}
 	 */
 	@Override
-	public PepperMapper createPepperMapper(SElementId sElementId) {
+	public PepperMapper createPepperMapper(Identifier sElementId) {
 		EXMARaLDA2SaltMapper mapper = new EXMARaLDA2SaltMapper();
-		URI resourcePath = this.getSElementId2ResourceTable().get(sElementId);
-		if (sElementId.getSIdentifiableElement() instanceof SDocument) {
+		URI resourcePath = getIdentifier2ResourceTable().get(sElementId);
+		if (sElementId.getIdentifiableElement() instanceof SDocument) {
 			mapper.setResourceURI(resourcePath);
 			mapper.setResourceSet(getResourceSet());
 		}

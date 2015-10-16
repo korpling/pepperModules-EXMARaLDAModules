@@ -17,17 +17,17 @@
  */
 package org.corpus_tools.peppermodules.exmaralda;
 
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusDocumentRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SCorpusDocumentRelation;
+import org.corpus_tools.salt.common.SCorpusGraph;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.common.STextualRelation;
+import org.corpus_tools.salt.common.SToken;
+import org.corpus_tools.salt.common.SaltProject;
+import org.corpus_tools.salt.core.SAnnotation;
+import org.corpus_tools.salt.graph.Identifier;
 
 public class ContentCreator 
 {
@@ -35,119 +35,100 @@ public class ContentCreator
 	public static void createCorpus1(SaltProject saltProject)
 	{
 		createCorpusStructure1(saltProject);
-		SElementId sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId("corp1/doc1");
-		SDocument doc= saltProject.getSCorpusGraphs().get(0).getSDocuments().get(0);
+		SDocument doc= saltProject.getCorpusGraphs().get(0).getDocuments().get(0);
 		createDocumentStructure1(doc);
 	}
 	
 	public static void createCorpusStructure1(SaltProject saltProject)
 	{
 		{//creating corpus structure
-			SCorpusGraph corpGraph= SaltCommonFactory.eINSTANCE.createSCorpusGraph();
-			saltProject.getSCorpusGraphs().add(corpGraph);
+			SCorpusGraph corpGraph= SaltFactory.createSCorpusGraph();
+			saltProject.addCorpusGraph(corpGraph);
 			//		corp1
 			//		|
 			//		doc1
 			
 			//corp1
-			SElementId sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-			sElementId.setSId("corp1");
-			SCorpus corp1= SaltCommonFactory.eINSTANCE.createSCorpus();
-			corp1.setSName("corp1");
-			corp1.setSElementId(sElementId);
-			corpGraph.getSCorpora().add(corp1);
+			SCorpus corp1= SaltFactory.createSCorpus();
+			corp1.setName("corp1");
+			SaltFactory.createIdentifier(corp1, "corp1");
+			corpGraph.getCorpora().add(corp1);
 			
 			//doc1
-			SDocument doc1= SaltCommonFactory.eINSTANCE.createSDocument();
-			sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-			sElementId.setSId("corp1/doc1");
-			doc1.setSElementId(sElementId);
-			doc1.setSName("doc1");
-			corpGraph.getSDocuments().add(doc1);
+			SDocument doc1= SaltFactory.createSDocument();
+			SaltFactory.createIdentifier(corp1, "corp1/doc1");
+			doc1.setName("doc1");
+			corpGraph.getDocuments().add(doc1);
 			
 			//CorpDocRel
-			SCorpusDocumentRelation corpDocRel1= SaltCommonFactory.eINSTANCE.createSCorpusDocumentRelation();
-			sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-			sElementId.setSId("rel1");
-			corpDocRel1.setSElementId(sElementId);
-			corpDocRel1.setSName("rel1");
-			corpDocRel1.setSCorpus(corp1);
-			corpDocRel1.setSDocument(doc1);
-			corpGraph.getSCorpusDocumentRelations().add(corpDocRel1);
+			SCorpusDocumentRelation corpDocRel1= SaltFactory.createSCorpusDocumentRelation();
+			SaltFactory.createIdentifier(corpDocRel1, "rel1");
+			corpDocRel1.setName("rel1");
+			corpDocRel1.setSource(corp1);
+			corpDocRel1.setTarget(doc1);
+			corpGraph.addRelation(corpDocRel1);
 		}
 	}
 	
 	public static void createCorpusStructure2(SaltProject saltProject)
 	{
-		SCorpusGraph corpGraph= SaltCommonFactory.eINSTANCE.createSCorpusGraph();
-		saltProject.getSCorpusGraphs().add(corpGraph);
+		SCorpusGraph corpGraph= SaltFactory.createSCorpusGraph();
+		saltProject.addCorpusGraph(corpGraph);
 		//			corp2
 		//		/		\
 		//		doc1	doc2
 		
 		//corp2
-		SElementId sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId("corp2");
-		SCorpus corp2= SaltCommonFactory.eINSTANCE.createSCorpus();
-		corp2.setSName("corp2");
-		corp2.setSElementId(sElementId);
-		corpGraph.getSCorpora().add(corp2);
+		SCorpus corp2= SaltFactory.createSCorpus();
+		corp2.setName("corp2");
+		SaltFactory.createIdentifier(corp2, "corp2");
+		corpGraph.getCorpora().add(corp2);
 		
 		//doc1
-		SDocument doc1= SaltCommonFactory.eINSTANCE.createSDocument();
-		sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId("corp2/doc1");
-		doc1.setSElementId(sElementId);
-		doc1.setSName("doc1");
-		corpGraph.getSDocuments().add(doc1);
+		SDocument doc1= SaltFactory.createSDocument();
+		SaltFactory.createIdentifier(doc1, "corp2/doc1");
+		doc1.setName("doc1");
+		corpGraph.getDocuments().add(doc1);
 		
 		//CorpDocRel
-		SCorpusDocumentRelation corpDocRel1= SaltCommonFactory.eINSTANCE.createSCorpusDocumentRelation();
-		sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId("rel1");
-		corpDocRel1.setSElementId(sElementId);
-		corpDocRel1.setSName("rel1");
-		corpDocRel1.setSCorpus(corp2);
-		corpDocRel1.setSDocument(doc1);
-		corpGraph.getSCorpusDocumentRelations().add(corpDocRel1);
+		SCorpusDocumentRelation corpDocRel1= SaltFactory.createSCorpusDocumentRelation();
+		SaltFactory.createIdentifier(corpDocRel1, "rel1");
+		corpDocRel1.setName("rel1");
+		corpDocRel1.setSource(corp2);
+		corpDocRel1.setTarget(doc1);
+		corpGraph.getCorpusDocumentRelations().add(corpDocRel1);
 		
 		//doc2
-		SDocument doc2= SaltCommonFactory.eINSTANCE.createSDocument();
-		sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId("corp2/doc2");
-		doc2.setSElementId(sElementId);
-		doc2.setSName("doc2");
-		corpGraph.getSDocuments().add(doc2);
+		SDocument doc2= SaltFactory.createSDocument();
+		SaltFactory.createIdentifier(doc2, "corp2/doc2");
+		doc2.setName("doc2");
+		corpGraph.getDocuments().add(doc2);
 		
 		//CorpDocRel
-		SCorpusDocumentRelation corpDocRel2= SaltCommonFactory.eINSTANCE.createSCorpusDocumentRelation();
-		sElementId= SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId("rel2");
-		corpDocRel2.setSElementId(sElementId);
-		corpDocRel2.setSName("rel2");
-		corpDocRel2.setSCorpus(corp2);
-		corpDocRel2.setSDocument(doc2);
-		corpGraph.getSCorpusDocumentRelations().add(corpDocRel2);
+		SCorpusDocumentRelation corpDocRel2= SaltFactory.createSCorpusDocumentRelation();
+		SaltFactory.createIdentifier(corpDocRel2, "rel2");
+		corpDocRel2.setName("rel2");
+		corpDocRel2.setSource(corp2);
+		corpDocRel2.setTarget(doc2);
+		corpGraph.getCorpusDocumentRelations().add(corpDocRel2);
 	}
 	
 	
 	public static void createDocumentStructure1(SDocument doc1)
 	{
-		if (doc1== null)
+		if (doc1== null){
 			throw new NullPointerException("Document is empty.");
-		SElementId sElementId= null;
+		}
+		Identifier sElementId= null;
 		
 		//document content
-		doc1.setSDocumentGraph(SaltCommonFactory.eINSTANCE.createSDocumentGraph());
-		doc1.getSDocumentGraph().setSName(doc1.getSName()+ "_graph");
+		doc1.setDocumentGraph(SaltFactory.createSDocumentGraph());
+		doc1.getDocumentGraph().setName(doc1.getName()+ "_graph");
 		//text
-		STextualDS text1= SaltCommonFactory.eINSTANCE.createSTextualDS();
-		text1.setSName("text1");
-		SElementId textId= SaltCommonFactory.eINSTANCE.createSElementId();
-		textId.setSId("text1");
-		text1.setSText("This is a sample text.");
-		doc1.getSDocumentGraph().addSNode(text1);
+		STextualDS text1= SaltFactory.createSTextualDS();
+		text1.setName("text1");
+		text1.setText("This is a sample text.");
+		doc1.getDocumentGraph().addNode(text1);
 		
 		//tokens and relations to text
 		
@@ -155,107 +136,95 @@ public class ContentCreator
 		STextualRelation textRel= null;
 		
 		//tok1
-		tok = SaltCommonFactory.eINSTANCE.createSToken();
-		tok.setSName("tok1");
-		sElementId = SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId(tok.getSName());
-		tok.setSElementId(sElementId);
-		doc1.getSDocumentGraph().addSNode(tok);
+		tok = SaltFactory.createSToken();
+		tok.setName("tok1");
+		SaltFactory.createIdentifier(tok, tok.getName());
+		doc1.getDocumentGraph().addNode(tok);
 		//tok1 -> text1
-		textRel= SaltCommonFactory.eINSTANCE.createSTextualRelation();
-		textRel.setSToken(tok);
-		textRel.setSTextualDS(text1);
-		textRel.setSStart(0);
-		textRel.setSEnd(5);
-		doc1.getSDocumentGraph().addSRelation(textRel);
+		textRel= SaltFactory.createSTextualRelation();
+		textRel.setSource(tok);
+		textRel.setTarget(text1);
+		textRel.setStart(0);
+		textRel.setEnd(5);
+		doc1.getDocumentGraph().addRelation(textRel);
 		
 		//tok2
-		tok = SaltCommonFactory.eINSTANCE.createSToken();
-		tok.setSName("tok2");
-		sElementId = SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId(tok.getSName());
-		tok.setSElementId(sElementId);
-		doc1.getSDocumentGraph().addSNode(tok);
+		tok = SaltFactory.createSToken();
+		tok.setName("tok2");
+		SaltFactory.createIdentifier(tok, tok.getName());
+		doc1.getDocumentGraph().addNode(tok);
 		//tok2 -> text1
-		textRel= SaltCommonFactory.eINSTANCE.createSTextualRelation();
-		textRel.setSToken(tok);
-		textRel.setSTextualDS(text1);
-		textRel.setSStart(6);
-		textRel.setSEnd(8);
-		doc1.getSDocumentGraph().addSRelation(textRel);
+		textRel= SaltFactory.createSTextualRelation();
+		textRel.setSource(tok);
+		textRel.setTarget(text1);
+		textRel.setStart(6);
+		textRel.setEnd(8);
+		doc1.getDocumentGraph().addRelation(textRel);
 		
 		//tok3
-		tok = SaltCommonFactory.eINSTANCE.createSToken();
-		tok.setSName("tok3");
-		sElementId = SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId(tok.getSName());
-		tok.setSElementId(sElementId);
-		doc1.getSDocumentGraph().addSNode(tok);
+		tok = SaltFactory.createSToken();
+		tok.setName("tok3");
+		SaltFactory.createIdentifier(tok, tok.getName());
+		doc1.getDocumentGraph().addNode(tok);
 		//tok1 -> text1
-		textRel= SaltCommonFactory.eINSTANCE.createSTextualRelation();
-		textRel.setSToken(tok);
-		textRel.setSTextualDS(text1);
-		textRel.setSStart(9);
-		textRel.setSEnd(10);
-		doc1.getSDocumentGraph().addSRelation(textRel);
+		textRel= SaltFactory.createSTextualRelation();
+		textRel.setSource(tok);
+		textRel.setTarget(text1);
+		textRel.setStart(9);
+		textRel.setEnd(10);
+		doc1.getDocumentGraph().addRelation(textRel);
 		
 		//tok4
-		tok = SaltCommonFactory.eINSTANCE.createSToken();
-		tok.setSName("tok4");
-		sElementId = SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId(tok.getSName());
-		tok.setSElementId(sElementId);
-		doc1.getSDocumentGraph().addSNode(tok);
+		tok = SaltFactory.createSToken();
+		tok.setName("tok4");
+		SaltFactory.createIdentifier(tok, tok.getName());
+		doc1.getDocumentGraph().addNode(tok);
 		//tok1 -> text1
-		textRel= SaltCommonFactory.eINSTANCE.createSTextualRelation();
-		textRel.setSToken(tok);
-		textRel.setSTextualDS(text1);
-		textRel.setSStart(11);
-		textRel.setSEnd(17);
-		doc1.getSDocumentGraph().addSRelation(textRel);
+		textRel= SaltFactory.createSTextualRelation();
+		textRel.setSource(tok);
+		textRel.setTarget(text1);
+		textRel.setStart(11);
+		textRel.setEnd(17);
+		doc1.getDocumentGraph().addRelation(textRel);
 		
 		//tok5
-		tok = SaltCommonFactory.eINSTANCE.createSToken();
-		tok.setSName("tok5");
-		sElementId = SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId(tok.getSName());
-		tok.setSElementId(sElementId);
-		doc1.getSDocumentGraph().addSNode(tok);
+		tok = SaltFactory.createSToken();
+		tok.setName("tok5");
+		SaltFactory.createIdentifier(tok, tok.getName());
+		doc1.getDocumentGraph().addNode(tok);
 		//tok1 -> text1
-		textRel= SaltCommonFactory.eINSTANCE.createSTextualRelation();
-		textRel.setSToken(tok);
-		textRel.setSTextualDS(text1);
-		textRel.setSStart(18);
-		textRel.setSEnd(22);
-		doc1.getSDocumentGraph().addSRelation(textRel);
+		textRel= SaltFactory.createSTextualRelation();
+		textRel.setSource(tok);
+		textRel.setTarget(text1);
+		textRel.setStart(18);
+		textRel.setEnd(22);
+		doc1.getDocumentGraph().addRelation(textRel);
 		
 		//tok6
-		tok = SaltCommonFactory.eINSTANCE.createSToken();
-		tok.setSName("tok6");
-		sElementId = SaltCommonFactory.eINSTANCE.createSElementId();
-		sElementId.setSId(tok.getSName());
-		tok.setSElementId(sElementId);
-		doc1.getSDocumentGraph().addSNode(tok);
+		tok = SaltFactory.createSToken();
+		tok.setName("tok6");
+		SaltFactory.createIdentifier(tok, tok.getName());
+		doc1.getDocumentGraph().addNode(tok);
 		//tok1 -> text1
-		textRel= SaltCommonFactory.eINSTANCE.createSTextualRelation();
-		textRel.setSToken(tok);
-		textRel.setSTextualDS(text1);
-		textRel.setSStart(22);
-		textRel.setSEnd(23);
-		doc1.getSDocumentGraph().addSRelation(textRel);
+		textRel= SaltFactory.createSTextualRelation();
+		textRel.setSource(tok);
+		textRel.setTarget(text1);
+		textRel.setStart(22);
+		textRel.setEnd(23);
+		doc1.getDocumentGraph().addRelation(textRel);
 		
 		//create Annotations
-		for (SToken sToken: doc1.getSDocumentGraph().getSTokens())
+		for (SToken sToken: doc1.getDocumentGraph().getTokens())
 		{
-			SAnnotation posAnno= SaltCommonFactory.eINSTANCE.createSAnnotation();
-			posAnno.setSName("pos");
-			posAnno.setSValue("anyPosAnno");
-			sToken.addSAnnotation(posAnno);
+			SAnnotation posAnno= SaltFactory.createSAnnotation();
+			posAnno.setName("pos");
+			posAnno.setValue("anyPosAnno");
+			sToken.addAnnotation(posAnno);
 			
-			SAnnotation lemmaAnno= SaltCommonFactory.eINSTANCE.createSAnnotation();
-			lemmaAnno.setSName("lemma");
-			lemmaAnno.setSValue("anyLemmaAnno");
-			sToken.addSAnnotation(lemmaAnno);
+			SAnnotation lemmaAnno= SaltFactory.createSAnnotation();
+			lemmaAnno.setName("lemma");
+			lemmaAnno.setValue("anyLemmaAnno");
+			sToken.addAnnotation(lemmaAnno);
 		}	
 	}
 }

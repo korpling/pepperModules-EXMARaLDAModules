@@ -24,14 +24,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.corpus_tools.pepper.modules.PepperModuleProperties;
+import org.corpus_tools.pepper.modules.PepperModuleProperty;
+import org.corpus_tools.pepper.modules.exceptions.PepperModuleException;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.core.SLayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SLayer;
 
 /**
  * Defines the properties to be used for the {@link EXMARaLDAImporter}.
@@ -185,8 +185,8 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 					tierNames = tierNameList.replace("}", "").replace("{", "").split(",");
 				}
 				String sLayerName = matcher.group().replace(tierNameList, "").replace("}", "").replace("{", "");
-				SLayer sLayer = SaltFactory.eINSTANCE.createSLayer();
-				sLayer.setSName(sLayerName);
+				SLayer sLayer = SaltFactory.createSLayer();
+				sLayer.setName(sLayerName);
 				for (String tierName : tierNames) {
 					// put all tiernames in table to map them to the layer
 					tierNames2SLayers.put(tierName, sLayer);

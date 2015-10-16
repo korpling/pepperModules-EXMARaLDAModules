@@ -17,13 +17,15 @@
  */
 package org.corpus_tools.peppermodules.exmaralda;
 
+import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.impl.PepperExporterImpl;
+import org.corpus_tools.pepper.modules.PepperExporter;
+import org.corpus_tools.pepper.modules.PepperExporter.EXPORT_MODE;
+import org.corpus_tools.pepper.modules.PepperMapper;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperExporter;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperExporterImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 @Component(name = "EXMARaLDAExporterJavaComponent", factory = "PepperExporterComponentFactory")
 public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExporter {
@@ -34,23 +36,23 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		super();
 		// setting name of module
 		setName("EXMARaLDAExporter");
-		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setSupplierContact(URI.createURI(PepperConfiguration.EMAIL));
 		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-EXMARaLDAModules"));
 		setDesc("This exporter transforms a Salt model into the exb format for EXMARaLDA.  ");
 		// set list of formats supported by this module
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
-		setSDocumentEnding(FILE_EXTENION);
+		setDocumentEnding(FILE_EXTENION);
 		setExportMode(EXPORT_MODE.DOCUMENTS_IN_FILES);
 	}
 
 	/**
 	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}. {@inheritDoc
-	 * PepperModule#createPepperMapper(SElementId)}
+	 * PepperModule#createPepperMapper(Identifier)}
 	 */
 	@Override
-	public PepperMapper createPepperMapper(SElementId sElementId) {
+	public PepperMapper createPepperMapper(Identifier sElementId) {
 		Salt2EXMARaLDAMapper mapper = new Salt2EXMARaLDAMapper();
-		mapper.setResourceURI(getSElementId2ResourceTable().get(sElementId));
+		mapper.setResourceURI(getIdentifier2ResourceTable().get(sElementId));
 		return (mapper);
 	}
 }

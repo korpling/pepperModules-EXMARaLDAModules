@@ -25,8 +25,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.net.MalformedURLException;
 
+import org.corpus_tools.pepper.modules.PepperModuleProperty;
 import org.corpus_tools.peppermodules.exmaralda.EXMARaLDA2SaltMapper;
 import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAImporterProperties;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDocument;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +41,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFac
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.MetaInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 
 /**
  * Tests the mappers for a correct mapping of audio data.
@@ -60,7 +60,7 @@ public class AudioTest {
 
 	public void setFixture(EXMARaLDA2SaltMapper fixture) {
 		this.fixture = fixture;
-		this.getFixture().setProperties(new EXMARaLDAImporterProperties());
+		getFixture().setProperties(new EXMARaLDAImporterProperties());
 	}
 
 	@Before
@@ -84,7 +84,7 @@ public class AudioTest {
 		Double end = 2.5677097899;
 		URI refFile = URI.createFileURI(testFile.getAbsolutePath());
 
-		PepperModuleProperty<String> prop = (PepperModuleProperty<String>) this.getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
+		PepperModuleProperty<String> prop = (PepperModuleProperty<String>) getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
 		prop.setValue(txtTier);
 
 		BasicTranscription basicTranscription = ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
@@ -116,21 +116,21 @@ public class AudioTest {
 
 		basicTranscription.getTiers().add(tier1);
 
-		SDocument sDoc = SaltFactory.eINSTANCE.createSDocument();
-		getFixture().setSDocument(sDoc);
+		SDocument sDoc = SaltFactory.createSDocument();
+		getFixture().setDocument(sDoc);
 		getFixture().setBasicTranscription(basicTranscription);
 		getFixture().mapSDocument();
 
-		assertNotNull(sDoc.getSDocumentGraph());
-		assertNotNull(sDoc.getSDocumentGraph().getSTextualDSs());
-		assertEquals(1, sDoc.getSDocumentGraph().getSTextualDSs().size());
-		assertEquals(token1, sDoc.getSDocumentGraph().getSTextualDSs().get(0).getSText());
-		assertEquals(1, sDoc.getSDocumentGraph().getSTokens().size());
-		assertEquals(1, sDoc.getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals(refFile, sDoc.getSDocumentGraph().getSAudioDataSources().get(0).getSAudioReference());
-		assertEquals(1, sDoc.getSDocumentGraph().getSAudioDSRelations().size());
-		assertEquals(start, sDoc.getSDocumentGraph().getSAudioDSRelations().get(0).getSStart());
-		assertEquals(end, sDoc.getSDocumentGraph().getSAudioDSRelations().get(0).getSEnd());
+		assertNotNull(sDoc.getDocumentGraph());
+		assertNotNull(sDoc.getDocumentGraph().getTextualDSs());
+		assertEquals(1, sDoc.getDocumentGraph().getTextualDSs().size());
+		assertEquals(token1, sDoc.getDocumentGraph().getTextualDSs().get(0).getText());
+		assertEquals(1, sDoc.getDocumentGraph().getTokens().size());
+		assertEquals(1, sDoc.getDocumentGraph().getMedialDSs().size());
+		assertEquals(refFile, sDoc.getDocumentGraph().getMedialDSs().get(0).getMediaReference());
+		assertEquals(1, sDoc.getDocumentGraph().getMedialRelations().size());
+		assertEquals(start, sDoc.getDocumentGraph().getMedialRelations().get(0).getStart());
+		assertEquals(end, sDoc.getDocumentGraph().getMedialRelations().get(0).getEnd());
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class AudioTest {
 		Double end = 2.5677097899;
 		URI refFile = URI.createFileURI(testFile.getAbsolutePath());
 
-		PepperModuleProperty<String> prop = (PepperModuleProperty<String>) this.getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
+		PepperModuleProperty<String> prop = (PepperModuleProperty<String>) getFixture().getProperties().getProperty(EXMARaLDAImporterProperties.PROP_TOKEN_TIER);
 		prop.setValue(txtTier);
 
 		BasicTranscription basicTranscription = ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription();
@@ -191,29 +191,29 @@ public class AudioTest {
 
 		basicTranscription.getTiers().add(tier1);
 
-		SDocument sDoc = SaltFactory.eINSTANCE.createSDocument();
-		getFixture().setSDocument(sDoc);
+		SDocument sDoc = SaltFactory.createSDocument();
+		getFixture().setDocument(sDoc);
 		getFixture().setBasicTranscription(basicTranscription);
 		getFixture().mapSDocument();
 
-		assertNotNull(sDoc.getSDocumentGraph());
-		assertNotNull(sDoc.getSDocumentGraph().getSTextualDSs());
-		assertEquals(1, sDoc.getSDocumentGraph().getSTextualDSs().size());
-		assertTrue(sDoc.getSDocumentGraph().getSTextualDSs().get(0).getSText().contains(token1));
-		assertTrue(sDoc.getSDocumentGraph().getSTextualDSs().get(0).getSText().contains(token2));
+		assertNotNull(sDoc.getDocumentGraph());
+		assertNotNull(sDoc.getDocumentGraph().getTextualDSs());
+		assertEquals(1, sDoc.getDocumentGraph().getTextualDSs().size());
+		assertTrue(sDoc.getDocumentGraph().getTextualDSs().get(0).getText().contains(token1));
+		assertTrue(sDoc.getDocumentGraph().getTextualDSs().get(0).getText().contains(token2));
 
-		assertEquals(2, sDoc.getSDocumentGraph().getSTokens().size());
+		assertEquals(2, sDoc.getDocumentGraph().getTokens().size());
 
-		assertEquals(1, sDoc.getSDocumentGraph().getSAudioDataSources().size());
-		assertEquals(refFile, sDoc.getSDocumentGraph().getSAudioDataSources().get(0).getSAudioReference());
+		assertEquals(1, sDoc.getDocumentGraph().getMedialDSs().size());
+		assertEquals(refFile, sDoc.getDocumentGraph().getMedialDSs().get(0).getMediaReference());
 
 		// start: check audio relations
-		assertEquals(2, sDoc.getSDocumentGraph().getSAudioDSRelations().size());
-		assertEquals(start, sDoc.getSDocumentGraph().getSAudioDSRelations().get(0).getSStart());
-		assertNull(sDoc.getSDocumentGraph().getSAudioDSRelations().get(0).getSEnd());
+		assertEquals(2, sDoc.getDocumentGraph().getMedialRelations().size());
+		assertEquals(start, sDoc.getDocumentGraph().getMedialRelations().get(0).getStart());
+		assertNull(sDoc.getDocumentGraph().getMedialRelations().get(0).getEnd());
 
-		assertNull(sDoc.getSDocumentGraph().getSAudioDSRelations().get(1).getSStart());
-		assertEquals(end, sDoc.getSDocumentGraph().getSAudioDSRelations().get(1).getSEnd());
+		assertNull(sDoc.getDocumentGraph().getMedialRelations().get(1).getStart());
+		assertEquals(end, sDoc.getDocumentGraph().getMedialRelations().get(1).getEnd());
 		// end: check audio relations
 	}
 }

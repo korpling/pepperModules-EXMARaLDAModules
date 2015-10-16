@@ -19,15 +19,14 @@ package org.corpus_tools.peppermodules.exmaralda.tests;
 
 import java.io.File;
 
+import org.corpus_tools.pepper.common.CorpusDesc;
+import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.testFramework.PepperImporterTest;
 import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAImporter;
+import org.corpus_tools.salt.SaltFactory;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.CorpusDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.FormatDesc;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperImporterTest;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
 
 public class EXMARaLDAImporterTest extends PepperImporterTest {
 	URI resourceURI = URI.createFileURI(new File(".").getAbsolutePath());
@@ -35,17 +34,17 @@ public class EXMARaLDAImporterTest extends PepperImporterTest {
 	@Before
 	public void setUp() throws Exception {
 		super.setFixture(new EXMARaLDAImporter());
-		super.getFixture().setSaltProject(SaltCommonFactory.eINSTANCE.createSaltProject());
+		super.getFixture().setSaltProject(SaltFactory.createSaltProject());
 		super.setResourcesURI(resourceURI);
 
 		// setting resources
-		this.getFixture().setResources(resourceURI);
+		getFixture().setResources(resourceURI);
 
 		// set formats to support
 		FormatDesc formatDef = new FormatDesc();
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
-		this.supportedFormatsCheck.add(formatDef);
+		addSupportedFormat(formatDef);
 	}
 
 	@Test

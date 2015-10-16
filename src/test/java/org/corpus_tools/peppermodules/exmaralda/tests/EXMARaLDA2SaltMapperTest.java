@@ -20,12 +20,17 @@ package org.corpus_tools.peppermodules.exmaralda.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.corpus_tools.peppermodules.exmaralda.EXMARaLDA2SaltMapper;
 import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAImporterProperties;
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.common.SToken;
+import org.corpus_tools.salt.core.SAnnotation;
+import org.corpus_tools.salt.util.DataSourceSequence;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,12 +41,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDataSourceSequence;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SAnnotation;
 
 public class EXMARaLDA2SaltMapperTest {
 	private EXMARaLDA2SaltMapper fixture = null;
@@ -124,18 +123,18 @@ public class EXMARaLDA2SaltMapperTest {
 		getFixture().setBasicTranscription(basicTranscription);
 		getFixture().mapSDocument();
 
-		SDocumentGraph sDocGraph = getFixture().getSDocument().getSDocumentGraph();
+		SDocumentGraph sDocGraph = getFixture().getDocument().getDocumentGraph();
 		assertNotNull(sDocGraph);
-		assertEquals(2, sDocGraph.getSTextualDSs().size());
-		assertEquals("A sample text", sDocGraph.getSTextualDSs().get(0).getSText());
-		assertEquals("oh yes", sDocGraph.getSTextualDSs().get(1).getSText());
+		assertEquals(2, sDocGraph.getTextualDSs().size());
+		assertEquals("A sample text", sDocGraph.getTextualDSs().get(0).getText());
+		assertEquals("oh yes", sDocGraph.getTextualDSs().get(1).getText());
 
-		assertEquals(5, sDocGraph.getSTokens().size());
-		assertEquals("A", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
-		assertEquals("sample", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
-		assertEquals("text", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
-		assertEquals("Oh", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
-		assertEquals("yes", sDocGraph.getSText(sDocGraph.getSTokens().get(0)));
+		assertEquals(5, sDocGraph.getTokens().size());
+		assertEquals("A", sDocGraph.getText(sDocGraph.getTokens().get(0)));
+		assertEquals("sample", sDocGraph.getText(sDocGraph.getTokens().get(0)));
+		assertEquals("text", sDocGraph.getText(sDocGraph.getTokens().get(0)));
+		assertEquals("Oh", sDocGraph.getText(sDocGraph.getTokens().get(0)));
+		assertEquals("yes", sDocGraph.getText(sDocGraph.getTokens().get(0)));
 	}
 
 	/**
@@ -153,15 +152,15 @@ public class EXMARaLDA2SaltMapperTest {
 	 */
 	@Test
 	public void testGetAdjacentSTokens() {
-		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
-		getFixture().getSDocument().setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		STextualDS text = getFixture().getSDocument().getSDocumentGraph().createSTextualDS("This is a sample text");
-		getFixture().getSDocument().getSDocumentGraph().tokenize();
+		getFixture().setDocument(SaltFactory.createSDocument());
+		getFixture().getDocument().setDocumentGraph(SaltFactory.createSDocumentGraph());
+		STextualDS text = getFixture().getDocument().getDocumentGraph().createTextualDS("This is a sample text");
+		getFixture().getDocument().getDocumentGraph().tokenize();
 
-		SDataSourceSequence sequence = SaltFactory.eINSTANCE.createSDataSourceSequence();
-		sequence.setSSequentialDS(text);
-		sequence.setSStart(6);
-		sequence.setSEnd(12);
+		DataSourceSequence sequence = new DataSourceSequence();
+		sequence.setDataSource(text);
+		sequence.setStart(6);
+		sequence.setEnd(12);
 
 		List<SToken> tokens = getFixture().getAdjacentSTokens(sequence);
 		assertEquals(3, tokens.size());
@@ -196,9 +195,9 @@ public class EXMARaLDA2SaltMapperTest {
 		Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 		tokenTier.getEvents().add(event1);
 
-		EList<Tier> tokenTiers = new BasicEList<Tier>();
+		List<Tier> tokenTiers = new ArrayList<>();
 		tokenTiers.add(tokenTier);
-		this.getFixture().cleanModel(basicTranscription, tokenTiers);
+		getFixture().cleanModel(basicTranscription, tokenTiers);
 
 		assertEquals(tokenTier.getEvents().toString(), 3, tokenTier.getEvents().size());
 
@@ -247,9 +246,9 @@ public class EXMARaLDA2SaltMapperTest {
 		event2.setEnd(tli4);
 		tokenTier.getEvents().add(event2);
 
-		EList<Tier> tokenTiers = new BasicEList<Tier>();
+		List<Tier> tokenTiers = new ArrayList<Tier>();
 		tokenTiers.add(tokenTier);
-		this.getFixture().cleanModel(basicTranscription, tokenTiers);
+		getFixture().cleanModel(basicTranscription, tokenTiers);
 
 		assertEquals(tokenTier.getEvents().toString(), 3, tokenTier.getEvents().size());
 
@@ -303,17 +302,17 @@ public class EXMARaLDA2SaltMapperTest {
 		tier.getEvents().add(event);
 
 		getFixture().setBasicTranscription(basicTranscription);
-		getFixture().setSDocument(SaltFactory.eINSTANCE.createSDocument());
+		getFixture().setDocument(SaltFactory.createSDocument());
 		getFixture().setProperties(new EXMARaLDAImporterProperties());
 		getFixture().getProperties().setPropertyValue(EXMARaLDAImporterProperties.PROP_TOKEN_TIER, "tok");
 		getFixture().mapSDocument();
 
-		assertNotNull(getFixture().getSDocument().getSDocumentGraph());
-		assertEquals(1, getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().size());
+		assertNotNull(getFixture().getDocument().getDocumentGraph());
+		assertEquals(1, getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotations().size());
 
-		SAnnotation sAnno = getFixture().getSDocument().getSDocumentGraph().getSSpans().get(0).getSAnnotations().get(0);
-		assertEquals("anno", sAnno.getSName());
-		assertEquals("value", sAnno.getSValue());
-		assertEquals("Bart", sAnno.getSNS());
+		SAnnotation sAnno = getFixture().getDocument().getDocumentGraph().getSpans().get(0).getAnnotations().iterator().next();
+		assertEquals("anno", sAnno.getName());
+		assertEquals("value", sAnno.getValue());
+		assertEquals("Bart", sAnno.getNamespace());
 	}
 }
