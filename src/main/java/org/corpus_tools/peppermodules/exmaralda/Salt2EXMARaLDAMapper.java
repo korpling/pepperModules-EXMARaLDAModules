@@ -302,11 +302,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 //		String text = getDocument().getDocumentGraph().getOverlappedText(sToken);
 //		event.setValue(text);
 //		POTPair potPair = acc.getPOT(sToken);
-
+		
 		List<SALT_TYPE> type= new ArrayList();
 		type.add(SALT_TYPE.STIME_OVERLAPPING_RELATION);
-		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>)(DataSourceSequence<? extends Number>)getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sToken, type);
-		
+		List<DataSourceSequence> sequences = getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sToken, type);
+		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>)(DataSourceSequence<? extends Number>)sequences.get(0);
 		if (sequence == null){
 			throw new PepperModuleDataException(this, "Cannot map token to event, because there is no point of time for SToken: " + sToken.getId());
 		}
@@ -396,7 +396,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		
 		List<SALT_TYPE> type= new ArrayList();
 		type.add(SALT_TYPE.STIME_OVERLAPPING_RELATION);
-		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>)(DataSourceSequence<? extends Number>)getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sNode, type);
+		List<DataSourceSequence> sequences = getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sNode, type);
+		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>)(DataSourceSequence<? extends Number>)sequences.get(0);
 		
 		event.setStart(this.getTLI(sequence.getStart().toString()));
 		event.setEnd(this.getTLI(sequence.getEnd().toString()));

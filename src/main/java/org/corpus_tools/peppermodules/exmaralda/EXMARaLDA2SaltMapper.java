@@ -632,11 +632,10 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			if (sequence.getDataSource().equals(rel.getTarget())) {
 				if (rel.getSource() instanceof SToken) {
 					if (rel instanceof STextualRelation || rel instanceof STimelineRelation) {
-						STextualRelation textRel= (STextualRelation) rel;
-						DataSourceSequence<Integer> intSeq= (DataSourceSequence<Integer>)(DataSourceSequence<? extends Number>)sequence; 
-						if ((textRel.getStart() <= intSeq.getStart()) && (textRel.getEnd() > intSeq.getStart())) {
+						DataSourceSequence<Integer> intSeq = (DataSourceSequence<Integer>) (DataSourceSequence<? extends Number>) sequence;
+						if (((Integer) rel.getStart() <= intSeq.getStart()) && ((Integer) rel.getEnd() > intSeq.getStart())) {
 							sTokens.add((SToken) rel.getSource());
-						} else if ((textRel.getStart() >= intSeq.getStart()) && (textRel.getStart() < intSeq.getEnd())) {
+						} else if (((Integer) rel.getStart() >= intSeq.getStart()) && ((Integer) rel.getStart() < intSeq.getEnd())) {
 							sTokens.add((SToken) rel.getSource());
 						}
 					}
@@ -750,7 +749,9 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					sToken.addLayer(sLayer);
 				}
 			}
-			token2Speaker.put(sToken, event.getTier().getSpeaker());
+			if (event.getTier().getSpeaker() != null) {
+				token2Speaker.put(sToken, event.getTier().getSpeaker());
+			}
 			// creating annotation for token
 			this.mapUDInformations2SAnnotationContainer(event.getUdInformations(), sToken);
 			// creating semanticalAnnotation for token
