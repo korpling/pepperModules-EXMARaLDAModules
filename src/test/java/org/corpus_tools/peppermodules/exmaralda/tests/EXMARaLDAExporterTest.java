@@ -17,6 +17,7 @@
  */
 package org.corpus_tools.peppermodules.exmaralda.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -31,7 +32,9 @@ import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.common.SCorpusDocumentRelation;
 import org.corpus_tools.salt.common.SCorpusGraph;
 import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SaltProject;
 import org.corpus_tools.salt.samples.SampleGenerator;
+import org.corpus_tools.salt.util.SaltUtil;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,20 +113,15 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 		corpDef.setCorpusPath(corpusPath);
 		getFixture().setCorpusDesc(corpDef);
 
-		// start: create sample
-		// start:create corpus structure
 		SDocument sDoc = this.createCorpusStructure();
-		// end:create corpus structure
 		SampleGenerator.createPrimaryData(sDoc);
 		SampleGenerator.createTokens(sDoc);
 		SampleGenerator.createMorphologyAnnotations(sDoc);
 		SampleGenerator.createInformationStructureSpan(sDoc);
 		SampleGenerator.createInformationStructureAnnotations(sDoc);
-		// end: create sample
 
-		// start: exporting document
+		// exporting document
 		start();
-		// end: exporting document
 
 		// checking if export was correct
 		assertTrue("The files '" + expectedURI + "' and '" + currentURI + "' aren't identical. ", this.compareFiles(expectedURI, currentURI));
@@ -131,39 +129,24 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 
 	/**
 	 * Creates a corpus structure with one corpus and one document. It returns
-	 * the created document. corp1 | doc1
+	 * the created document.
+	 * 
+	 * <pre
+	 * corp1 | doc1
+	 * </pre>
 	 * 
 	 * @return
 	 */
 	private SDocument createCorpusStructure() {
-		{// creating corpus structure
-			SCorpusGraph corpGraph = SaltFactory.createSCorpusGraph();
-			getFixture().getSaltProject().addCorpusGraph(corpGraph);
-			// corp1
-			// |
-			// doc1
+		// creating corpus structure
+		SCorpusGraph graph = SaltFactory.createSCorpusGraph();
+		getFixture().getSaltProject().addCorpusGraph(graph);
 
-			// corp1
-			SCorpus corp1 = SaltFactory.createSCorpus();
-			corp1.setName("corp1");
-			SaltFactory.createIdentifier(corp1, "corp1");
-			corpGraph.addNode(corp1);
+		SCorpus corp1 = SaltFactory.createSCorpus();
+		corp1.setName("corp1");
+		graph.addNode(corp1);
+		SDocument doc1 = graph.createDocument(corp1, "doc1");
 
-			// doc1
-			SDocument doc1 = SaltFactory.createSDocument();
-			SaltFactory.createIdentifier(doc1, "corp1/doc1");
-			doc1.setName("doc1");
-			corpGraph.addNode(doc1);
-			doc1.setDocumentGraph(SaltFactory.createSDocumentGraph());
-
-			// CorpDocRel
-			SCorpusDocumentRelation corpDocRel1 = SaltFactory.createSCorpusDocumentRelation();
-			SaltFactory.createIdentifier(corpDocRel1, "rel1");
-			corpDocRel1.setName("rel1");
-			corpDocRel1.setSource(corp1);
-			corpDocRel1.setTarget(doc1);
-			corpGraph.addRelation(corpDocRel1);
-			return (doc1);
-		}
+		return (doc1);
 	}
 }

@@ -121,21 +121,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		this.mapSDocuent2MetaInfo(getDocument(), metaInformation);
 
 		// creating timeline
-		if (this.getDocument().getDocumentGraph().getTimeline() == null) {// if
-																			// no
-																			// timeline
-																			// is
-																			// included,
-																			// create
-																			// one
-																			// SDocumentDataEnricher
-																			// dataEnricher
-																			// =
-																			// new
-																			// SDocumentDataEnricher();
-			// dataEnricher.setDocumentGraph(this.getDocument().getDocumentGraph());
-			// dataEnricher.createSTimeline();
-
+		if (this.getDocument().getDocumentGraph().getTimeline() == null) {
+			// if no timeline is included, create one SDocumentDataEnricher
 			getDocument().getDocumentGraph().createTimeline();
 		}
 		CommonTimeLine cTimeLine = ExmaraldaBasicFactory.eINSTANCE.createCommonTimeLine();
@@ -171,9 +158,9 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(EXMARaLDAExporter.FILE_EXTENION, new EXBResourceFactory());
 		// load resource
 		Resource resource = resourceSet.createResource(getResourceURI());
-		if (resource == null)
+		if (resource == null){
 			throw new PepperModuleDataException(this, "Cannot save a resource to uri '" + getResourceURI() + "', because the given resource is null.");
-
+		}
 		resource.getContents().add(basicTranscription);
 		try {
 			resource.save(null);
@@ -194,24 +181,18 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			// map project name
 			if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_PROJECT_NAME)) {
 				metaInfo.setProjectName(sMetaAnno.getValue().toString());
-			}
-			// map transcription name
-			else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_NAME))
+			} else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_NAME)) {
+				// map transcription name
 				metaInfo.setTranscriptionName(sMetaAnno.getValue().toString());
-			// map referenced file
-			else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_REFERENCED_FILE)) {
-				/* try { */
-				// new URL(sMetaAnno.getValue().toString());
+			} else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_REFERENCED_FILE)) {
+				// map referenced file
 				metaInfo.setReferencedFile(sMetaAnno.getValue().toString());
-				/*
-				 * } catch (MalformedURLException e) { }
-				 */
-			} else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_COMMENT))
+			} else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_COMMENT)) {
 				metaInfo.setComment(sMetaAnno.getValue().toString());
-			// map transcription convention
-			else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION))
+			} else if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION)) {
+				// map transcription convention
 				metaInfo.setTranscriptionConvention(sMetaAnno.getValue().toString());
-			else {
+			} else {
 				UDInformation udInfo = ExmaraldaBasicFactory.eINSTANCE.createUDInformation();
 				this.mapSMetaAnnotation2UDInformation(sMetaAnno, udInfo);
 				metaInfo.getUdMetaInformations().add(udInfo);
@@ -226,22 +207,21 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param cTimeLine
 	 */
 	private void map2CommonTimeLine(STimeline sTimeline, CommonTimeLine cTimeLine) {
-		if ((sTimeline == null) || (sTimeline.getEnd() == null) || (sTimeline.getEnd() == 0))
-		{
+		if ((sTimeline == null) || (sTimeline.getEnd() == null) || (sTimeline.getEnd() == 0)) {
 			this.getDocument().getDocumentGraph().createTimeline();
 			sTimeline = this.getDocument().getDocumentGraph().getTimeline();
 		}
 		String TLI_id = "T";
 		int i = 0;
-		for (int j= 0; j <  sTimeline.getEnd(); j++) {
+		for (int j = 0; j <= sTimeline.getEnd(); j++) {
 			TLI tli = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 			cTimeLine.getTLIs().add(tli);
-			tli.setTime(j+"");
+			tli.setTime(j + "");
 			tli.setId(TLI_id + i);
 			i++;
 			// put TLI to list
 			TLI2PointOfTime tliPOT = new TLI2PointOfTime();
-			tliPOT.pointOfTime = j+"";
+			tliPOT.pointOfTime = j + "";
 			tliPOT.tli = tli;
 			this.tLI2PointOfTimeList.add(tliPOT);
 		}
@@ -295,31 +275,23 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param event
 	 */
 	private void mapSToken2Event(SToken sToken, Event event) {
-//		SDocumentStructureAccessor acc = new SDocumentStructureAccessor();
-//		acc.setDocumentGraph(this.getDocument().getDocumentGraph());
-//		String text = acc.getSOverlappedText(sToken);
-		
-//		String text = getDocument().getDocumentGraph().getOverlappedText(sToken);
-//		event.setValue(text);
-//		POTPair potPair = acc.getPOT(sToken);
-		
-		List<SALT_TYPE> type= new ArrayList();
+		List<SALT_TYPE> type = new ArrayList();
 		type.add(SALT_TYPE.STIME_OVERLAPPING_RELATION);
 		List<DataSourceSequence> sequences = getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sToken, type);
-		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>)(DataSourceSequence<? extends Number>)sequences.get(0);
-		if (sequence == null){
+		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>) (DataSourceSequence<? extends Number>) sequences.get(0);
+		if (sequence == null) {
 			throw new PepperModuleDataException(this, "Cannot map token to event, because there is no point of time for SToken: " + sToken.getId());
 		}
-		if (sequence.getStart() == null){
+		if (sequence.getStart() == null) {
 			throw new PepperModuleDataException(this, "Cannot map token to event, because start of pot for following token is empty: " + sToken.getId());
 		}
-		if (sequence.getEnd() == null){
+		if (sequence.getEnd() == null) {
 			throw new PepperModuleDataException(this, "Cannot map token to event, because end of pot for following token is empty: " + sToken.getId());
 		}
 		event.setStart(this.getTLI(sequence.getStart().toString()));
 		event.setEnd(this.getTLI(sequence.getEnd().toString()));
 		event.setValue(getDocument().getDocumentGraph().getText(sToken));
-		
+
 	}
 
 	/**
@@ -338,21 +310,15 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		for (SStructuredNode sNode : sNodes) {// walk through the given list
 			for (SAnnotation sAnno : sNode.getAnnotations()) {
 				Tier currTier = null;
-				if (annoName2Tier.containsKey(sAnno.getQName())) {// if
-																	// annoName2Tier
-																	// contains
-																	// QName,
-																	// than
-																	// return
+				if (annoName2Tier.containsKey(sAnno.getQName())) {
+					// if annoName2Tier contains QName, than return
 					currTier = annoName2Tier.get(sAnno.getQName());
 				} else {// create new entry in annoName2Tier
 					currTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
-					{// create everything for tier
-						currTier.setCategory(sAnno.getName());
-						currTier.setDisplayName("[" + sAnno.getName() + "]");
-						currTier.setId(TIER_ID_PREFIX + this.getNewNumOfTiers());
-						currTier.setType(TIER_TYPE.T);
-					}
+					currTier.setCategory(sAnno.getName());
+					currTier.setDisplayName("[" + sAnno.getName() + "]");
+					currTier.setId(TIER_ID_PREFIX + this.getNewNumOfTiers());
+					currTier.setType(TIER_TYPE.T);
 					this.basicTranscription.getTiers().add(currTier);
 					annoName2Tier.put(sAnno.getQName(), currTier);
 				}
@@ -361,20 +327,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					currTier.getEvents().add(event);
 					SAnnotation sMediumAnno = sNode.getAnnotation(EXBNameIdentifier.KW_EXB_EVENT_MEDIUM);
 					SAnnotation sURLAnno = sNode.getAnnotation(EXBNameIdentifier.KW_EXB_EVENT_URL);
-					if (sMediumAnno != null)
+					if (sMediumAnno != null) {
 						event.setMedium(EVENT_MEDIUM.get(sMediumAnno.getValue().toString()));
+					}
 					if (sURLAnno != null) {
-						/*
-						 * try { // new URL(sMediumAnno.getValue().toString());
-						 */
-						event.setUrl(sMediumAnno.getValue().toString());/*
-																		 * }
-																		 * catch
-																		 * (
-																		 * MalformedURLException
-																		 * e) {
-																		 * }
-																		 */
+						event.setUrl(sMediumAnno.getValue().toString());
 					}
 					this.mapSStructuredNode2Event(sNode, sAnno.getQName(), event);
 				}
@@ -390,20 +347,16 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param event
 	 */
 	private void mapSStructuredNode2Event(SStructuredNode sNode, String sAnnotationQName, Event event) {
-//		SDocumentStructureAccessor acc = new SDocumentStructureAccessor();
-//		acc.setDocumentGraph(this.getDocument().getDocumentGraph());
-//		POTPair potPair = acc.getPOT(sNode);
-		
-		List<SALT_TYPE> type= new ArrayList();
+		List<SALT_TYPE> type = new ArrayList();
 		type.add(SALT_TYPE.STIME_OVERLAPPING_RELATION);
 		List<DataSourceSequence> sequences = getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sNode, type);
-		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>)(DataSourceSequence<? extends Number>)sequences.get(0);
-		
+		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>) (DataSourceSequence<? extends Number>) sequences.get(0);
+
 		event.setStart(this.getTLI(sequence.getStart().toString()));
 		event.setEnd(this.getTLI(sequence.getEnd().toString()));
 
 		SAnnotation sAnno = sNode.getAnnotation(sAnnotationQName);
-		if (sAnno != null){
+		if (sAnno != null) {
 			event.setValue(this.stringXMLConformer(sAnno.getValue_STEXT()));
 		}
 		// map SMeatAnnotations2udInformation

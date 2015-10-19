@@ -34,7 +34,7 @@
 <event start="T9" end="T10">be</event>
 <event start="T10" end="T11">?</event>
 </tier>
-<tier id="TIE1" category="POS" type="t" display-name="[POS]">
+<tier id="TIE1" category="pos" type="t" display-name="[pos]">
 <event start="T0" end="T1">VBZ</event>
 <event start="T1" end="T2">DT</event>
 <event start="T2" end="T3">NN</event>
@@ -47,7 +47,7 @@
 <event start="T9" end="T10">VB</event>
 <event start="T10" end="T11">.</event>
 </tier>
-<tier id="TIE2" category="LEMMA" type="t" display-name="[LEMMA]">
+<tier id="TIE2" category="lemma" type="t" display-name="[lemma]">
 <event start="T0" end="T1">be</event>
 <event start="T1" end="T2">this</event>
 <event start="T2" end="T3">example</event>
