@@ -225,6 +225,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		for (List<Tier> slot : this.tierCollection) {
 			this.mapTiers2SNodes(slot);
 		}
+
 		setProgress(1.0);
 		return (DOCUMENT_STATUS.COMPLETED);
 	}
@@ -538,16 +539,18 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				if (startPos < 0) {
 					if (getBasicTranscription().getCommonTimeLine().getTLIs().contains(eEvent.getStart())) {
 						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier '" + tier.getCategory() + "' because its start value reffering to timeline is less than 0.");
-					} else
+					} else {
 						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier '" + tier.getCategory() + "' because this event is not connected to the timeline.");
+					}
 					break;
 				}
 				Integer endPos = getBasicTranscription().getCommonTimeLine().getTLIs().indexOf(eEvent.getEnd());
 				if (endPos < 0) {
 					if (getBasicTranscription().getCommonTimeLine().getTLIs().contains(eEvent.getEnd())) {
 						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier " + tier.getCategory() + "' because its end value reffering to timeline is less than 0.");
-					} else
+					} else {
 						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier " + tier.getCategory() + "' because this event is not connected to the timeline.");
+					}
 					break;
 				}
 				DataSourceSequence sequence = new DataSourceSequence();
@@ -671,12 +674,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 */
 	public void mapCommonTimeLine2STimeine(CommonTimeLine eTimeLine, STimeline sTimeLine) {
 		for (TLI tli : eTimeLine.getTLIs()) {
-			if (tli.getTime() == null) {
-				sTimeLine.increasePointOfTime();
-			}
-			// else {
-			// sTimeLine.addSPointOfTime(tli.getTime());
-			// }
+			sTimeLine.increasePointOfTime();
 		}
 	}
 
