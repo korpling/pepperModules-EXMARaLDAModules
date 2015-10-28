@@ -573,11 +573,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 				if (sTokens.isEmpty()) {
 					if (!getProps().getCleanModel()) {
-						throw new PepperModuleDataException(this, "There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. Exception occurs in file '" + this.getResourceURI() + "'. You can try to set the property \"cleanModel\" to \"true\".");
+						logger.warn("There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. Exception occurs in file '" + this.getResourceURI() + "'. You can try to set the property \"cleanModel\" to \"true\".");
 					} else {
-						throw new PepperModuleDataException(this, "There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. Exception occurs in file '" + this.getResourceURI() + "'. Unfortunatly property '" + EXMARaLDAImporterProperties.PROP_CLEAN_MODEL + "' did not helped here. ");
+						logger.warn("There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. Exception occurs in file '" + this.getResourceURI() + "'. Unfortunatly property '" + EXMARaLDAImporterProperties.PROP_CLEAN_MODEL + "' did not helped here. ");
 					}
-				}
+				}else{
 
 				for (SToken sToken : sTokens) {
 					SSpanningRelation spanRel = SaltFactory.createSSpanningRelation();
@@ -585,7 +585,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					spanRel.setTarget(sToken);
 					this.getDocument().getDocumentGraph().addRelation(spanRel);
 				}
-
+				}
 				// medium and url to SAnnotation
 				this.mapMediumURL2SSNode(eEvent, sSpan);
 			}
