@@ -36,6 +36,7 @@ import org.corpus_tools.pepper.modules.exceptions.PepperModuleDataException;
 import org.corpus_tools.pepper.modules.exceptions.PepperModuleException;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
 import org.corpus_tools.salt.common.SSequentialRelation;
@@ -726,7 +727,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			start = text.length();
 			String eventValue = event.getValue();
 			if (eventValue != null) {
-				if (getProps().isTrimToken()) {
+				if (getProps().isTrimEvents()) {
 					text.append(eventValue.trim());
 				} else {
 					text.append(eventValue);
@@ -837,12 +838,20 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		if (tier.getCategory().equalsIgnoreCase(posTier)) {
 			// this tier has special annotations: pos annotations
 			SAnnotation sAnno = SaltFactory.createSPOSAnnotation();
-			sAnno.setValue(eEvent.getValue());
+			if (getProps().isTrimEvents()) {
+				sAnno.setValue(eEvent.getValue().trim());
+			}else{
+				sAnno.setValue(eEvent.getValue());
+			}
 			sNode.addAnnotation(sAnno);
 		} else if (tier.getCategory().equalsIgnoreCase(lemmaTier)) {
 			// this tier has special annotations: lemma annotations
 			SAnnotation sAnno = SaltFactory.createSLemmaAnnotation();
-			sAnno.setValue(eEvent.getValue());
+			if (getProps().isTrimEvents()) {
+				sAnno.setValue(eEvent.getValue().trim());
+			}else{
+				sAnno.setValue(eEvent.getValue());
+			}
 			sNode.addAnnotation(sAnno);
 		} else if ((uriTiers != null) && (uriTiers.contains(tier.getCategory()))) {
 			String pathName = this.getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(), eEvent.getValue());
@@ -858,7 +867,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			if (eEvent.getTier().getSpeaker() != null) {
 				namespace = eEvent.getTier().getSpeaker().getAbbreviation();
 			}
-			sNode.createAnnotation(namespace, tier.getCategory(), eEvent.getValue());
+			if (getProps().isTrimEvents()) {
+				sNode.createAnnotation(namespace, tier.getCategory(), eEvent.getValue().trim());
+			}else{
+				sNode.createAnnotation(namespace, tier.getCategory(), eEvent.getValue());
+			}
 		}
 		if ((eEvent.getUdInformations() != null) && (eEvent.getUdInformations().size() > 0)) {
 			this.mapUDInformations2SAnnotationContainer(eEvent.getUdInformations(), sNode);
