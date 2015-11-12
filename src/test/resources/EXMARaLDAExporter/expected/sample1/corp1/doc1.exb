@@ -34,20 +34,7 @@
 <event start="T9" end="T10">be</event>
 <event start="T10" end="T11">?</event>
 </tier>
-<tier id="TIE1" category="pos" type="t" display-name="[pos]">
-<event start="T0" end="T1">VBZ</event>
-<event start="T1" end="T2">DT</event>
-<event start="T2" end="T3">NN</event>
-<event start="T3" end="T4">RBR</event>
-<event start="T4" end="T5">JJ</event>
-<event start="T5" end="T6">IN</event>
-<event start="T6" end="T7">PRP</event>
-<event start="T7" end="T8">VBZ</event>
-<event start="T8" end="T9">TO</event>
-<event start="T9" end="T10">VB</event>
-<event start="T10" end="T11">.</event>
-</tier>
-<tier id="TIE2" category="lemma" type="t" display-name="[lemma]">
+<tier id="TIE1" category="lemma" type="t" display-name="[lemma]">
 <event start="T0" end="T1">be</event>
 <event start="T1" end="T2">this</event>
 <event start="T2" end="T3">example</event>
@@ -59,6 +46,19 @@
 <event start="T8" end="T9">to</event>
 <event start="T9" end="T10">be</event>
 <event start="T10" end="T11">?</event>
+</tier>
+<tier id="TIE2" category="pos" type="t" display-name="[pos]">
+<event start="T0" end="T1">VBZ</event>
+<event start="T1" end="T2">DT</event>
+<event start="T2" end="T3">NN</event>
+<event start="T3" end="T4">RBR</event>
+<event start="T4" end="T5">JJ</event>
+<event start="T5" end="T6">IN</event>
+<event start="T6" end="T7">PRP</event>
+<event start="T7" end="T8">VBZ</event>
+<event start="T8" end="T9">TO</event>
+<event start="T9" end="T10">VB</event>
+<event start="T10" end="T11">.</event>
 </tier>
 <tier id="TIE3" category="Inf-Struct" type="t" display-name="[Inf-Struct]">
 <event start="T0" end="T1">contrast-focus</event>

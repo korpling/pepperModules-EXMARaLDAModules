@@ -19,9 +19,19 @@ package org.corpus_tools.peppermodules.exmaralda.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+
+
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.ElementNameQualifier;
+import org.custommonkey.xmlunit.XMLAssert;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.corpus_tools.pepper.common.CorpusDesc;
 import org.corpus_tools.pepper.common.FormatDesc;
@@ -35,9 +45,11 @@ import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.common.SaltProject;
 import org.corpus_tools.salt.samples.SampleGenerator;
 import org.corpus_tools.salt.util.SaltUtil;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 public class EXMARaLDAExporterTest extends PepperExporterTest {
 	URI resourceURI = URI.createFileURI(new File(".").getAbsolutePath());
@@ -91,9 +103,11 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 	 * {@link SampleGenerator#createInformationStructureAnnotations(SDocument)}.
 	 * 
 	 * @throws IOException
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
 	 */
 	@Test
-	public void testStart1() throws IOException {
+	public void testStart1() throws IOException, SAXException, ParserConfigurationException {
 		File corpusPathFile = new File(getTempPath("exmaraldaExporterTest").getAbsolutePath() + "/current");
 		File currentFile = new File(getTempPath("exmaraldaExporterTest").getAbsolutePath() + "/current/corp1/doc1.exb");
 		File expectedFile = new File("./src/test/resources/EXMARaLDAExporter/expected/sample1/corp1/doc1.exb");
@@ -123,8 +137,14 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 		// exporting document
 		start();
 
-		// checking if export was correct
-		assertTrue("The files '" + expectedURI + "' and '" + currentURI + "' aren't identical. ", this.compareFiles(expectedURI, currentURI));
+		
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+
+		@SuppressWarnings("restriction")
+		Diff diff= XMLUnit.compareXML(docBuilder.parse(new File(expectedURI.toFileString())), docBuilder.parse(new File(currentURI.toFileString())));
+		diff.overrideElementQualifier(new ElementNameQualifier());
+		XMLAssert.assertXMLEqual(diff, true);
 	}
 
 	/**
