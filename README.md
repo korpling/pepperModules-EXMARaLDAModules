@@ -80,8 +80,10 @@ At this stage, we want to explain the mapping of an EXMARaLDA model to a Salt mo
 ## Primary text, tokenization and the timeline  
 Since in Salt the anchor of all higher structures and annotations are tokens, we need to identify which tier in EXMARaLDA represents the primary text and it's tokenization. Each tier having the 'type'-value 't' (t= transcription) is used to create a primary text in Salt. Imagine the following EXMARaLDA data:
 
-|SPK1 [tok]|Hello|I|am|speaker1||
-|SPK2 [tok]||Hello|I|am|speaker2|
+<table>
+	<tr><td>SPK1 [tok]</td><td>Hello</td><td>I</td><td>am</td><td>speaker1</td><td></tr></tr>
+	<tr><td>SPK2 [tok]</td><td></td><td>Hello</td><td>I</td><td>am</td><td>speaker1</td></tr>
+</table>
 
 corresponding to the xml representation:
 ```xml
@@ -107,8 +109,10 @@ Now for each event in such a tier, a token in Salt is created. That means for ou
 
 Along with 'tokens' annotations in EXMARaLDA are also modeled in events as shown in the following sample:
 
-|SPK1 [tok]|Hello|I|am|speaker1|
-|SPK2 [pos]|UH|PP|VBP|JJ|
+<table>
+	<tr><td>SPK1 [tok]</td><td>Hello</td><td>I</td><td>am</td><td>speaker1</td></tr>
+	<tr><td>SPK1 [pos]</td><td>UH</td><td>PP</td><td>VBP</td><td>JJ</td></tr>
+</table>
 
 corresponding to the xml representation:
 ```xml
