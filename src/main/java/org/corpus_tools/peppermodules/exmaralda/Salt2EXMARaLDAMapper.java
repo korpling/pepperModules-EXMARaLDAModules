@@ -55,6 +55,7 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
+import java.util.TreeMap;
 
 public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	// -------------------- basic transcription
@@ -304,7 +305,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	private void mapSStructuredNode2Tiers(List<SStructuredNode> sNodes) {
 		// compute a table, which stores the names of tiers, and the
 		// corresponding sAnnotationQName objects
-		Map<String, Tier> annoName2Tier = new Hashtable<String, Tier>();
+		Map<String, Tier> annoName2Tier = new TreeMap<>();
 		for (SStructuredNode sNode : sNodes) {// walk through the given list
 			for (SAnnotation sAnno : sNode.getAnnotations()) {
 				Tier currTier = null;
@@ -315,9 +316,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					currTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 					currTier.setCategory(sAnno.getName());
 					currTier.setDisplayName("[" + sAnno.getName() + "]");
-					currTier.setId(TIER_ID_PREFIX + this.getNewNumOfTiers());
 					currTier.setType(TIER_TYPE.T);
-					this.basicTranscription.getTiers().add(currTier);
 					annoName2Tier.put(sAnno.getQName(), currTier);
 				}
 				if ((!sAnno.getQName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_EVENT_MEDIUM) && (!sAnno.getQName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_EVENT_URL)))) {
@@ -334,6 +333,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					this.mapSStructuredNode2Event(sNode, sAnno.getQName(), event);
 				}
 			}
+		}
+		// set the ID of the tier according to its position in the ordered map
+		for(Map.Entry<String, Tier> e : annoName2Tier.entrySet()) {
+			e.getValue().setId(TIER_ID_PREFIX + this.getNewNumOfTiers());
+			this.basicTranscription.getTiers().add(e.getValue());
 		}
 	}
 

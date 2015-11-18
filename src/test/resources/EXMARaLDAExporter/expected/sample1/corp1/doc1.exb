@@ -34,7 +34,11 @@
 <event start="T9" end="T10">be</event>
 <event start="T10" end="T11">?</event>
 </tier>
-<tier id="TIE1" category="lemma" type="t" display-name="[lemma]">
+<tier id="TIE1" category="Inf-Struct" type="t" display-name="[Inf-Struct]">
+<event start="T0" end="T1">contrast-focus</event>
+<event start="T1" end="T11">topic</event>
+</tier>
+<tier id="TIE2" category="lemma" type="t" display-name="[lemma]">
 <event start="T0" end="T1">be</event>
 <event start="T1" end="T2">this</event>
 <event start="T2" end="T3">example</event>
@@ -47,7 +51,7 @@
 <event start="T9" end="T10">be</event>
 <event start="T10" end="T11">?</event>
 </tier>
-<tier id="TIE2" category="pos" type="t" display-name="[pos]">
+<tier id="TIE3" category="pos" type="t" display-name="[pos]">
 <event start="T0" end="T1">VBZ</event>
 <event start="T1" end="T2">DT</event>
 <event start="T2" end="T3">NN</event>
@@ -59,10 +63,6 @@
 <event start="T8" end="T9">TO</event>
 <event start="T9" end="T10">VB</event>
 <event start="T10" end="T11">.</event>
-</tier>
-<tier id="TIE3" category="Inf-Struct" type="t" display-name="[Inf-Struct]">
-<event start="T0" end="T1">contrast-focus</event>
-<event start="T1" end="T11">topic</event>
 </tier>
 </basic-body>
 </basic-transcription>
