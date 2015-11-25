@@ -374,9 +374,9 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param udInfo
 	 */
 	private void mapSMetaAnnotation2UDInformation(SMetaAnnotation sMetaAnno, UDInformation udInfo) {
-		if ((udInfo.getAttributeName() != null) && (!udInfo.getAttributeName().equals(""))) {
-			sMetaAnno.setName(udInfo.getAttributeName());
-			sMetaAnno.setValue(udInfo.getValue());
+		if ((sMetaAnno.getName() != null) && (!sMetaAnno.getName().equals(""))) {
+			udInfo.setAttributeName(stringXMLConformer(sMetaAnno.getName()));
+			udInfo.setValue(stringXMLConformer(sMetaAnno.getValue_STEXT()));
 		}
 	}
 
