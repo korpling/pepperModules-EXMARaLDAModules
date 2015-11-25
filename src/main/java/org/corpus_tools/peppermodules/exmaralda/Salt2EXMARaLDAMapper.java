@@ -289,7 +289,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		}
 		event.setStart(this.getTLI(sequence.getStart().toString()));
 		event.setEnd(this.getTLI(sequence.getEnd().toString()));
-		event.setValue(getDocument().getDocumentGraph().getText(sToken));
+		event.setValue(stringXMLConformer(getDocument().getDocumentGraph().getText(sToken)));
 
 	}
 
