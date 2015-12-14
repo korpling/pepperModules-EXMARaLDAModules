@@ -316,7 +316,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					currTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 					currTier.setCategory(sAnno.getName());
 					currTier.setDisplayName("[" + sAnno.getName() + "]");
-					currTier.setType(TIER_TYPE.T);
+					currTier.setType(TIER_TYPE.A);
 					annoName2Tier.put(sAnno.getQName(), currTier);
 				}
 				if ((!sAnno.getQName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_EVENT_MEDIUM) && (!sAnno.getQName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_EVENT_URL)))) {
