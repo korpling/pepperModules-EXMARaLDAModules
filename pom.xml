@@ -13,13 +13,6 @@
 		<system>GitHub</system>
 		<url>https://github.com/korpling/pepperModules-EXMARaLDAModules/issues</url>
 	</issueManagement>
-	<repositories>
-		<repository>
-			<id>korpling</id>
-			<name>korpling maven repo</name>
-			<url>http://korpling.german.hu-berlin.de/maven2</url>
-		</repository>
-	</repositories>
 	<scm>
 		<connection>scm:git:git://github.com/github.com:korpling/pepperModules-EXMARaLDAModules.git</connection>
 		<developerConnection>scm:git:git@github.com:korpling/pepperModules-EXMARaLDAModules.git</developerConnection>
