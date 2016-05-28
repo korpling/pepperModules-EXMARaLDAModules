@@ -528,7 +528,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				if (sLayer != null) {
 					// if current tier shall be added to a layer, than add sSpan
 					// to SLayer
-					sSpan.addLayer(sLayer);
+					sLayer.addNode(sSpan);
 				}
 
 				// creating semanticalAnnotation for token
@@ -745,7 +745,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				// add sToken to layer if required
 				SLayer sLayer = this.tierNames2SLayers.get(eTextTier.getCategory());
 				if (sLayer != null) {
-					sToken.addLayer(sLayer);
+					sLayer.addNode(sToken);
 				}
 			}
 			if (event.getTier().getSpeaker() != null) {
