@@ -85,6 +85,18 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 				getResources().appendSegment("selfTests").appendSegment("exmaraldaImporter").appendSegment("expected"));
 	}
 
+	@Override
+	public Double isImportable(URI corpusPath) {
+		Double retValue = 0.0;
+		for (String content : sampleFileContent(corpusPath, EXMARALDA_FILE_ENDINGS)) {
+			if ((content.contains("<?xml version=\"1.0\"")) && (content.contains("<basic-transcription>"))) {
+				retValue = 1.0;
+				break;
+			}
+		}
+		return retValue;
+	}
+	
 	/**
 	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}.
 	 * {@inheritDoc PepperModule#createPepperMapper(Identifier)}
