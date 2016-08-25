@@ -15,30 +15,32 @@
  *
  *
  */
-package org.corpus_tools.peppermodules.exmaralda.tests;
+package org.corpus_tools.peppermodules.exmaralda;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
 import org.corpus_tools.pepper.common.CorpusDesc;
 import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.common.ModuleFitness;
+import org.corpus_tools.pepper.common.ModuleFitness.FitnessFeature;
+import org.corpus_tools.pepper.core.ModuleFitnessChecker;
 import org.corpus_tools.pepper.testFramework.PepperImporterTest;
+import org.corpus_tools.pepper.testFramework.PepperTestUtil;
 import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAImporter;
 import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.util.SaltUtil;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
 
 public class EXMARaLDAImporterTest extends PepperImporterTest {
-	URI resourceURI = URI.createFileURI(new File(".").getAbsolutePath());
 
 	@Before
 	public void setUp() throws Exception {
 		super.setFixture(new EXMARaLDAImporter());
 		super.getFixture().setSaltProject(SaltFactory.createSaltProject());
-		super.setResourcesURI(resourceURI);
-
-		// setting resources
-		getFixture().setResources(resourceURI);
 
 		// set formats to support
 		FormatDesc formatDef = new FormatDesc();
@@ -55,5 +57,14 @@ public class EXMARaLDAImporterTest extends PepperImporterTest {
 		formatDef.setFormatName("EXMARaLDA");
 		formatDef.setFormatVersion("1.0");
 		corpDef.setFormatDesc(formatDef);
+	}
+
+	@Test
+	public void whenSelfTestingModule_thenResultShouldBeTrue() {
+		final ModuleFitness fitness = new ModuleFitnessChecker(PepperTestUtil.createDefaultPepper()).selfTest(fixture);
+		assertThat(fitness.getFitness(FitnessFeature.HAS_SELFTEST)).isTrue();
+		assertThat(fitness.getFitness(FitnessFeature.HAS_PASSED_SELFTEST)).isTrue();
+		assertThat(fitness.getFitness(FitnessFeature.IS_IMPORTABLE_SEFTEST_DATA)).isTrue();
+		assertThat(fitness.getFitness(FitnessFeature.IS_VALID_SELFTEST_DATA)).isTrue();
 	}
 }

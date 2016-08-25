@@ -18,6 +18,7 @@
 package org.corpus_tools.peppermodules.exmaralda;
 
 import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.core.SelfTestDesc;
 import org.corpus_tools.pepper.impl.PepperImporterImpl;
 import org.corpus_tools.pepper.modules.PepperImporter;
 import org.corpus_tools.pepper.modules.PepperMapper;
@@ -48,7 +49,7 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 
 		// adding all file endings to list of endings for documents (necessary
 		// for importCorpusStructure)
-		for (String ending : EXMARALDA_FILE_ENDINGS){
+		for (String ending : EXMARALDA_FILE_ENDINGS) {
 			getDocumentEndings().add(ending);
 		}
 	}
@@ -62,10 +63,14 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 				if (resourceSet == null) {
 					resourceSet = new ResourceSetImpl();
 					// Register XML resource factory
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exmaralda", new XMIResourceFactoryImpl());
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb", new EXBResourceFactory());
-					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xml", new EXBResourceFactory());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exmaralda",
+							new XMIResourceFactoryImpl());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi",
+							new XMIResourceFactoryImpl());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("exb",
+							new EXBResourceFactory());
+					resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xml",
+							new EXBResourceFactory());
 				}
 
 			}
@@ -73,9 +78,16 @@ public class EXMARaLDAImporter extends PepperImporterImpl implements PepperImpor
 		return (resourceSet);
 	}
 
+	@Override
+	public SelfTestDesc getSelfTestDesc() {
+		return new SelfTestDesc(
+				getResources().appendSegment("selfTests").appendSegment("exmaraldaImporter").appendSegment("in"),
+				getResources().appendSegment("selfTests").appendSegment("exmaraldaImporter").appendSegment("expected"));
+	}
+
 	/**
-	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}. {@inheritDoc
-	 * PepperModule#createPepperMapper(Identifier)}
+	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}.
+	 * {@inheritDoc PepperModule#createPepperMapper(Identifier)}
 	 */
 	@Override
 	public PepperMapper createPepperMapper(Identifier sElementId) {
