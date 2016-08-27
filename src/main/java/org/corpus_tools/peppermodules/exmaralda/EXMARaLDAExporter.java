@@ -18,9 +18,9 @@
 package org.corpus_tools.peppermodules.exmaralda;
 
 import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.core.SelfTestDesc;
 import org.corpus_tools.pepper.impl.PepperExporterImpl;
 import org.corpus_tools.pepper.modules.PepperExporter;
-import org.corpus_tools.pepper.modules.PepperExporter.EXPORT_MODE;
 import org.corpus_tools.pepper.modules.PepperMapper;
 import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
@@ -45,6 +45,13 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		setExportMode(EXPORT_MODE.DOCUMENTS_IN_FILES);
 	}
 
+	@Override
+	public SelfTestDesc getSelfTestDesc() {
+		return new SelfTestDesc(
+				getResources().appendSegment("selfTests").appendSegment("exmaraldaExporter").appendSegment("in"),
+				getResources().appendSegment("selfTests").appendSegment("exmaraldaExporter").appendSegment("expected"));
+	}
+	
 	/**
 	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}. {@inheritDoc
 	 * PepperModule#createPepperMapper(Identifier)}

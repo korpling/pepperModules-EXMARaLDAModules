@@ -17,6 +17,7 @@
  */
 package org.corpus_tools.peppermodules.exmaralda;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
@@ -35,7 +36,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.corpus_tools.pepper.common.CorpusDesc;
 import org.corpus_tools.pepper.common.FormatDesc;
+import org.corpus_tools.pepper.common.ModuleFitness;
+import org.corpus_tools.pepper.common.ModuleFitness.FitnessFeature;
+import org.corpus_tools.pepper.core.ModuleFitnessChecker;
 import org.corpus_tools.pepper.testFramework.PepperExporterTest;
+import org.corpus_tools.pepper.testFramework.PepperTestUtil;
 import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAExporter;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
@@ -52,13 +57,13 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class EXMARaLDAExporterTest extends PepperExporterTest {
-	URI resourceURI = URI.createFileURI(new File(".").getAbsolutePath());
+//	URI resourceURI = URI.createFileURI(new File(".").getAbsolutePath());
 
 	@Before
 	public void setUp() {
 		super.setFixture(new EXMARaLDAExporter());
 		super.getFixture().setSaltProject(SaltFactory.createSaltProject());
-		super.setResourcesURI(resourceURI);
+//		super.setResourcesURI(resourceURI);
 
 		// set formats to support
 		FormatDesc formatDef = new FormatDesc();
@@ -71,15 +76,15 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 		corpDef.setFormatDesc(formatDef);
 	}
 
-	@Test
-	public void testSetGetCorpusDefinition() {
-		// TODO something to test???
-		CorpusDesc corpDef = new CorpusDesc();
-		FormatDesc formatDef = new FormatDesc();
-		formatDef.setFormatName("EXMARaLDA");
-		formatDef.setFormatVersion("1.0");
-		corpDef.setFormatDesc(formatDef);
-	}
+//	@Test
+//	public void testSetGetCorpusDefinition() {
+//		// TODO something to test???
+//		CorpusDesc corpDef = new CorpusDesc();
+//		FormatDesc formatDef = new FormatDesc();
+//		formatDef.setFormatName("EXMARaLDA");
+//		formatDef.setFormatVersion("1.0");
+//		corpDef.setFormatDesc(formatDef);
+//	}
 
 	private void removeDirRec(File dir) {
 		if (dir != null) {
@@ -168,5 +173,12 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 		SDocument doc1 = graph.createDocument(corp1, "doc1");
 
 		return (doc1);
+	}
+	
+	@Test
+	public void whenSelfTestingModule_thenResultShouldBeTrue() {
+		final ModuleFitness fitness = new ModuleFitnessChecker(PepperTestUtil.createDefaultPepper()).selfTest(fixture);
+		assertThat(fitness.getFitness(FitnessFeature.HAS_SELFTEST)).isTrue();
+		assertThat(fitness.getFitness(FitnessFeature.HAS_PASSED_SELFTEST)).isTrue();
 	}
 }
