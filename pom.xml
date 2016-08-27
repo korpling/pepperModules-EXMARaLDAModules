@@ -27,21 +27,4 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
-				<configuration>
-					<descriptors>
-						<descriptor>${assemblies.name}</descriptor>
-					</descriptors>
-					<appendAssemblyId>false</appendAssemblyId>
-					<finalName>${project.artifactId}-${project.version}</finalName>
-					<outputDirectory>target/distribution</outputDirectory>
-					<workDirectory>target/assembly/work</workDirectory>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
