@@ -18,14 +18,6 @@
 package org.corpus_tools.peppermodules.exmaralda;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
-
-
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.ElementNameQualifier;
-import org.custommonkey.xmlunit.XMLAssert;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,15 +33,14 @@ import org.corpus_tools.pepper.common.ModuleFitness.FitnessFeature;
 import org.corpus_tools.pepper.core.ModuleFitnessChecker;
 import org.corpus_tools.pepper.testFramework.PepperExporterTest;
 import org.corpus_tools.pepper.testFramework.PepperTestUtil;
-import org.corpus_tools.peppermodules.exmaralda.EXMARaLDAExporter;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
-import org.corpus_tools.salt.common.SCorpusDocumentRelation;
 import org.corpus_tools.salt.common.SCorpusGraph;
 import org.corpus_tools.salt.common.SDocument;
-import org.corpus_tools.salt.common.SaltProject;
 import org.corpus_tools.salt.samples.SampleGenerator;
-import org.corpus_tools.salt.util.SaltUtil;
+import org.custommonkey.xmlunit.Diff;
+import org.custommonkey.xmlunit.ElementNameQualifier;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
@@ -57,13 +48,11 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class EXMARaLDAExporterTest extends PepperExporterTest {
-//	URI resourceURI = URI.createFileURI(new File(".").getAbsolutePath());
 
 	@Before
 	public void setUp() {
 		super.setFixture(new EXMARaLDAExporter());
 		super.getFixture().setSaltProject(SaltFactory.createSaltProject());
-//		super.setResourcesURI(resourceURI);
 
 		// set formats to support
 		FormatDesc formatDef = new FormatDesc();
@@ -75,16 +64,6 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 		CorpusDesc corpDef = new CorpusDesc();
 		corpDef.setFormatDesc(formatDef);
 	}
-
-//	@Test
-//	public void testSetGetCorpusDefinition() {
-//		// TODO something to test???
-//		CorpusDesc corpDef = new CorpusDesc();
-//		FormatDesc formatDef = new FormatDesc();
-//		formatDef.setFormatName("EXMARaLDA");
-//		formatDef.setFormatVersion("1.0");
-//		corpDef.setFormatDesc(formatDef);
-//	}
 
 	private void removeDirRec(File dir) {
 		if (dir != null) {
@@ -108,8 +87,8 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 	 * {@link SampleGenerator#createInformationStructureAnnotations(SDocument)}.
 	 * 
 	 * @throws IOException
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
 	 */
 	@Test
 	public void testStart1() throws IOException, SAXException, ParserConfigurationException {
@@ -142,12 +121,12 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 		// exporting document
 		start();
 
-		
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
 		@SuppressWarnings("restriction")
-		Diff diff= XMLUnit.compareXML(docBuilder.parse(new File(expectedURI.toFileString())), docBuilder.parse(new File(currentURI.toFileString())));
+		Diff diff = XMLUnit.compareXML(docBuilder.parse(new File(expectedURI.toFileString())),
+				docBuilder.parse(new File(currentURI.toFileString())));
 		diff.overrideElementQualifier(new ElementNameQualifier());
 		XMLAssert.assertXMLEqual(diff, true);
 	}
@@ -156,8 +135,7 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 	 * Creates a corpus structure with one corpus and one document. It returns
 	 * the created document.
 	 * 
-	 * <pre
-	 * corp1 | doc1
+	 * <pre corp1 | doc1
 	 * </pre>
 	 * 
 	 * @return
@@ -174,7 +152,7 @@ public class EXMARaLDAExporterTest extends PepperExporterTest {
 
 		return (doc1);
 	}
-	
+
 	@Test
 	public void whenSelfTestingModule_thenResultShouldBeTrue() {
 		final ModuleFitness fitness = new ModuleFitnessChecker(PepperTestUtil.createDefaultPepper()).selfTest(fixture);
