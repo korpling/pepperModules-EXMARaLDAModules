@@ -15,7 +15,7 @@
  *
  *
  */
-package org.corpus_tools.peppermodules.exmaralda.tests;
+package org.corpus_tools.peppermodules.exmaralda;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
