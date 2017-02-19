@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.corpus-tools</groupId>
@@ -7,7 +6,7 @@
 		<version>3.1.0</version>
 	</parent>
 	<artifactId>pepperModules-EXMARaLDAModules</artifactId>
-	<version>1.1.10-SNAPSHOT</version>
+	<version>1.1.10</version>
 	<packaging>bundle</packaging>
 	<issueManagement>
 		<system>GitHub</system>
@@ -17,7 +16,7 @@
 		<connection>scm:git:git://github.com/github.com:korpling/pepperModules-EXMARaLDAModules.git</connection>
 		<developerConnection>scm:git:git@github.com:korpling/pepperModules-EXMARaLDAModules.git</developerConnection>
 		<url>https://github.com/korpling/pepperModules-EXMARaLDAModules.git</url>
-		<tag>HEAD</tag>
+		<tag>pepperModules-EXMARaLDAModules-1.1.10</tag>
 	</scm>
 	<dependencies>
 		<dependency>
