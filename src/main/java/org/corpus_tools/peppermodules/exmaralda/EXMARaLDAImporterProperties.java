@@ -56,6 +56,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	public static final String PROP_CLEAN_MODEL = "cleanModel";
 	/** When this property is true, all tokens defined in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed. **/
 	public static final String PROP_TRIM_EVENTS = "trimEvents";
+	public static final String PROP_PARSE_NAMESPACE = "parseNamespace";
 
 	public EXMARaLDAImporterProperties() {
 		this.addProperty(new PepperModuleProperty(PROP_TOKEN_TIER, String.class, "With this property you can mark the Tier object which shall be interpreted as the one containing the tokenization and the primary text.", true));
@@ -69,6 +70,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 		this.addProperty(new PepperModuleProperty<String>(PROP_SALT_SEMANTICS_WORD, String.class, "You can influence the creation of objects in Salt to have a more semantic typing when mapping data to Salt. Here we provide three properties which can be used for a closer definition or typing of SAnnotation, SToken or SSpan objects conform to ISOCat1. This can be important in the case of a further processing with Pepper. Some modules exist, which only can deal with semantical enriched data for example they need a special kind of annotation like part-of-speech for their processing.", false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_CLEAN_MODEL, Boolean.class, "....", false, false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_TRIM_EVENTS, Boolean.class, "When this property is true, all events in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed. ", false, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(PROP_PARSE_NAMESPACE, Boolean.class, "Parse the qualified annotation name including the namespace (e.g. myns::annoname) from the category name.", false, false));
 	}
 
 	@Deprecated
@@ -120,6 +122,11 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	public Boolean isTrimEvents() {
 		return ((Boolean) this.getProperty(PROP_TRIM_EVENTS).getValue());
 	}
+	
+	public Boolean isParseNamespace() {
+		return ((Boolean) this.getProperty(PROP_PARSE_NAMESPACE).getValue());
+	}
+	
 	/**
 	 * String for regex for for tier to layer mapping
 	 */

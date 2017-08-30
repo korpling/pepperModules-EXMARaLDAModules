@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,7 +35,6 @@ import org.corpus_tools.pepper.modules.exceptions.PepperModuleDataException;
 import org.corpus_tools.pepper.modules.exceptions.PepperModuleException;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
-import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
 import org.corpus_tools.salt.common.SSequentialRelation;
@@ -70,6 +68,8 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
+import org.apache.commons.lang3.tuple.Pair;
+import org.corpus_tools.salt.util.SaltUtil;
 
 /**
  * This class maps data coming from the EXMARaLDA (EXB) model to a Salt model.
@@ -864,13 +864,21 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			}
 		} else {
 			String namespace = null;
-			if (eEvent.getTier().getSpeaker() != null) {
+			String name = tier.getCategory();
+			
+			if(getProps().isParseNamespace()) {
+				Pair<String, String> splitted = SaltUtil.splitQName(tier.getCategory());
+				namespace = splitted.getLeft();
+				name = splitted.getRight();
+			}
+			else if (eEvent.getTier().getSpeaker() != null) {
 				namespace = eEvent.getTier().getSpeaker().getAbbreviation();
 			}
+			
 			if (getProps().isTrimEvents()) {
-				sNode.createAnnotation(namespace, tier.getCategory(), eEvent.getValue().trim());
+				sNode.createAnnotation(namespace, name, eEvent.getValue().trim());
 			}else{
-				sNode.createAnnotation(namespace, tier.getCategory(), eEvent.getValue());
+				sNode.createAnnotation(namespace, name, eEvent.getValue());
 			}
 		}
 		if ((eEvent.getUdInformations() != null) && (eEvent.getUdInformations().size() > 0)) {
