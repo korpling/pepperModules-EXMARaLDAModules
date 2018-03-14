@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.corpus_tools.pepper.common.DOCUMENT_STATUS;
 import org.corpus_tools.pepper.impl.PepperMapperImpl;
 import org.corpus_tools.pepper.modules.exceptions.PepperModuleDataException;
@@ -35,7 +34,6 @@ import org.corpus_tools.salt.common.STextualDS;
 import org.corpus_tools.salt.common.STimeline;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.common.SStructuredNode;
-import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SMetaAnnotation;
 import org.corpus_tools.salt.util.DataSourceSequence;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -55,13 +53,24 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 import java.util.TreeMap;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
+import org.corpus_tools.salt.core.SAnnotation;
+import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
 import org.corpus_tools.salt.util.SaltUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
+	
+	private static final Logger logger = LoggerFactory.getLogger(EXMARaLDAExporter.class);
 
 	// -------------------- basic transcription
 	public void setBasicTranscription(BasicTranscription basicTranscription) {
@@ -75,25 +84,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	private BasicTranscription basicTranscription = null;
 	// -------------------- basic transcription
 	// -------------------- start: helping structures
-	private List<TLI2PointOfTime> tLI2PointOfTimeList = new ArrayList<TLI2PointOfTime>();
-
-	private class TLI2PointOfTime {
-
-		public TLI tli = null;
-
-		public String pointOfTime = null;
-	}
-
-	private TLI getTLI(String sPointOfTime) {
-		TLI retVal = null;
-		for (TLI2PointOfTime tli2pot : tLI2PointOfTimeList) {
-			if (tli2pot.pointOfTime.equalsIgnoreCase(sPointOfTime)) {
-				retVal = tli2pot.tli;
-				break;
-			}
-		}
-		return (retVal);
-	}
+	private final Map<String, TLI> tLI2PointOfTimeMap = new HashMap<>();
 
 	// -------------------- end: helping structures
 	@Override
@@ -120,6 +111,12 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			resourceFile.getParentFile().mkdirs();
 		}
 		this.setBasicTranscription(ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription());
+		
+		// token must have a timeline relation, fix this if source data is invalid
+		List<SMedialDS> mediaDSs = getDocument().getDocumentGraph().getMedialDSs();
+		if(mediaDSs != null && mediaDSs.size() == 1) {
+			addMediaRelationToToken(mediaDSs.get(0));
+		}
 
 		// mapping for MetaInformation
 		MetaInformation metaInformation = ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
@@ -303,9 +300,9 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	}
 	private static class TimePointEntry {
 		final TimePointEntryType type;
-		final SToken tok;
+		final SStructuredNode tok;
 		
-		public TimePointEntry(TimePointEntryType type, SToken tok) {
+		public TimePointEntry(TimePointEntryType type, SStructuredNode tok) {
 			this.type = type;
 			this.tok = tok;
 		}
@@ -341,14 +338,15 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					SMedialRelation mediaRel = (SMedialRelation) rel;
 					
 					// add both the start and end time to the set
-					TimePointEntry start = new TimePointEntry(
+					if(mediaRel.getSource() instanceof SStructuredNode) {
+						TimePointEntry start = new TimePointEntry(
 							TimePointEntryType.START, mediaRel.getSource());
-					TimePointEntry end = new TimePointEntry(
-							TimePointEntryType.END, mediaRel.getSource());
-					
-					timePoints.put(mediaRel.getStart(), start);
-					timePoints.put(mediaRel.getEnd(), end);
-					
+						TimePointEntry end = new TimePointEntry(
+								TimePointEntryType.END, mediaRel.getSource());
+
+						timePoints.put(mediaRel.getStart(), start);
+						timePoints.put(mediaRel.getEnd(), end);
+					}
 				}
 			}
 			
@@ -360,27 +358,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 				tli.setTime("" + e.getKey());
 				tli.setId(TLI_id + tIdx);
 				
-				// put TLI to list, but use the index of the token in the
-				// original timeline as point of time
-				SToken tok = e.getValue().tok;
-				List<DataSourceSequence> seqList = 
-						tok.getGraph().getOverlappedDataSourceSequence(tok, 
-										SALT_TYPE.STIME_OVERLAPPING_RELATION);
+				this.tLI2PointOfTimeMap.put(tli.getTime(), tli);
 				
-				if(seqList != null) {
-					for(DataSourceSequence seq : seqList) {
-						if(seq.getDataSource() == sTimeline) {
-							TLI2PointOfTime tliPOT = new TLI2PointOfTime();
-							if(e.getValue().type == TimePointEntryType.END) {
-								tliPOT.pointOfTime = "" + seq.getEnd();
-							} else {
-								tliPOT.pointOfTime = "" + seq.getStart();
-							}
-							tliPOT.tli = tli;
-							this.tLI2PointOfTimeList.add(tliPOT);
-						}
-					}
-				}
 				tIdx++;
 			}
 		} else {
@@ -392,11 +371,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 				tli.setTime(j + "");
 				tli.setId(TLI_id + i);
 				i++;
-				// put TLI to list
-				TLI2PointOfTime tliPOT = new TLI2PointOfTime();
-				tliPOT.pointOfTime = j + "";
-				tliPOT.tli = tli;
-				this.tLI2PointOfTimeList.add(tliPOT);
+				// put TLI to map
+				this.tLI2PointOfTimeMap.put(j + "", tli);
 			}
 		}		
 	}
@@ -442,6 +418,47 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			this.mapSToken2Event(sToken, event);
 		}
 	}
+	
+	private DataSourceSequence<? extends Number> getTimeOverlappedSeq(SStructuredNode sNode) {
+		
+		
+		List<SMedialDS> mediaDSs = getDocument().getDocumentGraph().getMedialDSs();
+		if(mediaDSs != null && mediaDSs.size() == 1) {
+			List<SToken> overlappedToken = getDocument().getDocumentGraph().getOverlappedTokens(sNode);
+			
+			double rangeStart = Double.MAX_VALUE;
+			double rangeEnd = Double.MIN_VALUE;
+			boolean foundMediaRel = false;
+			
+			for(SToken t : overlappedToken) {
+				for(SRelation rel : t.getOutRelations()) {
+					if(rel instanceof SMedialRelation) {
+						
+						foundMediaRel = true;
+						
+						SMedialRelation mediaRel = (SMedialRelation) rel;
+						rangeStart = Math.min(mediaRel.getStart(), rangeStart);
+						rangeEnd = Math.max(mediaRel.getEnd(), rangeEnd);
+					}
+				}
+			}
+			
+			if(!foundMediaRel) {
+				return null;
+			}
+			
+			return new DataSourceSequence(mediaDSs.get(0), rangeStart, rangeEnd);
+			
+			
+		} else {
+			List<DataSourceSequence> sequences = getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sNode, SALT_TYPE.STIME_OVERLAPPING_RELATION);
+			if(!sequences.isEmpty()) {
+				return sequences.get(0);
+			}
+		}
+		
+		return null;
+	}
 
 	/**
 	 * Maps one token to one event.
@@ -450,10 +467,10 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param event
 	 */
 	private void mapSToken2Event(SToken sToken, Event event) {
-		List<DataSourceSequence> sequences = getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sToken, SALT_TYPE.STIME_OVERLAPPING_RELATION);
-		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>) (DataSourceSequence<? extends Number>) sequences.get(0);
+		
+		DataSourceSequence<?> sequence = getTimeOverlappedSeq(sToken);
 		if (sequence == null) {
-			throw new PepperModuleDataException(this, "Cannot map token to event, because there is no point of time for SToken: " + sToken.getId());
+			logger.error("Cannot map token to event, because there is no point of time for SToken: " + sToken.getId());
 		}
 		if (sequence.getStart() == null) {
 			throw new PepperModuleDataException(this, "Cannot map token to event, because start of pot for following token is empty: " + sToken.getId());
@@ -461,10 +478,122 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		if (sequence.getEnd() == null) {
 			throw new PepperModuleDataException(this, "Cannot map token to event, because end of pot for following token is empty: " + sToken.getId());
 		}
-		event.setStart(this.getTLI(sequence.getStart().toString()));
-		event.setEnd(this.getTLI(sequence.getEnd().toString()));
+		event.setStart(this.tLI2PointOfTimeMap.get(sequence.getStart().toString()));
+		event.setEnd(this.tLI2PointOfTimeMap.get(sequence.getEnd().toString()));
 		event.setValue(stringXMLConformer(getDocument().getDocumentGraph().getText(sToken)));
 
+	}
+	
+	/**
+	 * For a token without a connection to a media source, create
+	 * new media relations by using spans that have a media relation and cover
+	 * this token.
+	 * @param mediaDS
+	 */
+	private void addMediaRelationToToken(SMedialDS mediaDS) {
+		Set<SToken> tokenWithoutMediaRel = new HashSet<>();
+		for(SToken tok : getDocument().getDocumentGraph().getTokens()) {
+			boolean hasMediaRel = false;
+			for(SRelation rel : tok.getOutRelations()) {
+				if(rel instanceof SMedialRelation && ((SMedialRelation) rel).getTarget() == mediaDS) {
+					hasMediaRel = true;
+					break;
+				}
+			}
+			if(!hasMediaRel) {
+				tokenWithoutMediaRel.add(tok);
+			}
+		}
+		
+		// sort all spans with a media relation by their range length
+		TreeMap<Double, List<SMedialRelation>> spansWithMediaRel = new TreeMap<>();
+		for(SMedialRelation mediaRel : getDocument().getDocumentGraph().getMedialRelations()) {
+			if(mediaRel.getSource() instanceof SStructuredNode) {
+				double length = mediaRel.getEnd() - mediaRel.getStart();
+				List<SMedialRelation> list = spansWithMediaRel.get(length);
+				if(list == null) {
+					list = new LinkedList<>();
+					spansWithMediaRel.put(length, list);
+				}
+				list.add(mediaRel);
+			} else {
+				boolean test = true;
+			}
+		}
+		// begin with the smallest span and fix all token that are covered by these spans
+		for(Map.Entry<Double,List<SMedialRelation>> e : spansWithMediaRel.entrySet()) {
+			
+			for(SMedialRelation s : e.getValue()) {
+				
+				fixSingleTokenMediaRelation(tokenWithoutMediaRel, s);
+				// check if no token is missing
+				if(tokenWithoutMediaRel.isEmpty()) {
+					break;
+				}
+			}
+			
+		}
+		
+		if(!tokenWithoutMediaRel.isEmpty()) {
+			StringBuffer tokenDebug = new StringBuffer();
+			for(SToken t : tokenWithoutMediaRel) {
+				tokenDebug.append("\"");
+				tokenDebug.append(getDocument().getDocumentGraph().getText(t));
+				tokenDebug.append("\" (");
+				tokenDebug.append(t.getId());
+				tokenDebug.append(") ");
+			}
+			logger.warn("Can't assign timeline to tokens {} based on media source relations.", tokenDebug);
+		}
+	}
+	
+	private void fixSingleTokenMediaRelation(Set<SToken> tokens, SMedialRelation spanMediaRel) {
+		
+		final double spanMediaLength = spanMediaRel.getEnd() - spanMediaRel.getStart();
+		
+		if(!(spanMediaRel.getSource() instanceof SStructuredNode)) {
+			return;
+		}
+		SStructuredNode span = (SStructuredNode) spanMediaRel.getSource();
+		
+		List<SToken> tokens2Fix = getDocument().getDocumentGraph().getOverlappedTokens(span);
+		
+		// copy for the getOverlappedDataSourceSequence function
+		List<SNode> tokenRange = new LinkedList<>();
+		for(SToken t : tokens2Fix) {
+			tokenRange.add(t);
+		}
+
+		tokens.removeAll(tokens2Fix);
+		
+		tokens2Fix = getDocument().getDocumentGraph().getSortedTokenByText(tokens2Fix);
+		
+		// assign a fraction of the overall time corresponding to the text length of the token
+		List<DataSourceSequence> seq = 
+				getDocument().getDocumentGraph().getOverlappedDataSourceSequence(tokenRange, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
+		if(seq != null && !seq.isEmpty()) {
+			double spanTextLength = (double) (seq.get(0).getEnd().intValue() - seq.get(0).getStart().intValue());
+			if(spanTextLength == 0.0) {
+				spanTextLength = 0.00001;
+			}
+			double currentStart = spanMediaRel.getStart();
+			
+			for(SToken tok : tokens2Fix) {
+				double tokTextLength = (double) getDocument().getDocumentGraph().getText(tok).length();
+				double tokMediaLength = (tokTextLength / spanTextLength) * spanMediaLength;
+				
+				SMedialRelation tokMediaRel = SaltFactory.createSMedialRelation();
+				tokMediaRel.setSource(tok);
+				tokMediaRel.setTarget(spanMediaRel.getTarget());
+				tokMediaRel.setStart(currentStart);
+				tokMediaRel.setEnd(currentStart + tokMediaLength);
+				
+				getDocument().getDocumentGraph().addRelation(tokMediaRel);
+				
+				currentStart = currentStart + tokMediaLength;
+			}
+		}
+		
 	}
 
 	/**
@@ -544,11 +673,10 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param event
 	 */
 	private void mapSStructuredNode2Event(SStructuredNode sNode, String sAnnotationQName, Event event) {
-		List<DataSourceSequence> sequences = getDocument().getDocumentGraph().getOverlappedDataSourceSequence(sNode, SALT_TYPE.STIME_OVERLAPPING_RELATION);
-		DataSourceSequence<Integer> sequence = (DataSourceSequence<Integer>) (DataSourceSequence<? extends Number>) sequences.get(0);
+		DataSourceSequence<?> sequence = getTimeOverlappedSeq(sNode);
 
-		event.setStart(this.getTLI(sequence.getStart().toString()));
-		event.setEnd(this.getTLI(sequence.getEnd().toString()));
+		event.setStart(this.tLI2PointOfTimeMap.get(sequence.getStart().toString()));
+		event.setEnd(this.tLI2PointOfTimeMap.get(sequence.getEnd().toString()));
 
 		SAnnotation sAnno = sNode.getAnnotation(sAnnotationQName);
 		if (sAnno != null) {
