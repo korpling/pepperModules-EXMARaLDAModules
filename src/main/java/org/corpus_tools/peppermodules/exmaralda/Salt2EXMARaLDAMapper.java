@@ -17,6 +17,7 @@
  */
 package org.corpus_tools.peppermodules.exmaralda;
 
+import com.google.common.base.Splitter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.EVENT_MEDIUM;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Event;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.ExmaraldaBasicFactory;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.MetaInformation;
+import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.SPEAKER_SEX;
+import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Speaker;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
@@ -126,8 +129,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		// mapping for MetaInformation
 		MetaInformation metaInformation = ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
 		basicTranscription.setMetaInformation(metaInformation);
-		this.mapSDocuent2MetaInfo(getDocument(), metaInformation);
-
+		this.mapSDocument2MetaInfo(getDocument(), metaInformation);
+		this.mapSDocument2SpeakerMeta(getDocument(), basicTranscription.getSpeakertable());
 		// creating timeline
 		if (this.getDocument().getDocumentGraph().getTimeline() == null) {
 			// if no timeline is included, create one SDocumentDataEnricher
@@ -206,7 +209,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param sDoc
 	 * @param metaInfo
 	 */
-	private void mapSDocuent2MetaInfo(SDocument sDoc, MetaInformation metaInfo) {
+	private void mapSDocument2MetaInfo(SDocument sDoc, MetaInformation metaInfo) {
 		// map SMeatAnnotations2udInformation
 		for (SMetaAnnotation sMetaAnno : sDoc.getMetaAnnotations()) {
 			// map project name
@@ -229,6 +232,66 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 				metaInfo.getUdMetaInformations().add(udInfo);
 			}
 		}
+	}
+	
+	/**
+	 * Maps textual DS meta annotation as speaker meta data. Assumes each textual DS belongs to another speaker.
+	 * @param doc
+	 * @param speakerTable 
+	 */
+	private void mapSDocument2SpeakerMeta(SDocument doc, List<Speaker> speakerTable) {
+		final Splitter listSplitter = Splitter.on(',').trimResults();
+		
+		Map<String,Speaker> speakerById = new TreeMap<>();
+		
+		for(SMetaAnnotation sMetaAnno : doc.getMetaAnnotations()) {
+			
+			// get existing speaker or create new one based on the namespace
+			String id = sMetaAnno.getNamespace();
+			
+			if(id != null) {
+				
+				Speaker speaker = speakerById.get(id);
+				if(speaker == null) {
+					speaker = ExmaraldaBasicFactory.eINSTANCE.createSpeaker();
+					
+					speaker.setId(id);					
+					speakerById.put(id, speaker);
+				}
+				
+				if (sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_SEX)) {
+					SPEAKER_SEX v = SPEAKER_SEX.get(sMetaAnno.getValue().toString());
+					if(v != null) {
+						speaker.setSex(v);
+					}
+				} else if(sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_ABBR)) {
+					speaker.setAbbreviation(sMetaAnno.getValue().toString());
+				} else if(sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_COMMENT)) {
+					speaker.setComment(sMetaAnno.getValue().toString());
+				} else if(sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_L1)) {
+					for(String l1 : listSplitter.split(sMetaAnno.getValue().toString())) {
+						speaker.getL1().add(l1);
+					}
+				} else if(sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_L2)) {
+					for(String l2 : listSplitter.split(sMetaAnno.getValue().toString())) {
+						speaker.getL2().add(l2);
+					}
+				} else if(sMetaAnno.getName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_LANGUAGES_USED)) {
+					for(String l : listSplitter.split(sMetaAnno.getValue().toString())) {
+						speaker.getLanguageUsed().add(l);
+					}
+				} else {
+					// if unknown, use general UD information
+					UDInformation udInfo = ExmaraldaBasicFactory.eINSTANCE.createUDInformation();
+					this.mapSMetaAnnotation2UDInformation(sMetaAnno, udInfo);
+					speaker.getUdSpeakerInformations().add(udInfo);
+				}
+			}
+		} // end for each meta annotation
+		
+		// add all speaker entries to speaker table
+		speakerTable.addAll(speakerById.values());
+		
 	}
 	
 	private static enum TimePointEntryType {

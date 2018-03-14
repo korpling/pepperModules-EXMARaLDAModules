@@ -360,12 +360,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			// map abbreviation
 			if ((speaker.getAbbreviation() != null) && (!speaker.getAbbreviation().isEmpty())) {
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, "abbreviation", speaker.getAbbreviation().toString());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_ABBR, speaker.getAbbreviation().toString());
 			}
 			// map sex
 			if (speaker.getSex() != null) {
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, "sex", speaker.getSex().toString());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_SEX, speaker.getSex().toString());
 			}
 			// language used
 			if ((speaker.getLanguageUsed() != null) && (speaker.getLanguageUsed().size() > 0)) {
@@ -378,7 +378,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 						langUsedStr.append(", " + langUsed);
 				}
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, "languages-used", langUsedStr.toString());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_LANGUAGES_USED, langUsedStr.toString());
 			}
 			// map l1
 			if ((speaker.getL1() != null) && (speaker.getL1().size() > 0)) {
@@ -391,7 +391,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 						l1Str.append(", " + l1);
 				}
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, "l1", l1Str.toString());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_L1, l1Str.toString());
 			}
 			// map l2
 			if ((speaker.getL2() != null) && (speaker.getL2().size() > 0)) {
@@ -405,12 +405,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				}
 
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, "l2", l2Str.toString());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_L2, l2Str.toString());
 			}
 			// map comment
 			if ((speaker.getComment() != null) && (!speaker.getComment().isEmpty())) {
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, "comment", speaker.getComment());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_COMMENT, speaker.getComment());
 			}
 			// map ud-informations
 			for (UDInformation udInfo : speaker.getUdSpeakerInformations()) {
