@@ -58,6 +58,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
@@ -141,9 +142,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 				basicTranscription.getTiers().add(tokenTier);
 				
 				DataSourceSequence<Integer> seq = new DataSourceSequence<>(text, text.getStart(), text.getEnd());
-				List<SToken> tokensOfText = text.getGraph().getTokensBySequence(seq);
 				String name = text.getName();
-				if(name == null || name.isEmpty()) {
+				if(name == null || name.isEmpty() || name.startsWith("sText")) {
 					if(textIdx > 0) {
 						name = TIER_NAME_TOKEN + textIdx;
 					} else {
@@ -157,6 +157,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 						tokenTier.setSpeaker(speaker);
 					}
 				}
+				List<SToken> tokensOfText = getDocument().getDocumentGraph().getSortedTokenByText(text.getGraph().getTokensBySequence(seq));
 				this.mapSToken2Tier(tokensOfText, tokenTier, name);
 				
 				textIdx++;
@@ -294,20 +295,6 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		return speakerById;
 	}
 	
-	private static enum TimePointEntryType {
-		START,
-		END
-	}
-	private static class TimePointEntry {
-		final TimePointEntryType type;
-		final SStructuredNode tok;
-		
-		public TimePointEntry(TimePointEntryType type, SStructuredNode tok) {
-			this.type = type;
-			this.tok = tok;
-		}
-	}
-	
 	/**
 	 * Creates content of a common timeline, and also creates all TLIs.
 	 *
@@ -332,30 +319,24 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			SMedialDS ds = this.getDocument().getDocumentGraph().getMedialDSs().get(0);
 			
 			// collect an ordered set of start/end times
-			TreeMap<Double,TimePointEntry> timePoints = new TreeMap<>();
+			TreeSet<Double> timePoints = new TreeSet<>();
 			for(SRelation rel : ds.getInRelations()) {
 				if(rel instanceof SMedialRelation) {
 					SMedialRelation mediaRel = (SMedialRelation) rel;
 					
 					// add both the start and end time to the set
-					if(mediaRel.getSource() instanceof SStructuredNode) {
-						TimePointEntry start = new TimePointEntry(
-							TimePointEntryType.START, mediaRel.getSource());
-						TimePointEntry end = new TimePointEntry(
-								TimePointEntryType.END, mediaRel.getSource());
+					timePoints.add(mediaRel.getStart());
+					timePoints.add(mediaRel.getEnd());
 
-						timePoints.put(mediaRel.getStart(), start);
-						timePoints.put(mediaRel.getEnd(), end);
-					}
 				}
 			}
 			
 			int tIdx = 0;
 			// iterate over the ordered times
-			for(Map.Entry<Double,TimePointEntry> e : timePoints.entrySet()) {
+			for(Double t : timePoints) {
 				TLI tli = ExmaraldaBasicFactory.eINSTANCE.createTLI();
 				cTimeLine.getTLIs().add(tli);
-				tli.setTime("" + e.getKey());
+				tli.setTime("" + t);
 				tli.setId(TLI_id + tIdx);
 				
 				this.tLI2PointOfTimeMap.put(tli.getTime(), tli);
@@ -420,7 +401,6 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	}
 	
 	private DataSourceSequence<? extends Number> getTimeOverlappedSeq(SStructuredNode sNode) {
-		
 		
 		List<SMedialDS> mediaDSs = getDocument().getDocumentGraph().getMedialDSs();
 		if(mediaDSs != null && mediaDSs.size() == 1) {
@@ -516,8 +496,6 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					spansWithMediaRel.put(length, list);
 				}
 				list.add(mediaRel);
-			} else {
-				boolean test = true;
 			}
 		}
 		// begin with the smallest span and fix all token that are covered by these spans
