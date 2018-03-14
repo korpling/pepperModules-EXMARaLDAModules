@@ -55,9 +55,16 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
+import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
+import org.corpus_tools.salt.common.SMedialDS;
+import org.corpus_tools.salt.common.SMedialRelation;
+import org.corpus_tools.salt.common.STimelineRelation;
+import org.corpus_tools.salt.core.SRelation;
 
 public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
+
 	// -------------------- basic transcription
 	public void setBasicTranscription(BasicTranscription basicTranscription) {
 		this.basicTranscription = basicTranscription;
@@ -73,6 +80,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	private List<TLI2PointOfTime> tLI2PointOfTimeList = new ArrayList<TLI2PointOfTime>();
 
 	private class TLI2PointOfTime {
+
 		public TLI tli = null;
 
 		public String pointOfTime = null;
@@ -90,7 +98,6 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	}
 
 	// -------------------- end: helping structures
-
 	@Override
 	public DOCUMENT_STATUS mapSCorpus() {
 		if (getResourceURI() != null) {
@@ -102,7 +109,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	/**
 	 * {@inheritDoc PepperMapper#setDocument(SDocument)}
-	 * 
+	 *
 	 * OVERRIDE THIS METHOD FOR CUSTOMIZED MAPPING.
 	 */
 	@Override
@@ -159,7 +166,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(EXMARaLDAExporter.FILE_EXTENION, new EXBResourceFactory());
 		// load resource
 		Resource resource = resourceSet.createResource(getResourceURI());
-		if (resource == null){
+		if (resource == null) {
 			throw new PepperModuleDataException(this, "Cannot save a resource to uri '" + getResourceURI() + "', because the given resource is null.");
 		}
 		resource.getContents().add(basicTranscription);
@@ -172,7 +179,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	/**
 	 * Maps all SMetaAnnotations of document to MetaInformation or UDInformation
-	 * 
+	 *
 	 * @param sDoc
 	 * @param metaInfo
 	 */
@@ -200,10 +207,24 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			}
 		}
 	}
-
+	
+	private static enum TimePointEntryType {
+		START,
+		END
+	}
+	private static class TimePointEntry {
+		final TimePointEntryType type;
+		final SToken tok;
+		
+		public TimePointEntry(TimePointEntryType type, SToken tok) {
+			this.type = type;
+			this.tok = tok;
+		}
+	}
+	
 	/**
-	 * Creates content of a common timeline, and also creates all TLI�s.
-	 * 
+	 * Creates content of a common timeline, and also creates all TLIs.
+	 *
 	 * @param sTimeline
 	 * @param cTimeLine
 	 */
@@ -212,20 +233,83 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			this.getDocument().getDocumentGraph().createTimeline();
 			sTimeline = this.getDocument().getDocumentGraph().getTimeline();
 		}
-		String TLI_id = "T";
-		int i = 0;
-		for (int j = 0; j <= sTimeline.getEnd(); j++) {
-			TLI tli = ExmaraldaBasicFactory.eINSTANCE.createTLI();
-			cTimeLine.getTLIs().add(tli);
-			tli.setTime(j + "");
-			tli.setId(TLI_id + i);
-			i++;
-			// put TLI to list
-			TLI2PointOfTime tliPOT = new TLI2PointOfTime();
-			tliPOT.pointOfTime = j + "";
-			tliPOT.tli = tli;
-			this.tLI2PointOfTimeList.add(tliPOT);
-		}
+
+		final boolean createFromMediaDS
+				= this.getDocument().getDocumentGraph().getMedialDSs() != null
+				&& this.getDocument().getDocumentGraph().getMedialDSs().size() == 1
+				&& !this.getDocument().getDocumentGraph().getMedialRelations().isEmpty();
+
+		if (createFromMediaDS) {
+			String TLI_id = "T";
+			
+			// get the first (and only) media data source
+			SMedialDS ds = this.getDocument().getDocumentGraph().getMedialDSs().get(0);
+			
+			// collect an ordered set of start/end times
+			TreeMap<Double,TimePointEntry> timePoints = new TreeMap<>();
+			for(SRelation rel : ds.getInRelations()) {
+				if(rel instanceof SMedialRelation) {
+					SMedialRelation mediaRel = (SMedialRelation) rel;
+					
+					// add both the start and end time to the set
+					TimePointEntry start = new TimePointEntry(
+							TimePointEntryType.START, mediaRel.getSource());
+					TimePointEntry end = new TimePointEntry(
+							TimePointEntryType.END, mediaRel.getSource());
+					
+					timePoints.put(mediaRel.getStart(), start);
+					timePoints.put(mediaRel.getEnd(), end);
+					
+				}
+			}
+			
+			int tIdx = 0;
+			// iterate over the ordered times
+			for(Map.Entry<Double,TimePointEntry> e : timePoints.entrySet()) {
+				TLI tli = ExmaraldaBasicFactory.eINSTANCE.createTLI();
+				cTimeLine.getTLIs().add(tli);
+				tli.setTime("" + e.getKey());
+				tli.setId(TLI_id + tIdx);
+				
+				// put TLI to list, but use the index of the token in the
+				// original timeline as point of time
+				SToken tok = e.getValue().tok;
+				List<DataSourceSequence> seqList = 
+						tok.getGraph().getOverlappedDataSourceSequence(tok, 
+										SALT_TYPE.STIME_OVERLAPPING_RELATION);
+				
+				if(seqList != null) {
+					for(DataSourceSequence seq : seqList) {
+						if(seq.getDataSource() == sTimeline) {
+							TLI2PointOfTime tliPOT = new TLI2PointOfTime();
+							if(e.getValue().type == TimePointEntryType.END) {
+								tliPOT.pointOfTime = "" + seq.getEnd();
+							} else {
+								tliPOT.pointOfTime = "" + seq.getStart();
+							}
+							tliPOT.tli = tli;
+							this.tLI2PointOfTimeList.add(tliPOT);
+						}
+					}
+				}
+				tIdx++;
+			}
+		} else {
+			String TLI_id = "T";
+			int i = 0;
+			for (int j = 0; j <= sTimeline.getEnd(); j++) {
+				TLI tli = ExmaraldaBasicFactory.eINSTANCE.createTLI();
+				cTimeLine.getTLIs().add(tli);
+				tli.setTime(j + "");
+				tli.setId(TLI_id + i);
+				i++;
+				// put TLI to list
+				TLI2PointOfTime tliPOT = new TLI2PointOfTime();
+				tliPOT.pointOfTime = j + "";
+				tliPOT.tli = tli;
+				this.tLI2PointOfTimeList.add(tliPOT);
+			}
+		}		
 	}
 
 	/**
@@ -253,7 +337,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * created. It calls mapSToken2Event(). <br/>
 	 * Please take care, that the mapping for SToken-annotations has to be
 	 * treated seperatly
-	 * 
+	 *
 	 * @param sTokens
 	 * @param tier
 	 */
@@ -271,7 +355,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	/**
 	 * Maps one token to one event.
-	 * 
+	 *
 	 * @param sToken
 	 * @param event
 	 */
@@ -298,7 +382,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * annotations and creates one tier for each. <br/>
 	 * Please take attention, that SToken-object shall be mapped by
 	 * mapSToken2Tier() additionally to create a tier for text.
-	 * 
+	 *
 	 * @param sNodes
 	 * @param tier
 	 */
@@ -335,7 +419,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			}
 		}
 		// set the ID of the tier according to its position in the ordered map
-		for(Map.Entry<String, Tier> e : annoName2Tier.entrySet()) {
+		for (Map.Entry<String, Tier> e : annoName2Tier.entrySet()) {
 			e.getValue().setId(TIER_ID_PREFIX + this.getNewNumOfTiers());
 			this.basicTranscription.getTiers().add(e.getValue());
 		}
@@ -343,7 +427,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	/**
 	 * Maps a structuredNode to an event.
-	 * 
+	 *
 	 * @param sNode
 	 * @param sAnnotationQName
 	 * @param event
@@ -369,7 +453,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	/**
 	 * Maps a meta annotation to a udInformation
-	 * 
+	 *
 	 * @param sMetaAnno
 	 * @param udInfo
 	 */
@@ -383,9 +467,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	/**
 	 * This method transforms a given string to a xml conform string and returns
 	 * it.
-	 * 
-	 * @param uncleanedString
-	 *            string which possibly is not conform to xml
+	 *
+	 * @param uncleanedString string which possibly is not conform to xml
 	 * @return
 	 */
 	private String stringXMLConformer(String uncleanedString) {
