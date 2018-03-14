@@ -138,9 +138,32 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		this.map2CommonTimeLine(getDocument().getDocumentGraph().getTimeline(), cTimeLine);
 
 		// creating token tier
-		Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
-		basicTranscription.getTiers().add(tokenTier);
-		this.mapSToken2Tier(getDocument().getDocumentGraph().getTokens(), tokenTier);
+		List<STextualDS> texts = this.getDocument().getDocumentGraph().getTextualDSs();
+		if(texts != null && !texts.isEmpty()) {
+			int textIdx = 0;
+			for(STextualDS text : texts) {
+				Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
+				basicTranscription.getTiers().add(tokenTier);
+				
+				DataSourceSequence<Integer> seq = new DataSourceSequence<>(text, text.getStart(), text.getEnd());
+				List<SToken> tokensOfText = text.getGraph().getTokensBySequence(seq);
+				String name = text.getName();
+				if(name == null || name.isEmpty()) {
+					if(textIdx > 0) {
+						name = TIER_NAME_TOKEN + textIdx;
+					} else {
+						name = TIER_NAME_TOKEN;
+					}
+				}
+				this.mapSToken2Tier(tokensOfText, tokenTier, name);
+				
+				textIdx++;
+			}
+		} else {
+			Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
+			basicTranscription.getTiers().add(tokenTier);
+			this.mapSToken2Tier(getDocument().getDocumentGraph().getTokens(), tokenTier, TIER_NAME_TOKEN);
+		}
 		// map all SStructuredNodes to tiers
 
 		List<SStructuredNode> structuredNodes = new ArrayList<>();
@@ -340,10 +363,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 *
 	 * @param sTokens
 	 * @param tier
+	 * @param textName 
 	 */
-	private void mapSToken2Tier(List<SToken> sTokens, Tier tier) {
-		tier.setCategory(TIER_NAME_TOKEN);
-		tier.setDisplayName("[" + TIER_NAME_TOKEN + "]");
+	private void mapSToken2Tier(List<SToken> sTokens, Tier tier, String textName) {
+		tier.setCategory(textName);
+		tier.setDisplayName("[" + textName + "]");
 		tier.setId(TIER_ID_PREFIX + this.getNewNumOfTiers());
 		tier.setType(TIER_TYPE.T);
 		for (SToken sToken : sTokens) {
