@@ -32,4 +32,7 @@ public class EXBNameIdentifier {
 	public static final String KW_EXB_L2 = "l2";
 	public static final String KW_EXB_LANGUAGES_USED = "languages-used";
 	
+	public static final String EXB_NS = "exmaralda";
+	public static final String EXB_SPEAKER = "speaker";
+	
 }

@@ -21,7 +21,6 @@ import com.google.common.base.Splitter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +32,8 @@ import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
 import org.corpus_tools.salt.common.STextualDS;
-import org.corpus_tools.salt.common.STextualRelation;
 import org.corpus_tools.salt.common.STimeline;
 import org.corpus_tools.salt.common.SToken;
-import org.corpus_tools.salt.common.SStructure;
 import org.corpus_tools.salt.common.SStructuredNode;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SMetaAnnotation;
@@ -58,13 +55,11 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
-import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
-import org.corpus_tools.salt.common.STimelineRelation;
 import org.corpus_tools.salt.core.SRelation;
+import org.corpus_tools.salt.util.SaltUtil;
 
 public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
@@ -130,7 +125,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		MetaInformation metaInformation = ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
 		basicTranscription.setMetaInformation(metaInformation);
 		this.mapSDocument2MetaInfo(getDocument(), metaInformation);
-		this.mapSDocument2SpeakerMeta(getDocument(), basicTranscription.getSpeakertable());
+		Map<String, Speaker> speakerById = this.mapSDocument2SpeakerMeta(getDocument(), basicTranscription.getSpeakertable());
 		// creating timeline
 		if (this.getDocument().getDocumentGraph().getTimeline() == null) {
 			// if no timeline is included, create one SDocumentDataEnricher
@@ -158,6 +153,13 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 						name = TIER_NAME_TOKEN;
 					}
 				}
+				SMetaAnnotation metaSpeaker = text.getMetaAnnotation(SaltUtil.createQName(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER));
+				if(metaSpeaker != null && metaSpeaker.getValue_STEXT() != null) {
+					Speaker speaker = speakerById.get(metaSpeaker.getValue_STEXT());
+					if(speaker != null) {
+						tokenTier.setSpeaker(speaker);
+					}
+				}
 				this.mapSToken2Tier(tokensOfText, tokenTier, name);
 				
 				textIdx++;
@@ -178,7 +180,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		structuredNodes.addAll(getDocument().getDocumentGraph().getStructures());
 
 		// map
-		this.mapSStructuredNode2Tiers(structuredNodes);
+		this.mapSStructuredNode2Tiers(structuredNodes, speakerById);
 
 		saveToFile(basicTranscription);
 
@@ -239,7 +241,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 * @param doc
 	 * @param speakerTable 
 	 */
-	private void mapSDocument2SpeakerMeta(SDocument doc, List<Speaker> speakerTable) {
+	private Map<String,Speaker> mapSDocument2SpeakerMeta(SDocument doc, List<Speaker> speakerTable) {
 		final Splitter listSplitter = Splitter.on(',').trimResults();
 		
 		Map<String,Speaker> speakerById = new TreeMap<>();
@@ -292,6 +294,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		// add all speaker entries to speaker table
 		speakerTable.addAll(speakerById.values());
 		
+		return speakerById;
 	}
 	
 	private static enum TimePointEntryType {
@@ -472,8 +475,9 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 *
 	 * @param sNodes
 	 * @param tier
+	 * @param speakerById
 	 */
-	private void mapSStructuredNode2Tiers(List<SStructuredNode> sNodes) {
+	private void mapSStructuredNode2Tiers(List<SStructuredNode> sNodes, Map<String, Speaker> speakerById) {
 		// compute a table, which stores the names of tiers, and the
 		// corresponding sAnnotationQName objects
 		Map<String, Tier> annoName2Tier = new TreeMap<>();
@@ -488,6 +492,26 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					currTier.setCategory(sAnno.getName());
 					currTier.setDisplayName("[" + sAnno.getName() + "]");
 					currTier.setType(TIER_TYPE.A);
+					
+					// check if this node is covering a textual DS with a speaker
+					List<DataSourceSequence> seqList = this.getDocument().getDocumentGraph()
+							.getOverlappedDataSourceSequence(sNode, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
+					if(seqList != null) {
+						for(DataSourceSequence seq : seqList) {
+							if(seq.getDataSource() instanceof STextualDS) {
+								STextualDS ds = (STextualDS) seq.getDataSource();
+								SMetaAnnotation metaSpeaker = 
+										ds.getMetaAnnotation(SaltUtil.createQName(
+												EXBNameIdentifier.EXB_NS, 
+												EXBNameIdentifier.EXB_SPEAKER));
+								if(metaSpeaker != null && speakerById.containsKey(metaSpeaker.getValue_STEXT())) {
+									currTier.setSpeaker(speakerById.get(metaSpeaker.getValue_STEXT()));
+								}
+							}
+						}
+					}
+					
+					// add to map, so it is not recreated again
 					annoName2Tier.put(sAnno.getQName(), currTier);
 				}
 				if ((!sAnno.getQName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_EVENT_MEDIUM) && (!sAnno.getQName().equalsIgnoreCase(EXBNameIdentifier.KW_EXB_EVENT_URL)))) {

@@ -216,6 +216,16 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			STextualDS sTextDS = SaltFactory.createSTextualDS();
 			logger.debug("[EXMARaLDAImporter] create primary data for tier '{}'.", eTextTier.getCategory());
 			sTextDS.setName(eTextTier.getCategory());
+			
+			Speaker speaker = eTextTier.getSpeaker();
+			if(speaker != null) {
+				// add speaker information to this specific textual DS as meta-data, so the exporter
+				// can assign the correct document meta-data (which has the speaker ID as namespace)
+				// to this textual DS.
+				sTextDS.createMetaAnnotation(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER, 
+						speaker.getAbbreviation() == null ? speaker.getId() : speaker.getAbbreviation());
+			}
+			
 			getDocument().getDocumentGraph().addNode(sTextDS);
 			this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);
 		}
