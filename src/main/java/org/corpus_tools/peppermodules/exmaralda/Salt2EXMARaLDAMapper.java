@@ -54,18 +54,16 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
 import org.corpus_tools.salt.core.SAnnotation;
-import org.corpus_tools.salt.core.SNode;
 import org.corpus_tools.salt.core.SRelation;
 import org.corpus_tools.salt.util.SaltUtil;
+import org.eclipse.emf.common.util.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,6 +115,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		MetaInformation metaInformation = ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
 		basicTranscription.setMetaInformation(metaInformation);
 		this.mapSDocument2MetaInfo(getDocument(), metaInformation);
+		this.mapMediaSourceToReferencedFile(getDocument().getDocumentGraph(), metaInformation);
+		
 		Map<String, Speaker> speakerById = this.mapSDocument2SpeakerMeta(getDocument(), basicTranscription.getSpeakertable());
 		// creating timeline
 		if (this.getDocument().getDocumentGraph().getTimeline() == null) {
@@ -194,6 +194,26 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			resource.save(null);
 		} catch (IOException e) {
 			throw new PepperModuleDataException(this, "Cannot write exmaradla basic transcription to uri '" + getResourceURI() + "'.", e);
+		}
+	}
+	
+	
+	private void mapMediaSourceToReferencedFile(SDocumentGraph sDocGraph, MetaInformation metaInfo) {
+		if(sDocGraph.getMedialDSs() != null && !sDocGraph.getMedialDSs().isEmpty()) {
+			SMedialDS medialDS = sDocGraph.getMedialDSs().get(0);
+			File mediaFile;
+			if(medialDS.getMediaReference().isFile()) {
+				mediaFile = new File(medialDS.getMediaReference().toFileString());
+			} else {
+				mediaFile = new File(medialDS.getMediaReference().toString());
+			}
+			if(mediaFile.exists()) {
+				// create a relative URL
+				URI mediaLoc = URI.createFileURI(mediaFile.getAbsolutePath());
+				URI baseLoc = this.getResourceURI();
+				mediaLoc = mediaLoc.deresolve(baseLoc);
+				metaInfo.setReferencedFile(mediaLoc.toFileString());
+			}			
 		}
 	}
 
@@ -303,13 +323,13 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 		final boolean createFromMediaDS
 				= this.getDocument().getDocumentGraph().getMedialDSs() != null
-				&& this.getDocument().getDocumentGraph().getMedialDSs().size() == 1
+				&& !this.getDocument().getDocumentGraph().getMedialDSs().isEmpty()
 				&& !this.getDocument().getDocumentGraph().getMedialRelations().isEmpty();
 
 		if (createFromMediaDS) {
 			String TLI_id = "T";
 			
-			// get the first (and only) media data source
+			// get the first media data source
 			SMedialDS ds = this.getDocument().getDocumentGraph().getMedialDSs().get(0);
 			
 			// collect an ordered set of start/end times
@@ -397,7 +417,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	private DataSourceSequence<? extends Number> getTimeOverlappedSeq(SStructuredNode sNode) {
 		
 		List<SMedialDS> mediaDSs = getDocument().getDocumentGraph().getMedialDSs();
-		if(mediaDSs != null && mediaDSs.size() == 1) {
+		if(mediaDSs != null && !mediaDSs.isEmpty()) {
 			List<SToken> overlappedToken = getDocument().getDocumentGraph().getOverlappedTokens(sNode);
 			
 			double rangeStart = Double.MAX_VALUE;

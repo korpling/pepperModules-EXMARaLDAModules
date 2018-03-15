@@ -330,7 +330,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				logger.warn("[EXMARaLDAImporter] The file refered in exmaralda model '" + audioURI + "' does not exist and cannot be mapped to a salt model. It will be ignored.");
 			} else {
 				SMedialDS sAudioDS = SaltFactory.createSMedialDS();
-				sAudioDS.setMediaReference(audioURI);
+				sAudioDS.setMediaReference(URI.createFileURI(audioFile.getPath()));
 				sDoc.getDocumentGraph().addNode(sAudioDS);
 			}
 		}
