@@ -605,6 +605,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 */
 	private void mapSStructuredNode2Event(SStructuredNode sNode, String sAnnotationQName, Event event) {
 		DataSourceSequence<?> sequence = getTimeOverlappedSeq(sNode);
+		
+		if(sequence.getStart() == null || sequence.getEnd() == null) {
+			logger.error("Cannot map node {} because it does not cover any tokens", sNode.getId());
+			return;
+		}
 
 		event.setStart(this.tLI2PointOfTimeMap.get(sequence.getStart().toString()));
 		event.setEnd(this.tLI2PointOfTimeMap.get(sequence.getEnd().toString()));
