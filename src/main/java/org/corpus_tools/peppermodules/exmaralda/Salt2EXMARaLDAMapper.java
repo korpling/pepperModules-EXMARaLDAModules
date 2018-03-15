@@ -112,13 +112,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			resourceFile.getParentFile().mkdirs();
 		}
 		this.setBasicTranscription(ExmaraldaBasicFactory.eINSTANCE.createBasicTranscription());
-		
-		// token must have a timeline relation, fix this if source data is invalid
-		List<SMedialDS> mediaDSs = getDocument().getDocumentGraph().getMedialDSs();
-		if(mediaDSs != null && mediaDSs.size() == 1) {
-			addMediaRelationToToken(mediaDSs.get(0));
-		}
-
+	
 		// mapping for MetaInformation
 		MetaInformation metaInformation = ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
 		basicTranscription.setMetaInformation(metaInformation);
@@ -464,116 +458,6 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 	}
 	
-	/**
-	 * For a token without a connection to a media source, create
-	 * new media relations by using spans that have a media relation and cover
-	 * this token.
-	 * @param mediaDS
-	 */
-	private void addMediaRelationToToken(SMedialDS mediaDS) {
-		Set<SToken> tokenWithoutMediaRel = new HashSet<>();
-		for(SToken tok : getDocument().getDocumentGraph().getTokens()) {
-			boolean hasMediaRel = false;
-			for(SRelation rel : tok.getOutRelations()) {
-				if(rel instanceof SMedialRelation && ((SMedialRelation) rel).getTarget() == mediaDS) {
-					hasMediaRel = true;
-					break;
-				}
-			}
-			if(!hasMediaRel) {
-				tokenWithoutMediaRel.add(tok);
-			}
-		}
-		
-		// sort all spans with a media relation by their range length
-		TreeMap<Double, List<SMedialRelation>> spansWithMediaRel = new TreeMap<>();
-		for(SMedialRelation mediaRel : getDocument().getDocumentGraph().getMedialRelations()) {
-			if(mediaRel.getSource() instanceof SStructuredNode) {
-				double length = mediaRel.getEnd() - mediaRel.getStart();
-				List<SMedialRelation> list = spansWithMediaRel.get(length);
-				if(list == null) {
-					list = new LinkedList<>();
-					spansWithMediaRel.put(length, list);
-				}
-				list.add(mediaRel);
-			}
-		}
-		// begin with the smallest span and fix all token that are covered by these spans
-		for(Map.Entry<Double,List<SMedialRelation>> e : spansWithMediaRel.entrySet()) {
-			
-			for(SMedialRelation s : e.getValue()) {
-				
-				fixSingleTokenMediaRelation(tokenWithoutMediaRel, s);
-				// check if no token is missing
-				if(tokenWithoutMediaRel.isEmpty()) {
-					break;
-				}
-			}
-			
-		}
-		
-		if(!tokenWithoutMediaRel.isEmpty()) {
-			StringBuffer tokenDebug = new StringBuffer();
-			for(SToken t : tokenWithoutMediaRel) {
-				tokenDebug.append("\"");
-				tokenDebug.append(getDocument().getDocumentGraph().getText(t));
-				tokenDebug.append("\" (");
-				tokenDebug.append(t.getId());
-				tokenDebug.append(") ");
-			}
-			logger.warn("Can't assign timeline to tokens {} based on media source relations.", tokenDebug);
-		}
-	}
-	
-	private void fixSingleTokenMediaRelation(Set<SToken> tokens, SMedialRelation spanMediaRel) {
-		
-		final double spanMediaLength = spanMediaRel.getEnd() - spanMediaRel.getStart();
-		
-		if(!(spanMediaRel.getSource() instanceof SStructuredNode)) {
-			return;
-		}
-		SStructuredNode span = (SStructuredNode) spanMediaRel.getSource();
-		
-		List<SToken> tokens2Fix = getDocument().getDocumentGraph().getOverlappedTokens(span);
-		
-		// copy for the getOverlappedDataSourceSequence function
-		List<SNode> tokenRange = new LinkedList<>();
-		for(SToken t : tokens2Fix) {
-			tokenRange.add(t);
-		}
-
-		tokens.removeAll(tokens2Fix);
-		
-		tokens2Fix = getDocument().getDocumentGraph().getSortedTokenByText(tokens2Fix);
-		
-		// assign a fraction of the overall time corresponding to the text length of the token
-		List<DataSourceSequence> seq = 
-				getDocument().getDocumentGraph().getOverlappedDataSourceSequence(tokenRange, SALT_TYPE.STEXT_OVERLAPPING_RELATION);
-		if(seq != null && !seq.isEmpty()) {
-			double spanTextLength = (double) (seq.get(0).getEnd().intValue() - seq.get(0).getStart().intValue());
-			if(spanTextLength == 0.0) {
-				spanTextLength = 0.00001;
-			}
-			double currentStart = spanMediaRel.getStart();
-			
-			for(SToken tok : tokens2Fix) {
-				double tokTextLength = (double) getDocument().getDocumentGraph().getText(tok).length();
-				double tokMediaLength = (tokTextLength / spanTextLength) * spanMediaLength;
-				
-				SMedialRelation tokMediaRel = SaltFactory.createSMedialRelation();
-				tokMediaRel.setSource(tok);
-				tokMediaRel.setTarget(spanMediaRel.getTarget());
-				tokMediaRel.setStart(currentStart);
-				tokMediaRel.setEnd(currentStart + tokMediaLength);
-				
-				getDocument().getDocumentGraph().addRelation(tokMediaRel);
-				
-				currentStart = currentStart + tokMediaLength;
-			}
-		}
-		
-	}
-
 	/**
 	 * Maps a a SStructuredNode-object to a tier. Therefore it takes all the
 	 * annotations and creates one tier for each. <br/>
