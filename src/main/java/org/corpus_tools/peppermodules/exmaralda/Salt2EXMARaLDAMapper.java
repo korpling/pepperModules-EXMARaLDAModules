@@ -61,6 +61,7 @@ import org.corpus_tools.salt.common.SDocumentGraph;
 import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
 import org.corpus_tools.salt.core.SAnnotation;
+import org.corpus_tools.salt.core.SFeature;
 import org.corpus_tools.salt.core.SRelation;
 import org.corpus_tools.salt.util.SaltUtil;
 import org.eclipse.emf.common.util.URI;
@@ -511,12 +512,12 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 						for(DataSourceSequence seq : seqList) {
 							if(seq.getDataSource() instanceof STextualDS) {
 								STextualDS ds = (STextualDS) seq.getDataSource();
-								SMetaAnnotation metaSpeaker = 
-										ds.getMetaAnnotation(SaltUtil.createQName(
+								SFeature featSpeaker = 
+										ds.getFeature(
 												EXBNameIdentifier.EXB_NS, 
-												EXBNameIdentifier.EXB_SPEAKER));
-								if(metaSpeaker != null && speakerById.containsKey(metaSpeaker.getValue_STEXT())) {
-									currTier.setSpeaker(speakerById.get(metaSpeaker.getValue_STEXT()));
+												EXBNameIdentifier.EXB_SPEAKER);
+								if(featSpeaker != null && speakerById.containsKey(featSpeaker.getValue_STEXT())) {
+									currTier.setSpeaker(speakerById.get(featSpeaker.getValue_STEXT()));
 								}
 							}
 						}

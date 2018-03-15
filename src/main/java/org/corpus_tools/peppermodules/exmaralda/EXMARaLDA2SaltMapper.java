@@ -219,10 +219,10 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			
 			Speaker speaker = eTextTier.getSpeaker();
 			if(speaker != null) {
-				// add speaker information to this specific textual DS as meta-data, so the exporter
+				// add speaker information to this specific textual DS as feature, so the exporter
 				// can assign the correct document meta-data (which has the speaker ID as namespace)
 				// to this textual DS.
-				sTextDS.createMetaAnnotation(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER, 
+				sTextDS.createFeature(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER, 
 						speaker.getAbbreviation() == null ? speaker.getId() : speaker.getAbbreviation());
 			}
 			
