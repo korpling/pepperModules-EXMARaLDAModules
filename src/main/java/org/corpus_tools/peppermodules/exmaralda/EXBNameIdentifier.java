@@ -34,5 +34,6 @@ public class EXBNameIdentifier {
 	
 	public static final String EXB_NS = "exmaralda";
 	public static final String EXB_SPEAKER = "speaker";
+	public static final String EXB_TIER_ORDER = "tier-order";
 	
 }

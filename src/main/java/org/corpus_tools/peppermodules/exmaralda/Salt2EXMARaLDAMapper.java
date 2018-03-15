@@ -18,6 +18,8 @@
 package org.corpus_tools.peppermodules.exmaralda;
 
 import com.google.common.base.Splitter;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +55,9 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -127,7 +131,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		CommonTimeLine cTimeLine = ExmaraldaBasicFactory.eINSTANCE.createCommonTimeLine();
 		basicTranscription.setCommonTimeLine(cTimeLine);
 		this.map2CommonTimeLine(getDocument().getDocumentGraph().getTimeline(), cTimeLine);
-
+		
 		// creating token tier
 		List<STextualDS> texts = this.getDocument().getDocumentGraph().getTextualDSs();
 		if(texts != null && !texts.isEmpty()) {
@@ -145,9 +149,9 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 						name = TIER_NAME_TOKEN;
 					}
 				}
-				SMetaAnnotation metaSpeaker = text.getMetaAnnotation(SaltUtil.createQName(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER));
-				if(metaSpeaker != null && metaSpeaker.getValue_STEXT() != null) {
-					Speaker speaker = speakerById.get(metaSpeaker.getValue_STEXT());
+				SFeature featSpeaker = text.getFeature(SaltUtil.createQName(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER));
+				if(featSpeaker != null && featSpeaker.getValue_STEXT() != null) {
+					Speaker speaker = speakerById.get(featSpeaker.getValue_STEXT());
 					if(speaker != null) {
 						tokenTier.setSpeaker(speaker);
 					}
@@ -174,6 +178,37 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 		// map
 		this.mapSStructuredNode2Tiers(structuredNodes, speakerById);
+		
+		// re-order tiers if an order was given
+		SFeature featTierOrder = getDocument().getDocumentGraph().getFeature(
+				EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_TIER_ORDER);
+		if(featTierOrder != null) {
+			List<String> tierOrder = Splitter.on(",").trimResults().splitToList(featTierOrder.getValue().toString());
+			Multimap<String, Tier> tiersByDisplayName = LinkedHashMultimap.create();
+			for(Tier t : basicTranscription.getTiers()) {
+				if(t.getDisplayName() == null) {
+					tiersByDisplayName.put("", t);
+				} else {
+					tiersByDisplayName.put(t.getDisplayName(), t);
+				}
+			}
+			
+			// append in correct order
+			List<Tier> newOrderedTierList = new LinkedList<>();
+			for(String displayName : tierOrder) {
+				Collection<Tier> tiers = tiersByDisplayName.removeAll(displayName);
+				for(Tier t : tiers) {
+					newOrderedTierList.add(t);
+				}
+			}
+			// append all remaining tiers
+			for(Tier t : tiersByDisplayName.values()) {
+				newOrderedTierList.add(t);
+			}
+			// replace the list
+			basicTranscription.getTiers().clear();
+			basicTranscription.getTiers().addAll(newOrderedTierList);
+		}
 
 		saveToFile(basicTranscription);
 
@@ -383,6 +418,19 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		numOfTiers++;
 		return (num);
 	}
+	
+	private String createDisplayName(Tier tier, String annoName) {
+		if(tier.getSpeaker() != null) {
+			Speaker s = tier.getSpeaker();
+			if(s.getAbbreviation() != null) {
+				return s.getAbbreviation() + " [" + annoName + "]";
+			} else {
+				return s.getId() + " [" + annoName + "]";
+			}
+		} else {
+			return "[" + annoName + "]";
+		}
+	}
 
 	/**
 	 * Stores the prefix for tier id
@@ -405,7 +453,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 */
 	private void mapSToken2Tier(List<SToken> sTokens, Tier tier, String textName) {
 		tier.setCategory(textName);
-		tier.setDisplayName("[" + textName + "]");
+		tier.setDisplayName(createDisplayName(tier, textName));
 		tier.setId(TIER_ID_PREFIX + this.getNewNumOfTiers());
 		tier.setType(TIER_TYPE.T);
 		for (SToken sToken : sTokens) {
@@ -502,7 +550,6 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 				} else {// create new entry in annoName2Tier
 					currTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
 					currTier.setCategory(sAnno.getName());
-					currTier.setDisplayName("[" + sAnno.getName() + "]");
 					currTier.setType(TIER_TYPE.A);
 					
 					// check if this node is covering a textual DS with a speaker
@@ -522,6 +569,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 							}
 						}
 					}
+					currTier.setDisplayName(createDisplayName(currTier, sAnno.getName()));
 					
 					// add to map, so it is not recreated again
 					annoName2Tier.put(sAnno.getQName(), currTier);

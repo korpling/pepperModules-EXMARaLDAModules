@@ -17,6 +17,7 @@
  */
 package org.corpus_tools.peppermodules.exmaralda;
 
+import com.google.common.base.Joiner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TIER_TYPE;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
+import java.util.LinkedList;
 import org.apache.commons.lang3.tuple.Pair;
 import org.corpus_tools.salt.util.SaltUtil;
 
@@ -174,6 +176,15 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			// map all speaker objects
 			this.mapSpeaker2SMetaAnnotation(speaker, getDocument());
 		}
+		// remember the original order of the tiers
+		List<String> tierDisplayNames = new LinkedList<>();
+		for(Tier t : basicTranscription.getTiers()) {
+			if(t.getDisplayName() != null) {
+				tierDisplayNames.add(t.getDisplayName());
+			}
+		}
+		getDocument().getDocumentGraph().createFeature(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_TIER_ORDER, 
+				Joiner.on(',').join(tierDisplayNames));
 
 		// mapping the timeline
 		STimeline sTimeline = SaltFactory.createSTimeline();
