@@ -247,6 +247,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		for (List<Tier> slot : this.tierCollection) {
 			this.mapTiers2SNodes(slot);
 		}
+		
+		if(!getProps().isMapTimeline() && sTimeline != null) {
+			// remove existing timeline if it should not be included
+			getDocument().getDocumentGraph().removeNode(sTimeline);
+			getDocument().getDocumentGraph().setTimeline(null);
+		}
 
 		setProgress(1.0);
 		return (DOCUMENT_STATUS.COMPLETED);

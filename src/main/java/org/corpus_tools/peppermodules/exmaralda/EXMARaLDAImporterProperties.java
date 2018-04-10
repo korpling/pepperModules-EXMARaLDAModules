@@ -57,6 +57,8 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	/** When this property is true, all tokens defined in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed. **/
 	public static final String PROP_TRIM_EVENTS = "trimEvents";
 	public static final String PROP_PARSE_NAMESPACE = "parseNamespace";
+	public static final String PROP_MAP_TIMELINE = "mapTimeline";
+	
 
 	public EXMARaLDAImporterProperties() {
 		this.addProperty(new PepperModuleProperty(PROP_TOKEN_TIER, String.class, "With this property you can mark the Tier object which shall be interpreted as the one containing the tokenization and the primary text.", true));
@@ -71,6 +73,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_CLEAN_MODEL, Boolean.class, "....", false, false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_TRIM_EVENTS, Boolean.class, "When this property is true, all events in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed. ", false, false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_PARSE_NAMESPACE, Boolean.class, "Parse the qualified annotation name including the namespace (e.g. myns::annoname) from the category name.", false, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(PROP_MAP_TIMELINE, Boolean.class, "Import the EXMARaLDA timeline as Salt STimeline", true, false));
 	}
 
 	@Deprecated
@@ -125,6 +128,10 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	
 	public Boolean isParseNamespace() {
 		return ((Boolean) this.getProperty(PROP_PARSE_NAMESPACE).getValue());
+	}
+	
+	public Boolean isMapTimeline() {
+		return ((Boolean) this.getProperty(PROP_MAP_TIMELINE).getValue());
 	}
 	
 	/**

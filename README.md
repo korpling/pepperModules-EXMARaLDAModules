@@ -189,6 +189,7 @@ The table contains an overview of all usable properties to customize the behavio
 |saltSemantics.WORD  |Tier.categoryName	                                            |optional            |	-- |
 |cleanModel          |Boolean	                                                    |optional            |	-- |
 |trimToken           |Boolean	                                                    |optional            |	-- |
+|mapTimeline         |Boolean	                                                    |optional            |	true |
 
 ### salt.tokenSeparator
 With the property salt.tokenSeparatoryou can set a single sign or a sequence of signs which shall be used between the concatenation of event values representing the primary data. 
@@ -272,6 +273,9 @@ Setting this property to true, adds an additional event in tier 'primary data' c
 
 ### trimToken
 When this property is true, all tokens defined in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed.
+
+## mapTimeline
+When this property is set to `false`, the original timeline in the input file will not be imported. The default is to include the timeline. 
 
 ## Contribute
 Since this Pepper module is under a free license, please feel free to fork it from github and improve the module. If you even think that others can benefit from your improvements, don't hesitate to make a pull request, so that your changes can be merged.
