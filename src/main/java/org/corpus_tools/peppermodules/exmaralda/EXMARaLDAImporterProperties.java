@@ -61,7 +61,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	
 
 	public EXMARaLDAImporterProperties() {
-		this.addProperty(new PepperModuleProperty(PROP_TOKEN_TIER, String.class, "With this property you can mark the Tier object which shall be interpreted as the one containing the tokenization and the primary text.", true));
+		this.addProperty(new PepperModuleProperty(PROP_TOKEN_TIER, String.class, "With this property you can mark the Tier object which shall be interpreted as the one containing the tokenization and the primary text.", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_TOKENSEP, String.class, "With this property you can set a single sign or a sequence of signs which shall be used between the concatenation of event values representing the primary data.", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_TIERMERGE, String.class, "In EXMARaLDA there is just one value per each Event object. When mapping those data to Salt, this restriction results, that a SSpan or SToken object will be created for each Event object. To avoid this, you can mark a sequence of sets of tiers to map them to a single SSpan or SToken object in Salt.", false));
 		this.addProperty(new PepperModuleProperty<String>(PROP_LAYERS_SMALL, String.class, "With this property you can use the layer mechanism of Salt. This means, with this property, you can map all SToken or SSpan object caused by Event objects to an SLayer object. You can also group SToken or SSpan coming from Event objects contained in several Tier objects to the same SLayer object.", false));
