@@ -17,30 +17,48 @@
  */
 package org.corpus_tools.peppermodules.exmaralda;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.corpus_tools.pepper.common.DOCUMENT_STATUS;
 import org.corpus_tools.pepper.impl.PepperMapperImpl;
 import org.corpus_tools.pepper.modules.exceptions.PepperModuleDataException;
 import org.corpus_tools.salt.SALT_TYPE;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.SMedialDS;
+import org.corpus_tools.salt.common.SMedialRelation;
+import org.corpus_tools.salt.common.SStructuredNode;
 import org.corpus_tools.salt.common.STextualDS;
 import org.corpus_tools.salt.common.STimeline;
 import org.corpus_tools.salt.common.SToken;
-import org.corpus_tools.salt.common.SStructuredNode;
+import org.corpus_tools.salt.core.SAnnotation;
+import org.corpus_tools.salt.core.SFeature;
 import org.corpus_tools.salt.core.SMetaAnnotation;
+import org.corpus_tools.salt.core.SRelation;
 import org.corpus_tools.salt.util.DataSourceSequence;
+import org.corpus_tools.salt.util.SaltUtil;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.BasicTranscription;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.CommonTimeLine;
@@ -55,22 +73,6 @@ import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.TLI;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.Tier;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.UDInformation;
 import de.hu_berlin.german.korpling.saltnpepper.misc.exmaralda.resources.EXBResourceFactory;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.corpus_tools.salt.common.SDocumentGraph;
-import org.corpus_tools.salt.common.SMedialDS;
-import org.corpus_tools.salt.common.SMedialRelation;
-import org.corpus_tools.salt.core.SAnnotation;
-import org.corpus_tools.salt.core.SFeature;
-import org.corpus_tools.salt.core.SRelation;
-import org.corpus_tools.salt.util.SaltUtil;
-import org.eclipse.emf.common.util.URI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	
@@ -119,10 +121,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		// mapping for MetaInformation
 		MetaInformation metaInformation = ExmaraldaBasicFactory.eINSTANCE.createMetaInformation();
 		basicTranscription.setMetaInformation(metaInformation);
-		this.mapSDocument2MetaInfo(getDocument(), metaInformation);
+		Map<String, Speaker> speakerById = this.mapSDocument2SpeakerMeta(getDocument(), basicTranscription.getSpeakertable());
+		
+		this.mapSDocument2MetaInfo(getDocument(), metaInformation, speakerById.keySet());
 		this.mapMediaSourceToReferencedFile(getDocument().getDocumentGraph(), metaInformation);
 		
-		Map<String, Speaker> speakerById = this.mapSDocument2SpeakerMeta(getDocument(), basicTranscription.getSpeakertable());
 		// creating timeline
 		if (this.getDocument().getDocumentGraph().getTimeline() == null) {
 			// if no timeline is included, create one SDocumentDataEnricher
@@ -258,8 +261,9 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	 *
 	 * @param sDoc
 	 * @param metaInfo
+	 * @param excludeNamespaces
 	 */
-	private void mapSDocument2MetaInfo(SDocument sDoc, MetaInformation metaInfo) {
+	private void mapSDocument2MetaInfo(SDocument sDoc, MetaInformation metaInfo, Set<String> excludeNamespaces) {
 		// map SMeatAnnotations2udInformation
 		for (SMetaAnnotation sMetaAnno : sDoc.getMetaAnnotations()) {
 			// map project name
@@ -277,9 +281,12 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 				// map transcription convention
 				metaInfo.setTranscriptionConvention(sMetaAnno.getValue().toString());
 			} else {
-				UDInformation udInfo = ExmaraldaBasicFactory.eINSTANCE.createUDInformation();
-				this.mapSMetaAnnotation2UDInformation(sMetaAnno, udInfo);
-				metaInfo.getUdMetaInformations().add(udInfo);
+				
+				if(sMetaAnno.getNamespace() == null || !excludeNamespaces.contains(sMetaAnno.getNamespace())) {
+					UDInformation udInfo = ExmaraldaBasicFactory.eINSTANCE.createUDInformation();
+					this.mapSMetaAnnotation2UDInformation(sMetaAnno, udInfo);
+					metaInfo.getUdMetaInformations().add(udInfo);
+				}
 			}
 		}
 	}
