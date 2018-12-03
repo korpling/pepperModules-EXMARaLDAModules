@@ -593,7 +593,8 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 
 		DataSourceSequence<?> sequence = getTimeOverlappedSeq(sToken);
 		if (sequence == null) {
-			logger.error("Cannot map token to event, because there is no point of time for SToken: " + sToken.getId());
+			throw new PepperModuleDataException(this,
+					"Cannot map token to event, because there is no point of time for SToken: " + sToken.getId());
 		}
 		if (sequence.getStart() == null) {
 			throw new PepperModuleDataException(this,
