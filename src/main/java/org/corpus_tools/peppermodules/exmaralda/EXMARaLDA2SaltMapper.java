@@ -540,6 +540,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	private void mapTiers2SNodes(List<Tier> slot) {
 		for (Tier tier : slot) {
+			
+			if(getProps().isIgnoreDescription() && tier.getType() == TIER_TYPE.D) {
+				continue;
+			}
+
+			
 			logger.debug("[EXMARaLDAImporter] mapping tier '{}'. ", tier.getCategory());
 			SLayer sLayer = null;
 			if ((this.tierNames2SLayers != null)) {

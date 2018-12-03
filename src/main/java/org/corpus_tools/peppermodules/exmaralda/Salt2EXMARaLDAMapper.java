@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,9 @@ import org.corpus_tools.salt.common.SMedialDS;
 import org.corpus_tools.salt.common.SMedialRelation;
 import org.corpus_tools.salt.common.SStructuredNode;
 import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.common.STextualRelation;
 import org.corpus_tools.salt.common.STimeline;
+import org.corpus_tools.salt.common.STimelineRelation;
 import org.corpus_tools.salt.common.SToken;
 import org.corpus_tools.salt.core.SAnnotation;
 import org.corpus_tools.salt.core.SFeature;
@@ -78,6 +81,14 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EXMARaLDAExporter.class);
 
+	/**
+	 * casts {@link PepperModulePropertiesImpl} to
+	 * {@link EXMARaLDAImporterProperties}
+	 **/
+	public EXMARaLDAExporterProperties getProps() {
+		return ((EXMARaLDAExporterProperties) this.getProperties());
+	}
+	
 	// -------------------- basic transcription
 	public void setBasicTranscription(BasicTranscription basicTranscription) {
 		this.basicTranscription = basicTranscription;
@@ -129,7 +140,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		// creating timeline
 		if (this.getDocument().getDocumentGraph().getTimeline() == null) {
 			// if no timeline is included, create one SDocumentDataEnricher
-			getDocument().getDocumentGraph().createTimeline();
+			createTimelineFromText(getDocument().getDocumentGraph());
 		}
 		CommonTimeLine cTimeLine = ExmaraldaBasicFactory.eINSTANCE.createCommonTimeLine();
 		basicTranscription.setCommonTimeLine(cTimeLine);
@@ -141,7 +152,6 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			int textIdx = 0;
 			for(STextualDS text : texts) {
 				Tier tokenTier = ExmaraldaBasicFactory.eINSTANCE.createTier();
-				basicTranscription.getTiers().add(tokenTier);
 				
 				DataSourceSequence<Integer> seq = new DataSourceSequence<>(text, text.getStart(), text.getEnd());
 				String name = text.getName();
@@ -160,7 +170,11 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 					}
 				}
 				List<SToken> tokensOfText = getDocument().getDocumentGraph().getSortedTokenByText(text.getGraph().getTokensBySequence(seq));
-				this.mapSToken2Tier(tokensOfText, tokenTier, name);
+				
+				if(!tokensOfText.isEmpty() || !getProps().isDropEmptySpeaker()) {
+					basicTranscription.getTiers().add(tokenTier);
+					this.mapSToken2Tier(tokensOfText, tokenTier, name);
+				}
 				
 				textIdx++;
 			}
@@ -216,6 +230,50 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		saveToFile(basicTranscription);
 
 		return (DOCUMENT_STATUS.COMPLETED);
+	}
+	
+	private STimeline createTimelineFromText(SDocumentGraph g) {
+		STimeline retVal = null;
+		if ((g.getTimeline() == null) || (g.getTimeline().getEnd() == 0)) {
+			STimeline sTimeline = SaltFactory.createSTimeline();
+			g.addNode(sTimeline);
+			List<STimelineRelation> sTimeRelList = new ArrayList<>();
+			Map<STextualDS, List<STimelineRelation>> sTimeRelTable = new Hashtable<>();
+			for (STextualRelation sTextRel : g.getTextualRelations()) {
+				// for each token create a STimeline object
+				STimelineRelation sTimeRel = SaltFactory.createSTimelineRelation();
+				sTimeRel.setTarget(sTimeline);
+				sTimeRel.setSource(sTextRel.getSource());
+
+				// start: put STimelineRelation into sTimeRelTable
+				if (sTimeRelTable.get(sTextRel.getTarget()) == null) {
+					sTimeRelTable.put(sTextRel.getTarget(), new ArrayList<STimelineRelation>());
+				}
+				// TODO not only adding the timeRel, sorting for left and right
+				// textual position
+				sTimeRelTable.get(sTextRel.getTarget()).add(sTimeRel);
+				// end: put STimelineRelation into sTimeRelTable
+			} // for each token create a STimeline object
+			for (STextualDS sTextualDS : g.getTextualDSs()) {
+				List<STimelineRelation> rels = sTimeRelTable.get(sTextualDS);
+				if(rels != null) {
+					sTimeRelList.addAll(sTimeRelTable.get(sTextualDS));
+				}
+			}
+			Integer pot = 0;
+			for (STimelineRelation sTimeRelation : sTimeRelList) {
+				sTimeRelation.setStart(pot);
+				pot++;
+				sTimeline.increasePointOfTime();
+				sTimeRelation.setEnd(pot);
+				g.addRelation(sTimeRelation);
+			}
+			retVal = sTimeline;
+		} else {
+			retVal = g.getTimeline();
+		}
+
+		return (retVal);
 	}
 
 	private void saveToFile(BasicTranscription basicTranscription) {
@@ -613,7 +671,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 	private void mapSStructuredNode2Event(SStructuredNode sNode, String sAnnotationQName, Event event) {
 		DataSourceSequence<?> sequence = getTimeOverlappedSeq(sNode);
 		
-		if(sequence.getStart() == null || sequence.getEnd() == null) {
+		if(sequence == null || sequence.getStart() == null || sequence.getEnd() == null) {
 			logger.error("Cannot map node {} because it does not cover any tokens", sNode.getId());
 			return;
 		}

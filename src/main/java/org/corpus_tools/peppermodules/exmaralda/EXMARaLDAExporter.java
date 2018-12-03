@@ -43,6 +43,7 @@ public class EXMARaLDAExporter extends PepperExporterImpl implements PepperExpor
 		this.addSupportedFormat("EXMARaLDA", "1.0", null);
 		setDocumentEnding(FILE_EXTENION);
 		setExportMode(EXPORT_MODE.DOCUMENTS_IN_FILES);
+		setProperties(new EXMARaLDAExporterProperties());
 	}
 
 	@Override

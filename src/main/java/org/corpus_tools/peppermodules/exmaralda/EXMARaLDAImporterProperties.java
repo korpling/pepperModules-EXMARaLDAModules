@@ -58,6 +58,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	public static final String PROP_TRIM_EVENTS = "trimEvents";
 	public static final String PROP_PARSE_NAMESPACE = "parseNamespace";
 	public static final String PROP_MAP_TIMELINE = "mapTimeline";
+	public static final String PROP_IGNORE_DESCRIPTION = "ignoreDescription";
 	
 
 	public EXMARaLDAImporterProperties() {
@@ -74,6 +75,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_TRIM_EVENTS, Boolean.class, "When this property is true, all events in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed. ", false, false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_PARSE_NAMESPACE, Boolean.class, "Parse the qualified annotation name including the namespace (e.g. myns::annoname) from the category name.", false, false));
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_MAP_TIMELINE, Boolean.class, "Import the EXMARaLDA timeline as Salt STimeline", true, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(PROP_IGNORE_DESCRIPTION, Boolean.class, "Ignore all tiers of the type \"Description\"", false, false));
 	}
 
 	@Deprecated
@@ -133,6 +135,11 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	public Boolean isMapTimeline() {
 		return ((Boolean) this.getProperty(PROP_MAP_TIMELINE).getValue());
 	}
+	
+	public Boolean isIgnoreDescription() {
+		return ((Boolean) this.getProperty(PROP_IGNORE_DESCRIPTION).getValue());
+	}
+	
 	
 	/**
 	 * String for regex for for tier to layer mapping
