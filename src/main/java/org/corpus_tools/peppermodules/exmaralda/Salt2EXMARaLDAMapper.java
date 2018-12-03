@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
@@ -148,6 +149,7 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 		this.map2CommonTimeLine(getDocument().getDocumentGraph().getTimeline(), cTimeLine);
 
 		// creating token tier
+		Set<Speaker> speakersWithText = new HashSet<>();
 		List<STextualDS> texts = this.getDocument().getDocumentGraph().getTextualDSs();
 		if (texts != null && !texts.isEmpty()) {
 			int textIdx = 0;
@@ -163,18 +165,24 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 						name = TIER_NAME_TOKEN;
 					}
 				}
+				Speaker speaker = null;
 				SFeature featSpeaker = text
 						.getFeature(SaltUtil.createQName(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER));
 				if (featSpeaker != null && featSpeaker.getValue_STEXT() != null) {
-					Speaker speaker = speakerById.get(featSpeaker.getValue_STEXT());
+					speaker = speakerById.get(featSpeaker.getValue_STEXT());
 					if (speaker != null) {
 						tokenTier.setSpeaker(speaker);
+						speakersWithText.add(speaker);
 					}
 				}
 				List<SToken> tokensOfText = getDocument().getDocumentGraph()
 						.getSortedTokenByText(text.getGraph().getTokensBySequence(seq));
-
-				if (!tokensOfText.isEmpty() || !getProps().isDropEmptySpeaker()) {
+				
+				if(tokensOfText.isEmpty() && getProps().isDropEmptySpeaker()) {
+					if(speaker != null) {
+						speakersWithText.remove(speaker);
+					}
+				} else {
 					basicTranscription.getTiers().add(tokenTier);
 					this.mapSToken2Tier(tokensOfText, tokenTier, name);
 				}
@@ -186,6 +194,12 @@ public class Salt2EXMARaLDAMapper extends PepperMapperImpl {
 			basicTranscription.getTiers().add(tokenTier);
 			this.mapSToken2Tier(getDocument().getDocumentGraph().getTokens(), tokenTier, TIER_NAME_TOKEN);
 		}
+		
+		if(getProps().isDropEmptySpeaker()) {
+			// remove all speakers without a text from the speaker table
+			basicTranscription.getSpeakertable().retainAll(speakersWithText);
+		}
+		
 		// map all SStructuredNodes to tiers
 
 		List<SStructuredNode> structuredNodes = new ArrayList<>();
