@@ -97,16 +97,16 @@ The mapping uses the audio file passed with the model in the xml-element referen
 If an audio file is given the mapping creates a audio data source in Salt (SAudioDS) and relates each token with the audio file, when the event is related to the audio file in the EXMARaLDA model. 
 
 ```xml
-&lt;common-timeline>
-	&lt;tli id="T0" time="0.0"/>
-	&lt;tli id="T1" time="0.123"/>
+<common-timeline>
+	<tli id="T0" time="0.0"/>
+	<tli id="T1" time="0.123"/>
 	...
-&lt;/common-timeline>
-&lt;tier id="TIE0" speaker="SPK1" category="tok" type="t" display-name="SPK1 [tok]">
-  &lt;event start="T0" end="T1">Hello</event>
-  &lt;event start="T1" end="T2">I</event>
+</common-timeline>
+<tier id="TIE0" speaker="SPK1" category="tok" type="t" display-name="SPK1 [tok]">
+  <event start="T0" end="T1">Hello</event>
+  <event start="T1" end="T2">I</event>
   ..
-&lt;/tier>
+</tier>
 ```
 In this case, the first token 'Hello' is aligned to the range [0.0, 0.123] in the audio file in Salt. 
 
