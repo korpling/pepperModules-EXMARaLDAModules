@@ -113,7 +113,7 @@ In this case, the first token 'Hello' is aligned to the range [0.0, 0.123] in th
 ## Properties
 The table contains an overview of all usable properties to customize the behavior of this Pepper module. 
 
-|Name of property	 |Type of property	                                            |optional/ mandatory |	default value |
+|Name of property    |Type of property	                                            |optional/ mandatory |  default value |
 |--------------------|--------------------------------------------------------------|--------------------|----------------|
 |salt.tokenSeparator |String	                                                    |optional            |	-- |
 |salt.TierMerge      |{Tier1.categoryname, Tier2.categoryname, …}, {…} 	            |optional            |	-- |
@@ -124,7 +124,9 @@ The table contains an overview of all usable properties to customize the behavio
 |saltSemantics.WORD  |Tier.categoryName	                                            |optional            |	-- |
 |cleanModel          |Boolean	                                                    |optional            |	-- |
 |trimToken           |Boolean	                                                    |optional            |	-- |
-|mapTimeline         |Boolean	                                                    |optional            |	true |
+|mapTimeline         |Boolean	                                                    |optional            |    true |
+|mapDescriptions     |Boolean	                                                    |optional            |    true |
+|mapSpeakerMetadata  |Boolean	                                                    |optional            |    true |
 
 ### salt.tokenSeparator
 With the property salt.tokenSeparatoryou can set a single sign or a sequence of signs which shall be used between the concatenation of event values representing the primary data. 
@@ -138,22 +140,7 @@ salt.tokenSeparator=” “
 the produced text is the following: “This is a sample text .” Note the blank between “text” and “.”. In the current EXMARaLDAImporter version, there is no possibility to avoid the superfluous blank.
 
 ### salt.TierMerge
-In EXMARaLDA there is just one value per each Event object. When mapping those data to Salt, this restriction results, that a span or token will be create## Properties
-The table contains an overview of all usable properties to customize the behavior of this Pepper module. 
-
-|Name of property	 |Type of property	                                            |optional/ mandatory |	default value |
-|--------------------|--------------------------------------------------------------|--------------------|----------------|
-|salt.tokenSeparator |String	                                                    |optional            |	-- |
-|salt.TierMerge      |{Tier1.categoryname, Tier2.categoryname, …}, {…} 	            |optional            |	-- |
-|salt.URIAnnotation  |Tier.categoryName	                                            |optional            |	-- |
-|salt.Layers         |{layerName{Tier1.categoryName, Tier2.categoryName,...}},{...} |optional            |	-- |
-|saltSemantics.POS   |Tier.categoryName	                                            |optional            |	-- |
-|saltSemantics.LEMMA |Tier.categoryName	                                            |optional            |	-- |
-|saltSemantics.WORD  |Tier.categoryName	                                            |optional            |	-- |
-|cleanModel          |Boolean	                                                    |optional            |	-- |
-|trimToken           |Boolean	                                                    |optional            |	-- |
-|mapTimeline         |Boolean	                                                    |optional            |	true |
-d for each Event object. To avoid this, you can mark a sequence of sets of tiers to map them to a single span or token in Salt. This can be done with the property “salt.tierMerge”.
+In EXMARaLDA there is just one value per each Event object. When mapping those data to Salt, this restriction results, that a span or token will be created for each Event object. To avoid this, you can mark a sequence of sets of tiers to map them to a single span or token in Salt. This can be done with the property “salt.tierMerge”.
 ```
 salt.tierMerge={Tier1.categoryname, Tier2.categoryname, …}, {…}
 ```
@@ -172,6 +159,7 @@ salt.token=txt salt.tokenSeparator=” ” salt.tierMerge={txt, pos, lemma}
 ```
 
 Two events contained in tiers to merge, which overlapps the time ranges (timeRange1 and timeRange1) with timeRange1.start ≤ timeRange2.start and timeRange1.end > timeRange2.end, vice versa and are not allowed.
+
 
 ### salt.URIAnnotation
 With the property salt.URIAnnotation, you can mark a Tier object containing annotations, which are references in URI notation and are not simple String values. When mapping the data to Salt the resulting SAnnotation.sValue objects will be typed as URI values, so that each interpreting tool can interpret them as references.
@@ -227,6 +215,14 @@ When this property is true, all tokens defined in exmaralda are trimmed before t
 ## mapTimeline
 When this property is set to `false`, the original timeline in the input file will not be imported. The default is to include the timeline. 
 
+## mapDescriptions
+
+Map tiers of the type "Description" if set to  "true", which is the default value.
+
+## mapSpeakerMetadata
+
+Import the metadata of the speaker if set to "true", which is the default value.s
+
 # <a name="exporter">EXMARaLDAExporter</a>
 
 ## Properties
@@ -239,6 +235,7 @@ The table contains an overview of all usable properties to customize the behavio
 ### dropEmptySpeaker
 
 If `true`, a transcription tier with no events is dropped.
+
 
 # Contribute
 Since this Pepper module is under a free license, please feel free to fork it from github and improve the module. If you even think that others can benefit from your improvements, don't hesitate to make a pull request, so that your changes can be merged.
