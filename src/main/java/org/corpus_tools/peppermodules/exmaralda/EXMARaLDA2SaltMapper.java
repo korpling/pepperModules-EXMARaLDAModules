@@ -172,9 +172,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			this.mapMetaInformation2SDocument(basicTranscription, getDocument());
 		}
 		// mapping the speakers object
-		for (Speaker speaker : basicTranscription.getSpeakertable()) {
-			// map all speaker objects
-			this.mapSpeaker2SMetaAnnotation(speaker, getDocument());
+		if(getProps().isMapSpeakerMetadata()) {
+			for (Speaker speaker : basicTranscription.getSpeakertable()) {
+				// map all speaker objects
+				this.mapSpeaker2SMetaAnnotation(speaker, getDocument());
+			}
 		}
 		// remember the original order of the tiers
 		List<String> tierDisplayNames = new LinkedList<>();
@@ -540,6 +542,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	private void mapTiers2SNodes(List<Tier> slot) {
 		for (Tier tier : slot) {
+			
+			if(tier.getType() == TIER_TYPE.D && !getProps().isMapDescriptions()) {
+				continue;
+			}
+
+			
 			logger.debug("[EXMARaLDAImporter] mapping tier '{}'. ", tier.getCategory());
 			SLayer sLayer = null;
 			if ((this.tierNames2SLayers != null)) {
