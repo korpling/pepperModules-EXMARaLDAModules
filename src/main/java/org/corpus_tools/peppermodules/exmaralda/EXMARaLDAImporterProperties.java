@@ -60,6 +60,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 	public static final String PROP_MAP_TIMELINE = "mapTimeline";
 	public static final String PROP_MAP_DESCRIPTIONS = "mapDescriptions";
 	public static final String PROP_MAP_SPEAKER_METADATA = "mapSpeakerMetadata";
+	public static final String PROP_TEXT_NAME_WITH_NAMESPACE = "qualifyTextNames";
 	
 
 	public EXMARaLDAImporterProperties() {
@@ -78,6 +79,7 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 		this.addProperty(new PepperModuleProperty<Boolean>(PROP_MAP_TIMELINE, Boolean.class, "Import the EXMARaLDA timeline as Salt STimeline", true, false));
 		this.addProperty(PepperModuleProperty.create().withName(PROP_MAP_DESCRIPTIONS).withType(Boolean.class).withDescription("Map tiers of the type \\\"Description\\\"").withDefaultValue(true).build());
 		this.addProperty(PepperModuleProperty.create().withName(PROP_MAP_SPEAKER_METADATA).withType(Boolean.class).withDescription("Import the metadata of the speaker").withDefaultValue(true).build());
+		this.addProperty(PepperModuleProperty.create().withName(PROP_TEXT_NAME_WITH_NAMESPACE).withType(Boolean.class).withDescription("If true, texts will get qualified names with speaker name as namespace. If false, no namespace is used.").withDefaultValue(false).build());
 	}
 
 	@Deprecated
@@ -225,5 +227,9 @@ public class EXMARaLDAImporterProperties extends PepperModuleProperties {
 			}
 		}
 		return (tierNames2SLayers);
+	}
+	
+	public boolean qualifyTextNames() {
+		return (Boolean) getProperty(PROP_TEXT_NAME_WITH_NAMESPACE).getValue();
 	}
 }

@@ -227,8 +227,14 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			List<Tier> textSlot = entry.getValue();
 
 			STextualDS sTextDS = SaltFactory.createSTextualDS();
-			logger.debug("[EXMARaLDAImporter] create primary data for tier '{}'.", eTextTier.getCategory());
-			sTextDS.setName(eTextTier.getCategory());
+			String textName = null; 
+			if (getProps().qualifyTextNames()) {
+				textName = eTextTier.getSpeaker().getAbbreviation() + "::" + eTextTier.getCategory();
+			} else {
+				textName = eTextTier.getCategory();
+			}
+			logger.debug("[EXMARaLDAImporter] create primary data for tier '{}'.", textName);
+			sTextDS.setName(textName);
 			
 			Speaker speaker = eTextTier.getSpeaker();
 			if(speaker != null) {
