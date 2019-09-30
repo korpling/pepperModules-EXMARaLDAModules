@@ -118,8 +118,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * Relates the name of the tiers to the layers, to which they shall be
-	 * append.
+	 * Relates the name of the tiers to the layers, to which they shall be append.
 	 **/
 	private Map<String, SLayer> tierNames2SLayers = null;
 
@@ -142,11 +141,13 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			// load resource
 			Resource resource = getResourceSet().createResource(getResourceURI());
 			if (resource == null)
-				throw new PepperModuleDataException(this, "Cannot load the exmaralda file: " + getResourceURI() + ", becuase the resource is null.");
+				throw new PepperModuleDataException(this,
+						"Cannot load the exmaralda file: " + getResourceURI() + ", becuase the resource is null.");
 			try {
 				resource.load(null);
 			} catch (IOException e) {
-				throw new PepperModuleDataException(this, "Cannot load the exmaralda file: " + getResourceURI() + ".", e);
+				throw new PepperModuleDataException(this, "Cannot load the exmaralda file: " + getResourceURI() + ".",
+						e);
 			}
 
 			BasicTranscription basicTranscription = null;
@@ -172,7 +173,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			this.mapMetaInformation2SDocument(basicTranscription, getDocument());
 		}
 		// mapping the speakers object
-		if(getProps().isMapSpeakerMetadata()) {
+		if (getProps().isMapSpeakerMetadata()) {
 			for (Speaker speaker : basicTranscription.getSpeakertable()) {
 				// map all speaker objects
 				this.mapSpeaker2SMetaAnnotation(speaker, getDocument());
@@ -180,12 +181,12 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		}
 		// remember the original order of the tiers
 		List<String> tierDisplayNames = new LinkedList<>();
-		for(Tier t : basicTranscription.getTiers()) {
-			if(t.getDisplayName() != null) {
+		for (Tier t : basicTranscription.getTiers()) {
+			if (t.getDisplayName() != null) {
 				tierDisplayNames.add(t.getDisplayName());
 			}
 		}
-		getDocument().getDocumentGraph().createFeature(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_TIER_ORDER, 
+		getDocument().getDocumentGraph().createFeature(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_TIER_ORDER,
 				Joiner.on(',').join(tierDisplayNames));
 
 		// mapping the timeline
@@ -214,7 +215,8 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 		} // end for each slot of tierCollection
 		if (allTextSlots.size() == 0) {
-			throw new PepperModuleDataException(this, "Cannot convert given exmaralda file '" + this.getResourceURI() + "', because no textual source layer was found.");
+			throw new PepperModuleDataException(this, "Cannot convert given exmaralda file '" + this.getResourceURI()
+					+ "', because no textual source layer was found.");
 		}
 		if ("true".equalsIgnoreCase(getProps().getCleanModel().toString())) {
 			// run clean model
@@ -227,7 +229,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			List<Tier> textSlot = entry.getValue();
 
 			STextualDS sTextDS = SaltFactory.createSTextualDS();
-			String textName = null; 
+			String textName = null;
 			if (getProps().qualifyTextNames()) {
 				textName = eTextTier.getSpeaker().getAbbreviation() + "::" + eTextTier.getCategory();
 			} else {
@@ -235,16 +237,18 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			}
 			logger.debug("[EXMARaLDAImporter] create primary data for tier '{}'.", textName);
 			sTextDS.setName(textName);
-			
+
 			Speaker speaker = eTextTier.getSpeaker();
-			if(speaker != null) {
-				// add speaker information to this specific textual DS as feature, so the exporter
-				// can assign the correct document meta-data (which has the speaker ID as namespace)
+			if (speaker != null) {
+				// add speaker information to this specific textual DS as feature, so the
+				// exporter
+				// can assign the correct document meta-data (which has the speaker ID as
+				// namespace)
 				// to this textual DS.
-				sTextDS.createFeature(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER, 
+				sTextDS.createFeature(EXBNameIdentifier.EXB_NS, EXBNameIdentifier.EXB_SPEAKER,
 						speaker.getAbbreviation() == null ? speaker.getId() : speaker.getAbbreviation());
 			}
-			
+
 			getDocument().getDocumentGraph().addNode(sTextDS);
 			this.mapTier2STextualDS(eTextTier, sTextDS, textSlot);
 		}
@@ -255,8 +259,8 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		for (List<Tier> slot : this.tierCollection) {
 			this.mapTiers2SNodes(slot);
 		}
-		
-		if(!getProps().isMapTimeline() && sTimeline != null) {
+
+		if (!getProps().isMapTimeline() && sTimeline != null) {
 			// remove existing timeline if it should not be included
 			getDocument().getDocumentGraph().removeNode(sTimeline);
 			getDocument().getDocumentGraph().setTimeline(null);
@@ -267,20 +271,18 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * Checks a given EXMARalDA model given by the {@link BasicTranscription}
-	 * object if it is valid to be mapped to a Salt model. Some problems
-	 * occuring while mapping will be solved in this step. Here is a list of
-	 * problems and solutions if exist:
+	 * Checks a given EXMARalDA model given by the {@link BasicTranscription} object
+	 * if it is valid to be mapped to a Salt model. Some problems occuring while
+	 * mapping will be solved in this step. Here is a list of problems and solutions
+	 * if exist:
 	 * <ul>
 	 * <li>Given two or more {@link TLI} objects having no corresponding
-	 * {@link Event} object on token tier: Create artificial {@link Event}
-	 * objects, a space character as value.</li>
+	 * {@link Event} object on token tier: Create artificial {@link Event} objects,
+	 * a space character as value.</li>
 	 * </ul>
 	 * 
-	 * @param basicTranscription
-	 *            the model to be checked
-	 * @param tokenTiers
-	 *            a list of tiers representing the token layer
+	 * @param basicTranscription the model to be checked
+	 * @param tokenTiers         a list of tiers representing the token layer
 	 */
 	public void cleanModel(BasicTranscription basicTranscription, Collection<Tier> tokenTiers) {
 		for (Tier tokenTier : tokenTiers) {
@@ -318,9 +320,9 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * Maps all metaInformation objects to SMetaAnnotation objects and adds them
-	 * to the given SDocument object. Also UDInformation-objects will be mapped.
-	 * If a {@link BasicTranscription} object contains the not empty attribute
+	 * Maps all metaInformation objects to SMetaAnnotation objects and adds them to
+	 * the given SDocument object. Also UDInformation-objects will be mapped. If a
+	 * {@link BasicTranscription} object contains the not empty attribute
 	 * referencedFile, a {@link SMedialDS} will be created containing the given
 	 * {@link URI}.
 	 * 
@@ -328,11 +330,13 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	 * @param sDoc
 	 */
 	private void mapMetaInformation2SDocument(BasicTranscription basicTranscription, SDocument sDoc) {
-		if ((basicTranscription.getMetaInformation().getProjectName() != null) && (!basicTranscription.getMetaInformation().getProjectName().isEmpty())) {
+		if ((basicTranscription.getMetaInformation().getProjectName() != null)
+				&& (!basicTranscription.getMetaInformation().getProjectName().isEmpty())) {
 			// project name
 			sDoc.setName(basicTranscription.getMetaInformation().getProjectName());
 		}
-		if ((basicTranscription.getMetaInformation().getTranscriptionName() != null) && (!basicTranscription.getMetaInformation().getTranscriptionName().isEmpty())) {
+		if ((basicTranscription.getMetaInformation().getTranscriptionName() != null)
+				&& (!basicTranscription.getMetaInformation().getTranscriptionName().isEmpty())) {
 			// transcription name
 			SMetaAnnotation sMetaAnno = SaltFactory.createSMetaAnnotation();
 			sMetaAnno.setName(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_NAME);
@@ -352,21 +356,24 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				}
 			}
 			if ((audioFile == null) || (!audioFile.exists())) {
-				logger.warn("[EXMARaLDAImporter] The file refered in exmaralda model '" + audioURI + "' does not exist and cannot be mapped to a salt model. It will be ignored.");
+				logger.warn("[EXMARaLDAImporter] The file refered in exmaralda model '" + audioURI
+						+ "' does not exist and cannot be mapped to a salt model. It will be ignored.");
 			} else {
 				SMedialDS sAudioDS = SaltFactory.createSMedialDS();
 				sAudioDS.setMediaReference(URI.createFileURI(audioFile.getPath()));
 				sDoc.getDocumentGraph().addNode(sAudioDS);
 			}
 		}
-		if ((basicTranscription.getMetaInformation().getComment() != null) && (!basicTranscription.getMetaInformation().getComment().isEmpty())) {
+		if ((basicTranscription.getMetaInformation().getComment() != null)
+				&& (!basicTranscription.getMetaInformation().getComment().isEmpty())) {
 			// comment
 			SMetaAnnotation sMetaAnno = SaltFactory.createSMetaAnnotation();
 			sMetaAnno.setName(EXBNameIdentifier.KW_EXB_COMMENT);
 			sMetaAnno.setValue(basicTranscription.getMetaInformation().getComment());
 			sDoc.addMetaAnnotation(sMetaAnno);
 		}
-		if ((basicTranscription.getMetaInformation().getTranscriptionConvention() != null) && (!basicTranscription.getMetaInformation().getTranscriptionConvention().isEmpty())) {
+		if ((basicTranscription.getMetaInformation().getTranscriptionConvention() != null)
+				&& (!basicTranscription.getMetaInformation().getTranscriptionConvention().isEmpty())) {
 			// project transcription convention
 			SMetaAnnotation sMetaAnno = SaltFactory.createSMetaAnnotation();
 			sMetaAnno.setName(EXBNameIdentifier.KW_EXB_TRANSCRIPTION_CONVENTION);
@@ -375,27 +382,29 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		}
 		if (basicTranscription.getMetaInformation().getUdMetaInformations() != null) {
 			// map ud-informations
-			this.mapUDInformations2SAnnotationContainer(basicTranscription.getMetaInformation().getUdMetaInformations(), sDoc);
+			this.mapUDInformations2SAnnotationContainer(basicTranscription.getMetaInformation().getUdMetaInformations(),
+					sDoc);
 		}
 	}
 
 	/**
-	 * Maps informatios of Speaker to SMetaAnnotations and adds them to the
-	 * given SDocument object.
+	 * Maps informatios of Speaker to SMetaAnnotations and adds them to the given
+	 * SDocument object.
 	 * 
-	 * @param speaker
-	 *            speaker object to map
-	 * @param sDocument
-	 *            object to add SMetaAnnotation objects
+	 * @param speaker   speaker object to map
+	 * @param sDocument object to add SMetaAnnotation objects
 	 */
 	private void mapSpeaker2SMetaAnnotation(Speaker speaker, SDocument sDocument) {
 		if (sDocument == null)
-			throw new PepperModuleDataException(this, "Exception in method 'mapSpeaker2SMetaAnnotation()'. The given SDocument-object is null. Exception occurs in file '" + this.getResourceURI() + "'.");
+			throw new PepperModuleDataException(this,
+					"Exception in method 'mapSpeaker2SMetaAnnotation()'. The given SDocument-object is null. Exception occurs in file '"
+							+ this.getResourceURI() + "'.");
 		if ((speaker != null) && (speaker.getUdSpeakerInformations() != null)) {
 			// map abbreviation
 			if ((speaker.getAbbreviation() != null) && (!speaker.getAbbreviation().isEmpty())) {
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_ABBR, speaker.getAbbreviation().toString());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_ABBR,
+						speaker.getAbbreviation().toString());
 			}
 			// map sex
 			if (speaker.getSex() != null) {
@@ -413,7 +422,8 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 						langUsedStr.append(", " + langUsed);
 				}
 				String namespace = (speaker.getAbbreviation() != null) ? speaker.getAbbreviation() : speaker.getId();
-				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_LANGUAGES_USED, langUsedStr.toString());
+				sDocument.createMetaAnnotation(namespace, EXBNameIdentifier.KW_EXB_LANGUAGES_USED,
+						langUsedStr.toString());
 			}
 			// map l1
 			if ((speaker.getL1() != null) && (speaker.getL1().size() > 0)) {
@@ -465,13 +475,14 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * Mapps a list of UDInformation objects to a list of SMetaAnnotation
-	 * objects and adds them to the given sOwner.
+	 * Mapps a list of UDInformation objects to a list of SMetaAnnotation objects
+	 * and adds them to the given sOwner.
 	 * 
 	 * @param udInformations
 	 * @param sOwner
 	 */
-	private void mapUDInformations2SAnnotationContainer(List<UDInformation> udInformations, SAnnotationContainer sOwner) {
+	private void mapUDInformations2SAnnotationContainer(List<UDInformation> udInformations,
+			SAnnotationContainer sOwner) {
 		SMetaAnnotation sMetaAnno = null;
 		for (UDInformation udInfo : udInformations) {
 			sMetaAnno = SaltFactory.createSMetaAnnotation();
@@ -488,8 +499,8 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	/**
 	 * Compute which tiers belong together and stores them in tierCollection.
-	 * Therefore the property {@link EXMARaLDAImporterProperties#getTierMerge()}
-	 * is used.
+	 * Therefore the property {@link EXMARaLDAImporterProperties#getTierMerge()} is
+	 * used.
 	 */
 	public void computeTierCollection() {
 		this.tierCollection = new ArrayList<List<Tier>>();
@@ -507,7 +518,10 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 						// searching for tier
 						for (Tier tier : this.getBasicTranscription().getTiers()) {
 							if (tier.getCategory() == null)
-								throw new PepperModuleDataException(this, "Cannot convert given exmaralda file '" + this.getResourceURI() + "', because there is a <tier> element ('id=\"" + tier.getId() + "\"') without a @category attribute.");
+								throw new PepperModuleDataException(this,
+										"Cannot convert given exmaralda file '" + this.getResourceURI()
+												+ "', because there is a <tier> element ('id=\"" + tier.getId()
+												+ "\"') without a @category attribute.");
 							;
 							if (tier.getCategory().equalsIgnoreCase(tierCat))
 								slot.add(tier);
@@ -548,12 +562,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	private void mapTiers2SNodes(List<Tier> slot) {
 		for (Tier tier : slot) {
-			
-			if(tier.getType() == TIER_TYPE.D && !getProps().isMapDescriptions()) {
+
+			if (tier.getType() == TIER_TYPE.D && !getProps().isMapDescriptions()) {
 				continue;
 			}
 
-			
 			logger.debug("[EXMARaLDAImporter] mapping tier '{}'. ", tier.getCategory());
 			SLayer sLayer = null;
 			if ((this.tierNames2SLayers != null)) {
@@ -580,18 +593,23 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				Integer startPos = getBasicTranscription().getCommonTimeLine().getTLIs().indexOf(eEvent.getStart());
 				if (startPos < 0) {
 					if (getBasicTranscription().getCommonTimeLine().getTLIs().contains(eEvent.getStart())) {
-						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier '" + tier.getCategory() + "' because its start value reffering to timeline is less than 0.");
+						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier '"
+								+ tier.getCategory()
+								+ "' because its start value reffering to timeline is less than 0.");
 					} else {
-						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier '" + tier.getCategory() + "' because this event is not connected to the timeline.");
+						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier '"
+								+ tier.getCategory() + "' because this event is not connected to the timeline.");
 					}
 					break;
 				}
 				Integer endPos = getBasicTranscription().getCommonTimeLine().getTLIs().indexOf(eEvent.getEnd());
 				if (endPos < 0) {
 					if (getBasicTranscription().getCommonTimeLine().getTLIs().contains(eEvent.getEnd())) {
-						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier " + tier.getCategory() + "' because its end value reffering to timeline is less than 0.");
+						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier "
+								+ tier.getCategory() + "' because its end value reffering to timeline is less than 0.");
 					} else {
-						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier " + tier.getCategory() + "' because this event is not connected to the timeline.");
+						logger.warn("[EXMARaLDAImporter] Can not map an event '" + eEvent.getValue() + "' of tier "
+								+ tier.getCategory() + "' because this event is not connected to the timeline.");
 					}
 					break;
 				}
@@ -614,19 +632,35 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				}
 
 				if (sTokens.isEmpty()) {
-					if (!getProps().getCleanModel()) {
-						logger.warn("There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. The problem was detected in file '" + this.getResourceURI() + "'. You can try to set the property \"cleanModel\" to \"true\".");
-					} else {
-						logger.warn("There are no matching tokens found on token-tier " + "for current tier: '" + tier.getCategory() + "' in event starting at '" + eEvent.getStart() + "' and ending at '" + eEvent.getEnd() + "' having the value '" + eEvent.getValue() + "'. The problem was detected in file '" + this.getResourceURI() + "'. Unfortunatly property '" + EXMARaLDAImporterProperties.PROP_CLEAN_MODEL + "' did not helped here. ");
+					String tierCaption = tier.getCategory();
+					if(tier.getSpeaker() != null && tier.getSpeaker().getAbbreviation() != null) {
+						tierCaption = tierCaption + " (" + tier.getSpeaker().getAbbreviation() + ")";
 					}
-				}else{
+					String start = eEvent.getStart().getTime() == null ? eEvent.getStart().getId() : eEvent.getStart().getTime();
+					String end = eEvent.getEnd().getTime() == null ? eEvent.getEnd().getId() : eEvent.getEnd().getTime();
+					
+					if (!getProps().getCleanModel()) {
+						logger.warn("There are no matching tokens found on token-tier " + "for current tier: '"
+								+ tierCaption + "' in event starting at '" + start
+								+ "' and ending at '" + end + "' having the value '" + eEvent.getValue()
+								+ "'. The problem was detected in file '" + this.getResourceURI()
+								+ "'. You can try to set the property \"cleanModel\" to \"true\".");
+					} else {
+						logger.warn("There are no matching tokens found on token-tier " + "for current tier: '"
+								+ tierCaption + "' in event starting at '" + start
+								+ "' and ending at '" + end + "' having the value '" + eEvent.getValue()
+								+ "'. The problem was detected in file '" + this.getResourceURI()
+								+ "'. Unfortunatly property '" + EXMARaLDAImporterProperties.PROP_CLEAN_MODEL
+								+ "' did not helped here. ");
+					}
+				} else {
 
-				for (SToken sToken : sTokens) {
-					SSpanningRelation spanRel = SaltFactory.createSSpanningRelation();
-					spanRel.setSource(sSpan);
-					spanRel.setTarget(sToken);
-					this.getDocument().getDocumentGraph().addRelation(spanRel);
-				}
+					for (SToken sToken : sTokens) {
+						SSpanningRelation spanRel = SaltFactory.createSSpanningRelation();
+						spanRel.setSource(sSpan);
+						spanRel.setTarget(sToken);
+						this.getDocument().getDocumentGraph().addRelation(spanRel);
+					}
 				}
 				// medium and url to SAnnotation
 				this.mapMediumURL2SSNode(eEvent, sSpan);
@@ -635,10 +669,10 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * Returns a list of tokens, which are not exactly in the passed sequence.
-	 * That means, each token starting or ending inside the range is returned.
-	 * This method should help in case of a token tier was not minimal. For
-	 * instance imagine a tier containing A, B and C.
+	 * Returns a list of tokens, which are not exactly in the passed sequence. That
+	 * means, each token starting or ending inside the range is returned. This
+	 * method should help in case of a token tier was not minimal. For instance
+	 * imagine a tier containing A, B and C.
 	 * <table border= "1">
 	 * <tr>
 	 * <td>t1</td>
@@ -670,7 +704,8 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		} else if (sequence.getDataSource() instanceof STimeline) {
 			sSeqRels = getDocument().getDocumentGraph().getTimelineRelations();
 		} else {
-			throw new PepperModuleException(this, "Cannot compute overlaped nodes, because the given dataSource is not supported by this method.");
+			throw new PepperModuleException(this,
+					"Cannot compute overlaped nodes, because the given dataSource is not supported by this method.");
 		}
 		for (SSequentialRelation rel : sSeqRels) {
 			// walk through all textual relations
@@ -678,9 +713,11 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 				if (rel.getSource() instanceof SToken) {
 					if (rel instanceof STextualRelation || rel instanceof STimelineRelation) {
 						DataSourceSequence<Integer> intSeq = (DataSourceSequence<Integer>) (DataSourceSequence<? extends Number>) sequence;
-						if (((Integer) rel.getStart() <= intSeq.getStart()) && ((Integer) rel.getEnd() > intSeq.getStart())) {
+						if (((Integer) rel.getStart() <= intSeq.getStart())
+								&& ((Integer) rel.getEnd() > intSeq.getStart())) {
 							sTokens.add((SToken) rel.getSource());
-						} else if (((Integer) rel.getStart() >= intSeq.getStart()) && ((Integer) rel.getStart() < intSeq.getEnd())) {
+						} else if (((Integer) rel.getStart() >= intSeq.getStart())
+								&& ((Integer) rel.getStart() < intSeq.getEnd())) {
 							sTokens.add((SToken) rel.getSource());
 						}
 					}
@@ -691,8 +728,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 	}
 
 	/**
-	 * Maps the medium and url of an event and maps it to SAnnotations of an
-	 * SNode.
+	 * Maps the medium and url of an event and maps it to SAnnotations of an SNode.
 	 * 
 	 * @param event
 	 * @param sNode
@@ -807,7 +843,9 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			sTextRel.setEnd(end);
 			getDocument().getDocumentGraph().addRelation(sTextRel);
 
-			if ((getDocument().getDocumentGraph().getMedialDSs() != null) && (getDocument().getDocumentGraph().getMedialDSs().size() > 0) && ((event.getStart().getTime() != null) || (event.getEnd().getTime() != null))) {
+			if ((getDocument().getDocumentGraph().getMedialDSs() != null)
+					&& (getDocument().getDocumentGraph().getMedialDSs().size() > 0)
+					&& ((event.getStart().getTime() != null) || (event.getEnd().getTime() != null))) {
 				// start: creating SMedialRelation
 				try {
 					Double audioStart = null;
@@ -824,12 +862,15 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 					sAudioDSRelation.setEnd(audioEnd);
 					getDocument().getDocumentGraph().addRelation(sAudioDSRelation);
 				} catch (NumberFormatException e) {
-					logger.warn("[EXMARaLDAImporter] Cannot map time attribute of timeline to SStart or SEnd, because value '" + event.getStart().getTime() + "' is not mappable to a double value.");
+					logger.warn(
+							"[EXMARaLDAImporter] Cannot map time attribute of timeline to SStart or SEnd, because value '"
+									+ event.getStart().getTime() + "' is not mappable to a double value.");
 				}
 			}
 
 			// creating timelineRel
-			this.mapEvent2SToken(event, this.getBasicTranscription().getCommonTimeLine(), sToken, getDocument().getDocumentGraph().getTimeline());
+			this.mapEvent2SToken(event, this.getBasicTranscription().getCommonTimeLine(), sToken,
+					getDocument().getDocumentGraph().getTimeline());
 		}
 		sText.setText(text.toString());
 
@@ -881,7 +922,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			SAnnotation sAnno = SaltFactory.createSPOSAnnotation();
 			if (getProps().isTrimEvents()) {
 				sAnno.setValue(eEvent.getValue().trim());
-			}else{
+			} else {
 				sAnno.setValue(eEvent.getValue());
 			}
 			sNode.addAnnotation(sAnno);
@@ -890,15 +931,17 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 			SAnnotation sAnno = SaltFactory.createSLemmaAnnotation();
 			if (getProps().isTrimEvents()) {
 				sAnno.setValue(eEvent.getValue().trim());
-			}else{
+			} else {
 				sAnno.setValue(eEvent.getValue());
 			}
 			sNode.addAnnotation(sAnno);
 		} else if ((uriTiers != null) && (uriTiers.contains(tier.getCategory()))) {
-			String pathName = this.getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(), eEvent.getValue());
+			String pathName = this.getResourceURI().toFileString().replace(this.getResourceURI().lastSegment(),
+					eEvent.getValue());
 			File file = new File(pathName);
 			if (!file.exists()) {
-				logger.warn("[EXMARaLDAImporter] Cannot add the uri-annotation '" + eEvent.getValue() + "' of tier '" + tier.getCategory() + "', because the file '" + pathName + "' does not exist.");
+				logger.warn("[EXMARaLDAImporter] Cannot add the uri-annotation '" + eEvent.getValue() + "' of tier '"
+						+ tier.getCategory() + "', because the file '" + pathName + "' does not exist.");
 			} else {
 				URI corpusFilePath = URI.createFileURI(file.getAbsolutePath());
 				sNode.createAnnotation(null, tier.getCategory(), corpusFilePath.toFileString());
@@ -906,19 +949,19 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 		} else {
 			String namespace = null;
 			String name = tier.getCategory();
-			
-			if(getProps().isParseNamespace()) {
+
+			if (getProps().isParseNamespace()) {
 				Pair<String, String> splitted = SaltUtil.splitQName(tier.getCategory());
 				namespace = splitted.getLeft();
 				name = splitted.getRight();
-			}
-			else if (eEvent.getTier().getSpeaker() != null) {
+			} else if (eEvent.getTier().getSpeaker() != null) {
 				namespace = eEvent.getTier().getSpeaker().getAbbreviation();
 			}
-			
+
 			if (getProps().isTrimEvents()) {
-				sNode.createAnnotation(namespace, name, eEvent.getValue().trim());
-			}else{
+				String value = eEvent.getValue() == null ? null : eEvent.getValue().trim();
+				sNode.createAnnotation(namespace, name, value);
+			} else {
 				sNode.createAnnotation(namespace, name, eEvent.getValue());
 			}
 		}
