@@ -272,7 +272,7 @@ public class EXMARaLDA2SaltMapper extends PepperMapperImpl implements PepperMapp
 
 	/**
 	 * Checks a given EXMARalDA model given by the {@link BasicTranscription} object
-	 * if it is valid to be mapped to a Salt model. Some problems occuring while
+	 * if it is valid to be mapped to a Salt model. Some problems occurring while
 	 * mapping will be solved in this step. Here is a list of problems and solutions
 	 * if exist:
 	 * <ul>
