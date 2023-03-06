@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) http://www.rrz.uni-hamburg.de/exmaralda -->
+<basic-transcription>
+<head>
+<meta-information>
+	<project-name>doc1</project-name>
+	<transcription-name>fu001_2004_05</transcription-name>
+	<referenced-file url=""/>
+	<ud-meta-information><ud-information attribute-name="transcriptor">JK</ud-information><ud-information attribute-name="transcription-date">09.02.04</ud-information><ud-information attribute-name="transcription-modality">hand</ud-information><ud-information attribute-name="production-modality">Zusammenfassung</ud-information><ud-information attribute-name="topic">Entscheidungen</ud-information><ud-information attribute-name="sub-corpus">1.1</ud-information></ud-meta-information>
+	<comment></comment>
+	<transcription-convention></transcription-convention>
+</meta-information>
+<speakertable>
+	<speaker id="s0">
+		<abbreviation></abbreviation>
+		<sex value="m"/>
+		<languages-used></languages-used>
+		<l1></l1>
+		<l2></l2>
+		<ud-speaker-information>
+		<ud-information attribute-name="name">Andreeva</ud-information><ud-information attribute-name="first-name">Marianella</ud-information><ud-information attribute-name="birth-year">1982</ud-information><ud-information attribute-name="sex">f</ud-information><ud-information attribute-name="major-subject">Linguistik</ud-information><ud-information attribute-name="ctest">k.A.</ud-information><ud-information attribute-name="l1">bg</ud-information><ud-information attribute-name="l12"></ud-information><ud-information attribute-name="l2">en</ud-information><ud-information attribute-name="l3">de</ud-information><ud-information attribute-name="l4"></ud-information><ud-information attribute-name="l5"></ud-information><ud-information attribute-name="l6"></ud-information><ud-information attribute-name="l7"></ud-information><ud-information attribute-name="l2-duration">k.A.</ud-information><ud-information attribute-name="l3-duration">k.A.</ud-information><ud-information attribute-name="l4-duration"></ud-information><ud-information attribute-name="l5-duration"></ud-information><ud-information attribute-name="l6-duration"></ud-information><ud-information attribute-name="l7-duration"></ud-information><ud-information attribute-name="identifier">fu001</ud-information><ud-information attribute-name="l13"></ud-information><ud-information attribute-name="collection-date">09.02.04</ud-information><ud-information attribute-name="de-duration">k.A.</ud-information><ud-information attribute-name="subset">fu_2004_05</ud-information></ud-speaker-information>
+		<comment></comment>
+	</speaker>
+</speakertable></head>
+<basic-body>
+<common-timeline>
+<tli id="T1"/>
+<tli id="T2"/>
+<tli id="T3"/>
+<tli id="T4"/>
+<tli id="T5"/>
+<tli id="T6"/>
+<tli id="T7"/>
+<tli id="T8"/>
+<tli id="T9"/>
+<tli id="T10"/>
+</common-timeline>
+<tier id="TIE0" category="word" type="t" display-name="[word]">
+<event start="T1" end="T2">1.</event>
+<event start="T2" end="T3">Zusammenfassung</event>
+<event start="T3" end="T4">Unterscheidungen</event>
+<event start="T4" end="T5">treffen</event>
+<event start="T5" end="T6">(</event>
+<event start="T6" end="T7">George</event>
+<event start="T7" end="T8">A.</event>
+<event start="T8" end="T9">Miller</event>
+<event start="T9" end="T10">)</event>
+</tier><tier id="TIE1" category="lemma" type="t" display-name="[lemma]"><ud-tier-information><ud-information attribute-name="X-Generated-With">Decision Tree Tagger</ud-information><ud-information attribute-name="X-Generated-On">2007-11-01T17:12:13.309130</ud-information></ud-tier-information><event start="T1" end="T2">1.</event>
+<event start="T2" end="T3">Zusammenfassung</event>
+<event start="T3" end="T4">Unterscheidung</event>
+<event start="T4" end="T5">treffen</event>
+<event start="T5" end="T6">(</event>
+<event start="T6" end="T7">George</event>
+<event start="T7" end="T8">A.</event>
+<event start="T8" end="T9"><![CDATA[<unknown>]]></event>
+<event start="T9" end="T10">)</event>
+</tier><tier id="TIE2" category="pos" type="t" display-name="[pos]"><ud-tier-information><ud-information attribute-name="X-Generated-With">Decision Tree Tagger</ud-information><ud-information attribute-name="X-Generated-On">2007-11-01T17:12:13.289998</ud-information></ud-tier-information><event start="T1" end="T2">ADJA</event>
+<event start="T2" end="T3"><ud-information attribute-name="TestInfo">TestValue</ud-information>NN</event>
+<event start="T3" end="T4">NN</event>
+<event start="T4" end="T5">VVINF</event>
+<event start="T5" end="T6">$(</event>
+<event start="T6" end="T7">NE</event>
+<event start="T7" end="T8">NE</event>
+<event start="T8" end="T9">NE</event>
+<event start="T9" end="T10">$(</event>
+</tier><tier id="TIE3" speaker="s0" category="v" type="t" display-name=" [v]"><event start="T1" end="T3">Hallo</event>
+<event start="T3" end="T6">nochmal</event>
+</tier><tier id="TIE4" speaker="s0" category="v2" type="t" display-name=" [v2]"><event start="T1" end="T3">v2value1</event>
+<event start="T3" end="T6">v2value2</event>
+</tier></basic-body>
+</basic-transcription>
