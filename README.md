@@ -87,7 +87,7 @@ corresponding to the xml representation:
 Those data are mapped to a single span overlapping the 4 tokens in Salt. The span further is annotated with 'SPK1::s=sentence'.
 The mapping of the several groups of transcriptions and annotations defined by different speakers are processed independently. So the mapping of multiple speakers with several annotations is analog to one speaker.
 
-##Audio files
+## Audio files
 
 The mapping uses the audio file passed with the model in the xml-element referenced-file:
 
@@ -111,6 +111,7 @@ If an audio file is given the mapping creates a audio data source in Salt (SAudi
 In this case, the first token 'Hello' is aligned to the range [0.0, 0.123] in the audio file in Salt. 
 
 ## Properties
+
 The table contains an overview of all usable properties to customize the behavior of this Pepper module. 
 
 |Name of property    |Type of property	                                            |optional/ mandatory |  default value |
@@ -127,6 +128,7 @@ The table contains an overview of all usable properties to customize the behavio
 |mapTimeline         |Boolean	                                                    |optional            |    true |
 |mapDescriptions     |Boolean	                                                    |optional            |    true |
 |mapSpeakerMetadata  |Boolean	                                                    |optional            |    true |
+|strictFileType  |Boolean	                                                        |optional            |    true |
 
 ### salt.tokenSeparator
 With the property salt.tokenSeparatoryou can set a single sign or a sequence of signs which shall be used between the concatenation of event values representing the primary data. 
@@ -212,16 +214,26 @@ Setting this property to true, adds an additional event in tier 'primary data' c
 ### trimToken
 When this property is true, all tokens defined in exmaralda are trimmed before they are mapped to Salt. That means for instance trailing blanks are removed.
 
-## mapTimeline
+### mapTimeline
 When this property is set to `false`, the original timeline in the input file will not be imported. The default is to include the timeline. 
 
-## mapDescriptions
+### mapDescriptions
 
 Map tiers of the type "Description" if set to  "true", which is the default value.
 
-## mapSpeakerMetadata
+### mapSpeakerMetadata
 
-Import the metadata of the speaker if set to "true", which is the default value.s
+Import the metadata of the speaker if set to "true", which is the default value.
+
+### strictFileType
+
+The default setting of `true` restricts importing only files with the ending `.exb`.
+Older versions of the importer searched for files with the ending `.exb`,
+`.xml`, `.xmi` and `.exmaralda`.
+But the EXMARaLDA partitur editor only creates files with the ending `.exb` and
+only these files should be imported.
+Set to `false` for getting the old behavior.
+
 
 # <a name="exporter">EXMARaLDAExporter</a>
 
