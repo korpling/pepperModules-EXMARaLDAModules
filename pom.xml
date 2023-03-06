@@ -6,7 +6,7 @@
 		<version>3.3.3</version>
 	</parent>
 	<artifactId>pepperModules-EXMARaLDAModules</artifactId>
-	<version>2.0.0</version>
+	<version>2.0.1-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<issueManagement>
 		<system>GitHub</system>
