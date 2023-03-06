@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Only import documents with file ending `.exb` per default. The old behavior
+  can be restored by setting the parameter `strictFileType` to `false`.
+
 ### Fixed
 
 - NullPointerException when trimming empty event values
+- Do not attempt to create meta data label for UD informations without a name
